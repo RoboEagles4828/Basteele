@@ -27,11 +27,6 @@ deploy {
     }
 }
 
-frc {
-    team = 4828
-    robotClass = "org.usfirst.frc.team4828.Robot"
-}
-
 dependencies {
     compile wpilib()
     compile navx()
