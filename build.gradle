@@ -2,43 +2,59 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.11.17"
+    id "jaci.openrio.gradle.GradleRIO" version "2017.2.3"
+    id "jacoco"
+    id "pmd"
+    id "findbugs"
 }
 
-def TEAM = 5333
-def ROBOT_CLASS = "frc.team0000.robot.Robot"
-
-// Define my targets (RoboRIO) and artifacts (deployable files)
-// This is added by GradleRIO's backing project EmbeddedTools.
-deploy {
-    targets {
-        target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
-            team = TEAM
-        }
-    }
-    artifacts {
-        artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
-            targets << "roborio"
-        }
-    }
+repositories {
+    mavenCentral()
 }
 
-// Defining my dependencies. In this case, WPILib (+ friends), CTRE Toolsuite (Talon SRX)
-// and NavX.
+frc {
+    team = "4828"
+    robotClass = "org.usfirst.frc.team4828.Robot"
+}
+
 dependencies {
     compile wpilib()
-    compile ctre()
+    compile talonSrx()
     compile navx()
+
+    compile group: 'junit', name: 'junit', version: '4.12'
+    compile fileTree(dir: "libs", include: "*.jar")
+    nativeLib  fileTree(dir: 'libs', include: '**/*.so')
 }
 
-// Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
-// in order to make them all available at runtime. Also adding the manifest so WPILib
-// knows where to look for our Robot Class.
+def robotManifest = {
+  attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+  attributes 'Robot-Class': frc.robotClass
+}
+
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
+    manifest robotManifest
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.1'
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
 }

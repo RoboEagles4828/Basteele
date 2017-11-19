@@ -64,7 +64,7 @@ So let's say you have a great idea for the robot, such as better code for the sh
 
 If you haven't already, clone the repository into a folder:
 
-`git clone https://github.com/RoboEagles4828/2017Robot.git`
+`git clone https://github.com/RoboEagles4828/2018Robot.git`
 
 Now `cd` into the repository.
 
@@ -170,7 +170,7 @@ Install the most recent JDK from Oracle. Follow the prompts.
 
 You should have this done, but if you haven't, use this command:
 
-`git clone https://github.com/RoboEagles4828/2017Robot.git`
+`git clone https://github.com/RoboEagles4828/2018Robot.git`
 
 Don't forget to `cd` into the directory.
 
