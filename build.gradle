@@ -44,7 +44,7 @@ def robotManifest = {
 
 jar {
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest(ROBOT_CLASS)
+    manifest jaci.openrio.gradle.GradleRIOPlugin.javaManifest("frc.team4828.robot.Robot")
 }
 
 task wrapper(type: Wrapper) {
