@@ -18,5 +18,30 @@
 *.tar.gz
 *.rar
 
+# Gradle Files
+.gradle/
+
+# WPILib
+bin/
+build/
+dist/
+sysProps.xml
+workbench.xmi
+
+# Eclipse
+.project
+.settings/
+.classpath
+
+# IntelliJ IDEA
+*.ipr
+*.iml
+*.iws
+.idea/
+
+out/
+tmp/
+.loadpath
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
