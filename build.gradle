@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2017.11.17"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.01.07"
     id "jacoco"
     id "pmd"
     id "findbugs"
@@ -48,7 +48,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
+    gradleVersion = '4.4'
 }
 
 test {
