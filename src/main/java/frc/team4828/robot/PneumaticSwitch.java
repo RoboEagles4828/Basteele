@@ -22,31 +22,19 @@ public class PneumaticSwitch {
         return comp.getCompressorCurrent();
     }
 
-    public void forward() {
-        sol.set(DoubleSolenoid.Value.kForward);
-    }
-
-    public void reverse() {
-        sol.set(DoubleSolenoid.Value.kReverse);
-    }
-
-    public void off() {
-        sol.set(DoubleSolenoid.Value.kOff);
-    }
-
     public void set(int mode) {
         switch (mode) {
         case 1:
-            forward();
+            sol.set(DoubleSolenoid.Value.kForward);
             break;
         case -1:
-            reverse();
+            sol.set(DoubleSolenoid.Value.kReverse);
             break;
         case 0:
-            off();
+            sol.set(DoubleSolenoid.Value.kOff);
             break;
         default:
-            off();
+            sol.set(DoubleSolenoid.Value.kOff);
             break;
         }
     }

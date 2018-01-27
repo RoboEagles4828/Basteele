@@ -9,7 +9,7 @@ public class Gearbox {
     private TalonSRX motor2;
     private PneumaticSwitch switcher;
 
-    private final ControlMode CONTROL_MODE = ControlMode.PercentOutput;
+    private ControlMode controlMode = ControlMode.PercentOutput;
     private final double DEFAULT_SPEED = 0.500;
 
     public Gearbox(TalonSRX motor1, TalonSRX motor2, PneumaticSwitch switcher) {
@@ -19,18 +19,18 @@ public class Gearbox {
     }
 
     public void drive() {
-        motor1.set(CONTROL_MODE, DEFAULT_SPEED);
-        motor2.set(CONTROL_MODE, DEFAULT_SPEED);
+        motor1.set(controlMode, DEFAULT_SPEED);
+        motor2.set(controlMode, DEFAULT_SPEED);
     }
 
     public void drive(double speed) {
-        motor1.set(CONTROL_MODE, speed);
-        motor2.set(CONTROL_MODE, speed);
+        motor1.set(controlMode, speed);
+        motor2.set(controlMode, speed);
     }
 
     public void brake() {
-        motor1.set(CONTROL_MODE, 0);
-        motor2.set(CONTROL_MODE, 0);
+        motor1.set(controlMode, 0);
+        motor2.set(controlMode, 0);
     }
 
     public void setSwitch(int mode) {
