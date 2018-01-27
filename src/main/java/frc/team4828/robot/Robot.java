@@ -8,6 +8,7 @@ public class Robot extends IterativeRobot {
     Gearbox leftGearbox;
     Gearbox rightGearbox;
     Joystick joystick;
+    PneumaticSwitch dumper;
 
     public void robotInit() {
 
@@ -25,6 +26,9 @@ public class Robot extends IterativeRobot {
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
 
         joystick = new Joystick(Ports.JOYSTICK);
+
+        DoubleSolenoid dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
+        dumper = new PneumaticSwitch(comp, dumperSol);
 
     }
 
