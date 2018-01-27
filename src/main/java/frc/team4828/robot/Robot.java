@@ -1,33 +1,62 @@
 package frc.team4828.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.*;
 
 public class Robot extends IterativeRobot {
-    @Override
-    public void robotInit() { }
 
-    @Override
-    public void disabledInit() { }
+    TalonSRX fl, fr, bl, br;
+    Joystick j;
 
-    @Override
-    public void autonomousInit() { }
+    public void robotInit() {
+        fl = new TalonSRX(Ports.FRONT_LEFT);
+        fr = new TalonSRX(Ports.FRONT_RIGHT);
+        bl = new TalonSRX(Ports.BACK_LEFT);
+        br = new TalonSRX(Ports.BACK_RIGHT);
 
-    @Override
-    public void teleopInit() { }
+        j = new Joystick(Ports.JOYSTICK);
 
-    @Override
-    public void testInit() { }
+    }
 
+    public void autonomousInit() {
+        System.out.println(" --- Start Auton Init ---");
 
-    @Override
-    public void disabledPeriodic() { }
-    
-    @Override
-    public void autonomousPeriodic() { }
+        System.out.println(" --- Start Auton ---");
+    }
 
-    @Override
-    public void teleopPeriodic() { }
+    public void autonomousPeriodic() {
 
-    @Override
-    public void testPeriodic() { }
+        Timer.delay(.1);
+    }
+
+    public void teleopInit() {
+        System.out.println(" --- Start Teleop Init ---");
+
+        System.out.println(" --- Start Teleop ---");
+    }
+
+    public void teleopPeriodic() {
+
+        Timer.delay(.1);
+    }
+
+    public void testInit() {
+        System.out.println(" --- Start Test Init ---");
+
+        System.out.println(" --- Start Test ---");
+    }
+
+    public void testPeriodic() {
+        double speed1 = j.getThrottle();
+        double speed2 = j.getThrottle();
+
+        fl.set(ControlMode.PercentOutput, speed1);
+        fr.set(ControlMode.PercentOutput, speed2);
+        bl.set(ControlMode.PercentOutput, speed1);
+        br.set(ControlMode.PercentOutput, speed2);
+
+        Timer.delay(.1);
+    }
+
 }
