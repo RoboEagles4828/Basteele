@@ -8,6 +8,7 @@ public class Robot extends IterativeRobot {
     Gearbox leftGearbox;
     Gearbox rightGearbox;
     Joystick joystick;
+    PneumaticSwitch dumper;
 
     Grabber grabber;
 
@@ -29,6 +30,10 @@ public class Robot extends IterativeRobot {
         joystick = new Joystick(Ports.JOYSTICK);
 
         grabber = new Grabber(Ports.GRABBER_L, Ports.GRABBER_R);
+
+        DoubleSolenoid dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
+        dumper = new PneumaticSwitch(comp, dumperSol);
+
     }
 
     public void autonomousInit() {

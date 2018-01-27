@@ -12,4 +12,7 @@ public class Ports {
 
     public static final int GRABBER_L = 6;
     public static final int GRABBER_R = 7;
+
+    public static final int[] DUMPER = { 4, 5 };
+
 }
