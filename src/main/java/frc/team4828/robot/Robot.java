@@ -1,21 +1,30 @@
 package frc.team4828.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.*;
 
 public class Robot extends IterativeRobot {
 
-    TalonSRX fl, fr, bl, br;
-    Joystick j;
+    Gearbox leftGearbox;
+    Gearbox rightGearbox;
+    Joystick joystick;
 
     public void robotInit() {
-        fl = new TalonSRX(Ports.FRONT_LEFT);
-        fr = new TalonSRX(Ports.FRONT_RIGHT);
-        bl = new TalonSRX(Ports.BACK_LEFT);
-        br = new TalonSRX(Ports.BACK_RIGHT);
 
-        j = new Joystick(Ports.JOYSTICK);
+        TalonSRX motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
+        TalonSRX motor2 = new TalonSRX(Ports.LEFT_MOTORS[1]);
+        TalonSRX motor3 = new TalonSRX(Ports.RIGHT_MOTORS[0]);
+        TalonSRX motor4 = new TalonSRX(Ports.RIGHT_MOTORS[1]);
+        Compressor comp = new Compressor();
+        DoubleSolenoid sol1 = new DoubleSolenoid(Ports.LEFT_SOLENOID[0], Ports.LEFT_SOLENOID[1]);
+        DoubleSolenoid sol2 = new DoubleSolenoid(Ports.RIGHT_SOLENOID[0], Ports.RIGHT_SOLENOID[1]);
+        PneumaticSwitch switcher1 = new PneumaticSwitch(comp, sol1);
+        PneumaticSwitch switcher2 = new PneumaticSwitch(comp, sol2);
+
+        leftGearbox = new Gearbox(motor1, motor2, switcher1);
+        rightGearbox = new Gearbox(motor3, motor4, switcher2);
+
+        joystick = new Joystick(Ports.JOYSTICK);
 
     }
 
@@ -48,13 +57,11 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        double speed1 = j.getThrottle();
-        double speed2 = j.getThrottle();
+        double speed1 = joystick.getThrottle();
+        double speed2 = joystick.getThrottle();
 
-        fl.set(ControlMode.PercentOutput, speed1);
-        fr.set(ControlMode.PercentOutput, speed2);
-        bl.set(ControlMode.PercentOutput, speed1);
-        br.set(ControlMode.PercentOutput, speed2);
+        leftGearbox.drive(speed1);
+        rightGearbox.drive(speed2);
 
         Timer.delay(.1);
     }
