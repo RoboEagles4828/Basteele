@@ -25,8 +25,8 @@ public class Grabber {
         left.set(ControlMode.PercentOutput, -1);
         right.set(ControlMode.PercentOutput, 1);
     }
-    public void set(int spd) {
-        left.set(ControlMode.PercentOutput, spd);
-        right.set(ControlMode.PercentOutput, spd);
+    public void set(int speed) {
+        left.set(ControlMode.PercentOutput, speed);
+        right.set(ControlMode.PercentOutput, speed);
     }
 }

@@ -34,6 +34,7 @@ public class Robot extends IterativeRobot {
         DoubleSolenoid dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
         dumper = new PneumaticSwitch(comp, dumperSol);
 
+        grabber = new Grabber(Ports.GRABBER[0], Ports.GRABBER[1]);
     }
 
     public void autonomousInit() {
