@@ -3,15 +3,15 @@ package frc.team4828.robot;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-public class Pneumatic {
+public class PneumaticSwitch {
 
     private Compressor comp;
     private DoubleSolenoid sol;
 
-    Pneumatic(int compPort, int solPort1, int solPort2) {
-        comp = new Compressor(compPort);
+    PneumaticSwitch(Compressor comp, DoubleSolenoid sol) {
+        this.comp = comp;
         comp.setClosedLoopControl(true);
-        sol = new DoubleSolenoid(solPort1, solPort2);
+        this.sol = sol;
     }
 
     public boolean enabled() {
@@ -32,6 +32,23 @@ public class Pneumatic {
 
     public void off() {
         sol.set(DoubleSolenoid.Value.kOff);
+    }
+    
+    public void set(int mode) {
+        switch (mode) {
+        case 1:
+            forward();
+            break;
+        case -1:
+            reverse();
+            break;
+        case 0:
+            off();
+            break;
+        default:
+            off();
+            break;
+        }
     }
 
 }
