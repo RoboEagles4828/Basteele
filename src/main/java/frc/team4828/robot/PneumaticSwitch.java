@@ -33,7 +33,7 @@ public class PneumaticSwitch {
     public void off() {
         sol.set(DoubleSolenoid.Value.kOff);
     }
-    
+
     public void set(int mode) {
         switch (mode) {
         case 1:
