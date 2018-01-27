@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Grabber {
+
     TalonSRX left, right;
 
     public Grabber(int leftPort, int rightPort) {
@@ -25,6 +26,7 @@ public class Grabber {
         left.set(ControlMode.PercentOutput, -1);
         right.set(ControlMode.PercentOutput, 1);
     }
+
     public void set(int speed) {
         left.set(ControlMode.PercentOutput, speed);
         right.set(ControlMode.PercentOutput, speed);
