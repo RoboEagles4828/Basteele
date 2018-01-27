@@ -9,6 +9,8 @@ public class Robot extends IterativeRobot {
     Gearbox rightGearbox;
     Joystick joystick;
 
+    Grabber grabber;
+
     public void robotInit() {
 
         TalonSRX motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
@@ -26,6 +28,7 @@ public class Robot extends IterativeRobot {
 
         joystick = new Joystick(Ports.JOYSTICK);
 
+        grabber = new Grabber(Ports.GRABBER_L, Ports.GRABBER_R);
     }
 
     public void autonomousInit() {
