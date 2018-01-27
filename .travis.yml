@@ -8,8 +8,6 @@ addons:
       - libstdc++6
       - junit4
       - lynx
-  code_climate:
-          repo_token: 3196bfa644b36e30bf8c3d41c51d36d7eb39fc0d54739268ffc677170d1b26d0
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -45,3 +43,6 @@ cards:
   - master
   - development
   title: Toast
+env:
+  global:
+    - CODECOV_TOKEN=:078e0034-6bc8-45fd-be49-92ed5afc30f7
