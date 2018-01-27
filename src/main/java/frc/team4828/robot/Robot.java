@@ -10,6 +10,8 @@ public class Robot extends IterativeRobot {
     Joystick joystick;
     PneumaticSwitch dumper;
 
+    Grabber grabber;
+
     public void robotInit() {
 
         TalonSRX motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
@@ -29,6 +31,8 @@ public class Robot extends IterativeRobot {
 
         DoubleSolenoid dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
         dumper = new PneumaticSwitch(comp, dumperSol);
+
+        grabber = new Grabber(Ports.GRABBER[0], Ports.GRABBER[1]);
 
     }
 
