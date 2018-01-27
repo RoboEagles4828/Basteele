@@ -10,4 +10,6 @@ public class Ports {
     public static final int[] LEFT_SOLENOID = { 0, 1 };
     public static final int[] RIGHT_SOLENOID = { 2, 3 };
 
+    public static final int[] DUMPER = { 4, 5 };
+
 }
