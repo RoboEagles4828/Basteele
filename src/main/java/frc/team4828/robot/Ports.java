@@ -2,8 +2,8 @@ package frc.team4828.robot;
 
 public class Ports {
 
-    public static final int[] LEFT_MOTORS = { 1, 2 };
-    public static final int[] RIGHT_MOTORS = { 3, 4 };
+    public static final int[] LEFT_MOTORS = { 1, 3 };
+    public static final int[] RIGHT_MOTORS = { 2, 4 };
 
     public static final int JOYSTICK = 0;
 

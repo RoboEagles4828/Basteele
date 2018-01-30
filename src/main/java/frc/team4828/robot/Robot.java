@@ -10,6 +10,7 @@ public class Robot extends IterativeRobot {
     Joystick joystick;
     PneumaticSwitch dumper;
 
+    DriveTrain drive;
     Grabber grabber;
 
     public void robotInit() {
@@ -34,6 +35,7 @@ public class Robot extends IterativeRobot {
 
         grabber = new Grabber(Ports.GRABBER[0], Ports.GRABBER[1]);
 
+        drive = new DriveTrain(leftGearbox, rightGearbox);
     }
 
     public void autonomousInit() {
@@ -54,6 +56,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
+        drive.arcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
 
         Timer.delay(.1);
     }
