@@ -37,7 +37,14 @@ public class DriveTrain {
      *            The angle to drive
      */
     public void arcadeDrive(double x, double y, double angle) {
-        double[] drive = { y + x - angle, y - x + angle };
+        double[] drive = new double[2];
+        if (x > 0) {
+            drive[0] = y + x - angle;
+            drive[1] = y + angle;
+        } else {
+            drive[0] = y - angle;
+            drive[1] = y - x + angle;
+        }
         drive = normalize(drive);
         left.drive(drive[0]);
         right.drive(drive[1]);
