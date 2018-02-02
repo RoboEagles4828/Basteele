@@ -34,7 +34,7 @@ public class DriveTrain {
      * @param y
      *            The y component to drive (Positive is up; Negative is down)
      * @param twist
-     *            The angle to drive
+     *            The angle to drive (Positive is counterclockwise; Negative is clockwise)
      */
     public void arcadeDrive(double x, double y, double angle) {
         double[] drive = new double[2];
