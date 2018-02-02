@@ -56,8 +56,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-        drive.arcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
-
+        drive.jArcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
         Timer.delay(.1);
     }
 
@@ -68,12 +67,10 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        double speed1 = joystick.getThrottle();
-        double speed2 = joystick.getThrottle();
-
-        leftGearbox.drive(speed1);
-        rightGearbox.drive(speed2);
-
+        double x = joystick.getX();
+        double y = joystick.getY();
+        double twist = joystick.getTwist();
+        drive.debug(x, y, twist);
         Timer.delay(.1);
     }
 
