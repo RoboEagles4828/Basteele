@@ -17,7 +17,7 @@ public class Robot extends IterativeRobot {
     private Gearbox leftGearbox;
     private Gearbox rightGearbox;
     private DoubleSolenoid dumperSol;
-    
+
     private Joystick joystick;
 
     private DriveTrain drive;
@@ -65,6 +65,11 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         drive.jArcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
+        if (joystick.getRawButton(Buttons.DUMPER_ON)) {
+            dumper.set(1);
+        } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
+            dumper.set(-1);
+        }
         Timer.delay(.1);
     }
 
