@@ -31,9 +31,10 @@ public class DriveTrain {
      * 
      * Takes in X, Y, and twist to produce speeds for left and right gearboxes.
      * 
-     * @param x      The x component to drive (Positive is right; Negative is left)
-     * @param y      The y component to drive (Positive is up; Negative is down)
-     * @param twist  The angle to drive (Positive is counterclockwise; Negative is clockwise)
+     * @param x The x component to drive (Positive is right; Negative is left)
+     * @param y The y component to drive (Positive is up; Negative is down)
+     * @param twist The angle to drive (Positive is counterclockwise; Negative is
+     *            clockwise)
      */
     public void arcadeDrive(double x, double y, double angle) {
         double[] drive = new double[2];
