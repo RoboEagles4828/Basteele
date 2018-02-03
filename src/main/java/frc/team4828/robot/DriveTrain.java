@@ -44,6 +44,7 @@ public class DriveTrain {
 
     /**
      * Takes in x, y, and an angle to produce speeds for left and right gearboxes.
+     * <p>
      * 
      * @param x      The x component to drive (Positive is right; Negative is left).
      * @param y      The y component to drive (Positive is up; Negative is down).
@@ -65,6 +66,7 @@ public class DriveTrain {
 
     /**
      * Changes the inputs from the joystick to work with arcadeDrive.
+     * <p>
      *
      * @param x      The x component of the joystick.
      * @param y      The y component of the joystick.
@@ -88,6 +90,7 @@ public class DriveTrain {
 
     /**
      * Prints debug info to the console.
+     * <p>
      *
      * @param x      X to print.
      * @param y      Y to print.
