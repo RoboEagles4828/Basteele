@@ -3,6 +3,7 @@ package frc.team4828.robot;
 public class DriveTrain {
 
     private static final double TWIST_THRESH = .3;
+    private static final double TWIST_FACTOR = .5;
     Gearbox left, right;
 
     public DriveTrain(Gearbox left, Gearbox right) {
@@ -61,7 +62,8 @@ public class DriveTrain {
         }
         y *= -1;
         twist *= -1;
-        arcadeDrive(x, y, twist * .5);
+        twist *= TWIST_FACTOR;
+        arcadeDrive(x, y, twist);
     }
 
     public void debug(double x, double y, double twist) {
