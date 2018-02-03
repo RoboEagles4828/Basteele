@@ -62,7 +62,7 @@ public class DriveTrain {
         }
         y *= -1;
         twist *= -1;
-        arcadeDrive(x, y, twist);
+        arcadeDrive(x, y, twist * .5);
     }
 
     public void debug(double x, double y, double twist) {
