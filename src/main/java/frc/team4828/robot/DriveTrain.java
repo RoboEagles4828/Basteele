@@ -7,12 +7,12 @@ public class DriveTrain {
     Gearbox left, right;
 
     /**
-     * Drivetrain for the Robot. Takes in a left and right gearbox and uses arcade drive.
+     * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
      * <p>
      * Note: Takes in Gearbox Object, not the port.
      *
-     * @param left   Left Gearbox (Not the port, a Gearbox Object)
-     * @param right  Right Gearbox (Not the port, a Gearbox Object)
+     * @param left   Left Gearbox.
+     * @param right  Right Gearbox.
      */
     public DriveTrain(Gearbox left, Gearbox right) {
         this.left = left;
@@ -21,9 +21,10 @@ public class DriveTrain {
 
     /**
      * Scales inputs so that they remain within 1.
+     * <p>
      *
      * @param input  An input array of doubles that is to be normalized.
-     * @return a same size array that is normalized.
+     * @return       A same sized array that is normalized.
      */
     public double[] normalize(double[] input) {
         double max = 0;
@@ -44,9 +45,9 @@ public class DriveTrain {
     /**
      * Takes in x, y, and an angle to produce speeds for left and right gearboxes.
      * 
-     * @param x      The x component to drive (Positive is right; Negative is left)
-     * @param y      The y component to drive (Positive is up; Negative is down)
-     * @param angle  The angle to drive (Positive is counterclockwise; Negative is clockwise)
+     * @param x      The x component to drive (Positive is right; Negative is left).
+     * @param y      The y component to drive (Positive is up; Negative is down).
+     * @param angle  The angle to drive (Positive is counterclockwise; Negative is clockwise).
      */
     public void arcadeDrive(double x, double y, double angle) {
         double[] drive = new double[2];
@@ -63,11 +64,11 @@ public class DriveTrain {
     }
 
     /**
-     * Changes the inputs from the joystick to work with arcadeDrive
+     * Changes the inputs from the joystick to work with arcadeDrive.
      *
-     * @param x      The x component of the Joystick
-     * @param y      The y component of the Joystick
-     * @param twist  The twist component of the Joystick
+     * @param x      The x component of the joystick.
+     * @param y      The y component of the joystick.
+     * @param twist  The twist component of the joystick.
      */
     public void jArcadeDrive(double x, double y, double twist) {
         if (Math.abs(twist) < TWIST_THRESH) {
@@ -86,11 +87,11 @@ public class DriveTrain {
     }
 
     /**
-     * Prints debug prints to console.
+     * Prints debug info to the console.
      *
-     * @param x      X to print
-     * @param y      Y to print
-     * @param twist  Twist to print
+     * @param x      X to print.
+     * @param y      Y to print.
+     * @param twist  Twist to print.
      */
     public void debug(double x, double y, double twist) {
         System.out.println("X: " + x + " Y: " + y + " Twist: " + twist);
