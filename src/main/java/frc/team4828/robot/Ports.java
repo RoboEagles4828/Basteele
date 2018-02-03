@@ -4,6 +4,8 @@ public class Ports {
 
     public static final int[] LEFT_MOTORS = { 1, 2 };
     public static final int[] RIGHT_MOTORS = { 3, 4 };
+    
+    public static final int COMPRESSOR = 5;
 
     public static final int JOYSTICK = 0;
 
