@@ -7,6 +7,7 @@ public class Buttons {
     
     public static final int DUMPER_ON = 11;
     public static final int DUMPER_OFF = 12;
+
     
     public Buttons() {
         System.out.println("Don't instantiate the Buttons class, fool!");
