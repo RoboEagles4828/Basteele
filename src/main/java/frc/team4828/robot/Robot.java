@@ -91,6 +91,8 @@ public class Robot extends IterativeRobot {
                 case 6:
                     break;
                 case 7:
+                    // Outtake into the hole
+                    lift.outtake();
                     break;
                 default:
                     break;
