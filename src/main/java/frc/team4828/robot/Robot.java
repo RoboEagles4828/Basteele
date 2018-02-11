@@ -5,35 +5,45 @@ import edu.wpi.first.wpilibj.*;
 
 public class Robot extends IterativeRobot {
 
-    Gearbox leftGearbox;
-    Gearbox rightGearbox;
-    Joystick joystick;
-    PneumaticSwitch dumper;
+    private TalonSRX motor1;
+    private TalonSRX motor2;
+    private TalonSRX motor3;
+    private TalonSRX motor4;
+    private Compressor comp;
+    private DoubleSolenoid sol1;
+    private DoubleSolenoid sol2;
+    private PneumaticSwitch switcher1;
+    private PneumaticSwitch switcher2;
+    private Gearbox leftGearbox;
+    private Gearbox rightGearbox;
+    private DoubleSolenoid dumperSol;
 
-    Grabber grabber;
+    private Joystick joystick;
+
+    private DriveTrain drive;
+    private Grabber grabber;
+    private PneumaticSwitch dumper;
 
     public void robotInit() {
-
-        TalonSRX motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
-        TalonSRX motor2 = new TalonSRX(Ports.LEFT_MOTORS[1]);
-        TalonSRX motor3 = new TalonSRX(Ports.RIGHT_MOTORS[0]);
-        TalonSRX motor4 = new TalonSRX(Ports.RIGHT_MOTORS[1]);
-        Compressor comp = new Compressor();
-        DoubleSolenoid sol1 = new DoubleSolenoid(Ports.LEFT_SOLENOID[0], Ports.LEFT_SOLENOID[1]);
-        DoubleSolenoid sol2 = new DoubleSolenoid(Ports.RIGHT_SOLENOID[0], Ports.RIGHT_SOLENOID[1]);
-        PneumaticSwitch switcher1 = new PneumaticSwitch(comp, sol1);
-        PneumaticSwitch switcher2 = new PneumaticSwitch(comp, sol2);
-
+        motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
+        motor2 = new TalonSRX(Ports.LEFT_MOTORS[1]);
+        motor3 = new TalonSRX(Ports.RIGHT_MOTORS[0]);
+        motor4 = new TalonSRX(Ports.RIGHT_MOTORS[1]);
+        comp = new Compressor(Ports.COMPRESSOR);
+        comp.setClosedLoopControl(true);
+        sol1 = new DoubleSolenoid(Ports.LEFT_SOLENOID[0], Ports.LEFT_SOLENOID[1]);
+        sol2 = new DoubleSolenoid(Ports.RIGHT_SOLENOID[0], Ports.RIGHT_SOLENOID[1]);
+        switcher1 = new PneumaticSwitch(comp, sol1);
+        switcher2 = new PneumaticSwitch(comp, sol2);
         leftGearbox = new Gearbox(motor1, motor2, switcher1);
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
+        dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
 
         joystick = new Joystick(Ports.JOYSTICK);
 
-        DoubleSolenoid dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
-        dumper = new PneumaticSwitch(comp, dumperSol);
-
+        drive = new DriveTrain(leftGearbox, rightGearbox);
         grabber = new Grabber(Ports.GRABBER[0], Ports.GRABBER[1]);
-
+        dumper = new PneumaticSwitch(comp, dumperSol);
     }
 
     public void autonomousInit() {
@@ -54,7 +64,12 @@ public class Robot extends IterativeRobot {
     }
 
     public void teleopPeriodic() {
-
+        drive.jArcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
+        if (joystick.getRawButton(Buttons.DUMPER_ON)) {
+            dumper.set(1);
+        } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
+            dumper.set(-1);
+        }
         Timer.delay(.1);
     }
 
@@ -65,12 +80,10 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        double speed1 = joystick.getThrottle();
-        double speed2 = joystick.getThrottle();
-
-        leftGearbox.drive(speed1);
-        rightGearbox.drive(speed2);
-
+        double x = joystick.getX();
+        double y = joystick.getY();
+        double twist = joystick.getTwist();
+        drive.debug(x, y, twist);
         Timer.delay(.1);
     }
 

@@ -10,7 +10,6 @@ public class PneumaticSwitch {
 
     PneumaticSwitch(Compressor comp, DoubleSolenoid sol) {
         this.comp = comp;
-        comp.setClosedLoopControl(true);
         this.sol = sol;
     }
 

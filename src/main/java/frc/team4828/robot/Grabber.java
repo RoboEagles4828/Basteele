@@ -18,13 +18,13 @@ public class Grabber {
     }
 
     public void outtake() {
-        left.set(ControlMode.PercentOutput, 0);
-        right.set(ControlMode.PercentOutput, 0);
+        left.set(ControlMode.PercentOutput, -1);
+        right.set(ControlMode.PercentOutput, 1);
     }
 
     public void stop() {
-        left.set(ControlMode.PercentOutput, -1);
-        right.set(ControlMode.PercentOutput, 1);
+        left.set(ControlMode.PercentOutput, 0);
+        right.set(ControlMode.PercentOutput, 0);
     }
 
     public void set(int speed) {
