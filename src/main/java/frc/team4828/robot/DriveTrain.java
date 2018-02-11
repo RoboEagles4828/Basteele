@@ -4,6 +4,8 @@ public class DriveTrain {
 
     private static final double TWIST_THRESH = .3;
     private static final double TWIST_FACTOR = .5;
+    private static final double ENC_RATIO = 1;
+
     Gearbox left, right;
 
     /**
@@ -86,6 +88,24 @@ public class DriveTrain {
         twist *= -1;
         twist *= TWIST_FACTOR;
         arcadeDrive(x, y, twist);
+    }
+
+    /**
+     * Moves a certain distance forward. Distance is in meters.
+     *
+     * @param dist   The distance in meters
+     * @param speed  The speed to go at
+     */
+    private void moveDist(double dist, double speed) {
+        double startEncL = left.getEnc(), startEncR = right.getEnc();
+        left.drive(speed);
+        right.drive(speed);
+        while(startEncL - left.getEnc() < dist * ENC_RATIO || startEncR - right.getEnc() < dist * ENC_RATIO) {
+            if (startEncL - left.getEnc() >= dist * ENC_RATIO)
+                left.brake();
+            if (startEncR - right.getEnc() >= dist * ENC_RATIO)
+                right.brake();
+        }
     }
 
     /**
