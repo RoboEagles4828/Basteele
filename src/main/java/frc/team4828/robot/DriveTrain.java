@@ -94,17 +94,30 @@ public class DriveTrain {
      * Moves a certain distance forward. Distance is in meters.
      *
      * @param dist   The distance in meters
-     * @param speed  The speed to go at
+     * @param speed  The motors' speed
      */
-    private void moveDist(double dist, double speed) {
-        double startEncL = left.getEnc(), startEncR = right.getEnc();
-        left.drive(speed);
-        right.drive(speed);
-        while(startEncL - left.getEnc() < dist * ENC_RATIO || startEncR - right.getEnc() < dist * ENC_RATIO) {
-            if (startEncL - left.getEnc() >= dist * ENC_RATIO)
+    private void moveDistance(double distance, double speed) {
+        double startEncL = left.getEnc();
+        double startEncR = right.getEnc();
+        double changeEncL = 0;
+        double changeEncR = 0;
+        double maxEnc = Math.abs(distance * ENC_RATIO);
+        if (distance > 0) {
+            left.drive(speed);
+            right.drive(speed);
+        } else {
+            left.drive(-speed);
+            right.drive(-speed);
+        }
+        while (changeEncL < maxEnc || changeEncR < maxEnc) {
+            changeEncL = Math.abs(left.getEnc() - startEncL);
+            changeEncR = Math.abs(right.getEnc() - startEncR);
+            if (changeEncL >= maxEnc) {
                 left.brake();
-            if (startEncR - right.getEnc() >= dist * ENC_RATIO)
+            }
+            if (changeEncR >= maxEnc) {
                 right.brake();
+            }
         }
     }
 
