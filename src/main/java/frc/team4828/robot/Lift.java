@@ -12,18 +12,17 @@ public class Lift {
     private LiftThread liftThread;
     private ArmThread armThread;
 
-    public Lift(int liftMotorPort, int armMotorPort, int leftGrabberPort, int rightGrabberPort, int liftMinPort,
-            int liftMaxPort, int armMinPort, int armMaxPort, int switcherPort) {
-
-        liftMotor = new Talon(liftMotorPort);
-        armMotor = new Talon(armMotorPort);
-        leftGrabber = new Talon(leftGrabberPort);
-        rightGrabber = new Talon(rightGrabberPort);
-        liftMin = new DigitalInput(liftMinPort);
-        liftMax = new DigitalInput(liftMaxPort);
-        armMin = new DigitalInput(armMinPort);
-        armMax = new DigitalInput(armMaxPort);
-        switcher = new DigitalInput(switcherPort);
+    public Lift(Talon liftMotor, Talon armMotor, Talon leftGrabber, Talon rightGrabber, DigitalInput liftMin,
+            DigitalInput liftMax, DigitalInput armMin, DigitalInput armMax, DigitalInput switcher) {
+        this.liftMotor = liftMotor;
+        this.armMotor = armMotor;
+        this.leftGrabber = leftGrabber;
+        this.rightGrabber = rightGrabber;
+        this.liftMin = liftMin;
+        this.liftMax = liftMax;
+        this.armMin = armMin;
+        this.armMax = armMax;
+        this.switcher = switcher;
 
         liftThread = new LiftThread(liftMotor, liftMin, liftMax, switcher);
         armThread = new ArmThread(armMotor, armMin, armMax);
