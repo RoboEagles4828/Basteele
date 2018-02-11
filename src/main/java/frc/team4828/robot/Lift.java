@@ -66,6 +66,10 @@ public class Lift {
         return liftThread.getLift();
     }
 
+    public boolean isLiftIdle() {
+        return liftThread.isIdle();
+    }
+
     // End LiftThread methods
 
     // Start ArmThread methods
@@ -104,6 +108,10 @@ public class Lift {
 
     public double getArmSpeed() {
         return armThread.getArm();
+    }
+
+    public boolean isArmIdle() {
+        return armThread.isIdle();
     }
 
     // End ArmThread methods
