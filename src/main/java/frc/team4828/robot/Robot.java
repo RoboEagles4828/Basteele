@@ -5,24 +5,21 @@ import edu.wpi.first.wpilibj.*;
 
 public class Robot extends IterativeRobot {
 
-    private TalonSRX motor1;
-    private TalonSRX motor2;
-    private TalonSRX motor3;
-    private TalonSRX motor4;
+    private TalonSRX motor1, motor2, motor3, motor4;
     private Compressor comp;
-    private DoubleSolenoid sol1;
-    private DoubleSolenoid sol2;
-    private PneumaticSwitch switcher1;
-    private PneumaticSwitch switcher2;
-    private Gearbox leftGearbox;
-    private Gearbox rightGearbox;
+    private DoubleSolenoid sol1, sol2;
+    private PneumaticSwitch switcher1, switcher2;
+    private Gearbox leftGearbox, rightGearbox;
     private DoubleSolenoid dumperSol;
+
+    private Talon liftMotor, armMotor, leftGrabber, rightGrabber;
+    private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
 
     private Joystick joystick;
 
     private DriveTrain drive;
-    private Grabber grabber;
     private PneumaticSwitch dumper;
+    private Lift lift;
 
     public void robotInit() {
         motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
@@ -39,11 +36,22 @@ public class Robot extends IterativeRobot {
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
         dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
 
+        liftMotor = new Talon(Ports.LIFT_MOTOR);
+        armMotor = new Talon(Ports.ARM_MOTOR);
+        leftGrabber = new Talon(Ports.LEFT_GRABBER);
+        rightGrabber = new Talon(Ports.RIGHT_GRABBER);
+
+        liftMin = new DigitalInput(Ports.LIFT_MIN);
+        liftMax = new DigitalInput(Ports.LIFT_MAX);
+        armMin = new DigitalInput(Ports.ARM_MIN);
+        armMax = new DigitalInput(Ports.ARM_MAX);
+        switcher = new DigitalInput(Ports.SWITCHER);
+
         joystick = new Joystick(Ports.JOYSTICK);
 
         drive = new DriveTrain(leftGearbox, rightGearbox);
-        grabber = new Grabber(Ports.GRABBER[0], Ports.GRABBER[1]);
         dumper = new PneumaticSwitch(comp, dumperSol);
+        lift = new Lift(liftMotor, armMotor, leftGrabber, rightGrabber, liftMin, liftMax, armMin, armMax, switcher);
     }
 
     public void autonomousInit() {
@@ -69,6 +77,17 @@ public class Robot extends IterativeRobot {
             dumper.set(1);
         } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
             dumper.set(-1);
+        }
+        if (joystick.getRawButton(Buttons.LIFT[0])) {
+            lift.setLiftPos(0);
+        } else if (joystick.getRawButton(Buttons.LIFT[1])) {
+            lift.setLiftPos(2);
+        } else if (joystick.getRawButton(Buttons.LIFT[2])) {
+            lift.setLiftPos(4);
+        } else if (joystick.getRawButton(Buttons.LIFT[3])) {
+            lift.setLiftPos(6);
+        } else if (joystick.getRawButton(Buttons.LIFT[4])) {
+            lift.setLiftPos(8);
         }
         Timer.delay(.1);
     }
