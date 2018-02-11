@@ -6,99 +6,63 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Lift {
 
-    DigitalInput armMin, armMax, liftMax, liftMin, hallEffect;
-    Talon liftMotor, armMotor, leftGrabber, rightGrabber;
-    public static final double DEFAULT_SPEED = 0.1;
+    private Talon liftMotor, armMotor, leftGrabber, rightGrabber;
+    private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
+    private Grabber grabber;
 
-    // private DigitalInput[] switches;
+    private LiftThread liftThread;
 
-    private DigitalInput switcher;
-    private boolean currentState;
-    private boolean prevState;
+    public Lift(int liftMotorPort, int armMotorPort, int leftGrabberPort, int rightGrabberPort, int liftMinPort,
+            int liftMaxPort, int armMinPort, int armMaxPort, int switcherPort) {
 
-    private int pos = 0;
-    private int target = 0;
-    private boolean abort = false;
-    private int checkDelay = 10;
-    private int abortDelay = 100;
-    private int direction = 0;
-    Thread liftThread;
-    boolean stopThread = false;
-
-    int speed = -1;
-
-    public Lift(int hePort, int liftMotorPort, int armMotorPort, int armMaxPort, int armMinPort, int liftMaxPort,
-            int liftMinPort, int leftGrabberPort, int rightGrabberPort) {
-        hallEffect = new DigitalInput(hePort);
-        armMin = new DigitalInput(armMinPort);
-        armMax = new DigitalInput(armMaxPort);
-        liftMin = new DigitalInput(liftMinPort);
-        liftMax = new DigitalInput(liftMaxPort);
         liftMotor = new Talon(liftMotorPort);
         armMotor = new Talon(armMotorPort);
         leftGrabber = new Talon(leftGrabberPort);
         rightGrabber = new Talon(rightGrabberPort);
+        liftMin = new DigitalInput(liftMinPort);
+        liftMax = new DigitalInput(liftMaxPort);
+        armMin = new DigitalInput(armMinPort);
+        armMax = new DigitalInput(armMaxPort);
+        switcher = new DigitalInput(switcherPort);
+
+        liftThread = new LiftThread(liftMotor, liftMin, liftMax, switcher);
+    }
+
+    // Start LiftThread methods
+    
+    public void setSpeed(int speed) {
+        liftThread.setSpeed(speed);
     }
 
     public void setPos(int pos) {
-        System.out.println("Warning: Position has been manually changed");
-        this.pos = pos;
+        liftThread.setPos(pos);
     }
 
     public void setTarget(int target) {
-        this.target = target;
+        liftThread.setTarget(target);
+    }
+
+    public void startLiftThread() {
+        liftThread.start();
+    }
+
+    public void stopLiftThread() {
+        liftThread.stop();
+    }
+
+    public void forceStopLiftThread() {
+        liftThread.forceStop();
     }
 
     public void abort() {
-        abort = true;
+        liftThread.abort();
     }
 
     public void resume() {
-        abort = false;
+        liftThread.resume();
     }
 
-    public void run() {
-        System.out.println("Lift Thread Started");
-        while (!stopThread) {
-            while (!abort) {
-                checkPos();
-                try {
-                    Thread.sleep(checkDelay);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            try {
-                Thread.sleep(abortDelay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("Lift Thread Stopped");
-    }
-
-    private void checkPos() {
-        currentState = switcher.get();
-        if (currentState != prevState) {
-            pos += direction;
-        }
-        if (pos > target) {
-            setLift(1);
-        } else if (pos < target) {
-            setLift(-1);
-        } else {
-            setLift(0);
-        }
-    }
-
-    private void setLift(int direction) {
-        if (speed != -1) {
-            liftMotor.set(speed * direction);
-        } else {
-            liftMotor.set(DEFAULT_SPEED * direction);
-        }
-        this.direction = direction;
-    }
+    // End LiftThread methods
 
     public void armUp() {
         armMotor.set(DEFAULT_SPEED);
