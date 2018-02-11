@@ -48,3 +48,6 @@ hs_err_pid*
 
 # Gradle jar exception
 !gradle/**/*.jar
+
+# Docs
+docs/

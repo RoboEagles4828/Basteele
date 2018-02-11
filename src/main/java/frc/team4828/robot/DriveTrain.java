@@ -1,12 +1,18 @@
 package frc.team4828.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.Timer;
+
 public class DriveTrain {
 
     private static final double TWIST_THRESH = .3;
     private static final double TWIST_FACTOR = .5;
     private static final double ENC_RATIO = 1;
+    private static final double ANG_CHECK_TIME = .1;
 
     Gearbox left, right;
+    AHRS navx;
 
     /**
      * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
@@ -19,6 +25,7 @@ public class DriveTrain {
     public DriveTrain(Gearbox left, Gearbox right) {
         this.left = left;
         this.right = right;
+        navx = new AHRS(SerialPort.Port.kMXP);
     }
 
     /**
@@ -93,10 +100,10 @@ public class DriveTrain {
     /**
      * Moves a certain distance forward. Distance is in meters.
      *
-     * @param dist   The distance in meters
-     * @param speed  The motors' speed
+     * @param distance  The distance in feet
+     * @param speed     The motors' speed
      */
-    private void moveDistance(double distance, double speed) {
+    public void moveDistance(double distance, double speed) {
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
         double changeEncL = 0;
@@ -119,6 +126,29 @@ public class DriveTrain {
                 right.brake();
             }
         }
+    }
+
+    public void turnDegAbs(double angle, double speed) {
+        double start = navx.getAngle();
+        if(start - angle > 0) {
+            left.drive(speed);
+            right.drive(-speed);
+            while(navx.getAngle() < angle) {
+                Timer.delay(ANG_CHECK_TIME);
+            }
+        } else {
+            left.drive(-speed);
+            right.drive(speed);
+            while(navx.getAngle() > angle) {
+                Timer.delay(ANG_CHECK_TIME);
+            }
+        }
+        left.brake();
+        right.brake();
+    }
+
+    public void turnDegRel(double degree, double speed) {
+        turnDegAbs(navx.getAngle() + degree, speed);
     }
 
     /**

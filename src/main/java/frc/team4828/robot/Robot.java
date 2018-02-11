@@ -21,6 +21,10 @@ public class Robot extends IterativeRobot {
     private PneumaticSwitch dumper;
     private Lift lift;
 
+    private DigitalInput switch1, switch2, switch3;
+    private boolean doneAuton = false;
+
+
     public void robotInit() {
         motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
         motor2 = new TalonSRX(Ports.LEFT_MOTORS[1]);
@@ -61,7 +65,38 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-
+        if(!doneAuton) {
+            int mode = 0;
+            if (switch1.get())
+                mode += 4;
+            if (switch2.get())
+                mode += 2;
+            if (switch3.get())
+                mode += 1;
+            switch (mode) {
+                case 0:
+                    // Just go forward
+                    drive.moveDistance(120, .5);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                default:
+                    break;
+            }
+            doneAuton = true;
+        }
         Timer.delay(.1);
     }
 
