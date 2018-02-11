@@ -2,6 +2,7 @@ package frc.team4828.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 public class Gearbox {
 
@@ -33,8 +34,11 @@ public class Gearbox {
         motor2.set(controlMode, 0);
     }
 
+    public double getEnc() {
+        return motor1.getSensorCollection().getQuadraturePosition();
+    }
+
     public void setSwitch(int mode) {
         switcher.set(mode);
     }
-
 }
