@@ -8,9 +8,9 @@ public class Lift {
 
     private Talon liftMotor, armMotor, leftGrabber, rightGrabber;
     private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
-    private Grabber grabber;
 
     private LiftThread liftThread;
+    private ArmThread armThread;
 
     public Lift(int liftMotorPort, int armMotorPort, int leftGrabberPort, int rightGrabberPort, int liftMinPort,
             int liftMaxPort, int armMinPort, int armMaxPort, int switcherPort) {
@@ -26,19 +26,20 @@ public class Lift {
         switcher = new DigitalInput(switcherPort);
 
         liftThread = new LiftThread(liftMotor, liftMin, liftMax, switcher);
+        armThread = new ArmThread(armMotor, armMin, armMax);
     }
 
     // Start LiftThread methods
-    
-    public void setSpeed(int speed) {
+
+    public void setLiftSpeed(int speed) {
         liftThread.setSpeed(speed);
     }
 
-    public void setPos(int pos) {
+    public void setLiftPos(int pos) {
         liftThread.setPos(pos);
     }
 
-    public void setTarget(int target) {
+    public void setLiftTarget(int target) {
         liftThread.setTarget(target);
     }
 
@@ -54,47 +55,61 @@ public class Lift {
         liftThread.forceStop();
     }
 
-    public void abort() {
+    public void abortLift() {
         liftThread.abort();
     }
 
-    public void resume() {
+    public void resumeLift() {
         liftThread.resume();
+    }
+
+    public double getLiftSpeed() {
+        return liftThread.getLift();
     }
 
     // End LiftThread methods
 
-    public void armUp() {
-        armMotor.set(DEFAULT_SPEED);
-        while (!armMax.get()) {
-            Timer.delay(0.1);
-        }
-        armMotor.set(0);
+    // Start ArmThread methods
+
+    public void setArmSpeed(int speed) {
+        armThread.setSpeed(speed);
     }
 
-    public void armUp(int speed) {
-        armMotor.set(speed);
-        while (!armMax.get()) {
-            Timer.delay(0.1);
-        }
-        liftMotor.set(0);
+    public void setArmPos(int pos) {
+        armThread.setPos(pos);
     }
 
-    public void armDown() {
-        armMotor.set(-DEFAULT_SPEED);
-        while (!armMin.get()) {
-            Timer.delay(0.1);
-        }
-        armMotor.set(0);
+    public void setArmTarget(int target) {
+        armThread.setTarget(target);
     }
 
-    public void armDown(int speed) {
-        armMotor.set(speed);
-        while (!armMin.get()) {
-            Timer.delay(0.1);
-        }
-        armMotor.set(0);
+    public void startArmThread() {
+        armThread.start();
     }
+
+    public void stopArmThread() {
+        armThread.stop();
+    }
+
+    public void forceStopArmThread() {
+        armThread.forceStop();
+    }
+
+    public void abortArm() {
+        armThread.abort();
+    }
+
+    public void resumeArm() {
+        armThread.resume();
+    }
+
+    public double getArmSpeed() {
+        return armThread.getArm();
+    }
+
+    // End ArmThread methods
+
+    // Start Grabber methods
 
     public void intake() {
         leftGrabber.set(1);
@@ -106,13 +121,20 @@ public class Lift {
         rightGrabber.set(1);
     }
 
-    public void stop() {
+    public void stopGrabber() {
         leftGrabber.set(0);
         rightGrabber.set(0);
     }
 
-    public void set(int speed) {
+    public void setGrabberSpeed(int speed) {
         leftGrabber.set(speed);
         rightGrabber.set(-speed);
     }
+
+    public double getGrabberSpeed() {
+        return leftGrabber.get();
+    }
+
+    // End Grabber methods
+
 }

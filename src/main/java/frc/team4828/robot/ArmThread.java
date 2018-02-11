@@ -3,13 +3,10 @@ package frc.team4828.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 
-public class LiftThread implements Runnable {
+public class ArmThread implements Runnable {
 
-    private Talon liftMotor;
-    private DigitalInput liftMin, liftMax, switcher;
-
-    private boolean currentState;
-    private boolean prevState;
+    private Talon armMotor;
+    private DigitalInput armMin, armMax;
 
     private int speed = -1;
     private int pos = 0;
@@ -24,15 +21,14 @@ public class LiftThread implements Runnable {
 
     private Thread thread;
 
-    public LiftThread(Talon liftMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput switcher) {
-        this.liftMotor = liftMotor;
-        this.liftMin = liftMin;
-        this.liftMax = liftMax;
-        this.switcher = switcher;
+    public ArmThread(Talon armMotor, DigitalInput armMin, DigitalInput armMax) {
+        this.armMotor = armMotor;
+        this.armMin = armMin;
+        this.armMax = armMax;
     }
 
     public void run() {
-        System.out.println("Lift Thread Started");
+        System.out.println("Arm Thread Started");
         while (!stopThread) {
             while (!abort) {
                 checkPos();
@@ -48,7 +44,7 @@ public class LiftThread implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("Lift Thread Stopped");
+        System.out.println("Arm Thread Stopped");
     }
 
     public void setSpeed(int speed) {
@@ -88,33 +84,28 @@ public class LiftThread implements Runnable {
     }
 
     private void checkPos() {
-        currentState = switcher.get();
-        if (currentState != prevState) {
+        if ((armMin.get() && direction == -1) || (armMax.get() && direction == 1)) {
+            setArm(0);
             pos += direction;
         }
-        if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
-            setLift(0);
-            pos += direction;
+        if (pos > target && direction != -1 && !armMin.get()) {
+            setArm(-1);
+        } else if (pos < target && direction != 1 && !armMax.get()) {
+            setArm(1);
         }
-        if (pos > target && direction != -1 && !liftMin.get()) {
-            setLift(-1);
-        } else if (pos < target && direction != 1 && !liftMax.get()) {
-            setLift(1);
-        }
-        prevState = currentState;
     }
 
-    private void setLift(int direction) {
+    private void setArm(int direction) {
         if (speed != -1) {
-            liftMotor.set(speed * direction);
+            armMotor.set(speed * direction);
         } else {
-            liftMotor.set(DEFAULT_SPEED * direction);
+            armMotor.set(DEFAULT_SPEED * direction);
         }
         this.direction = direction;
     }
 
-    public double getLift() {
-        return liftMotor.get();
+    public double getArm() {
+        return armMotor.get();
     }
 
 }
