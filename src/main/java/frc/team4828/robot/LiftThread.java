@@ -117,4 +117,8 @@ public class LiftThread implements Runnable {
         return liftMotor.get();
     }
 
+    public boolean isIdle() {
+        return pos == target;
+    }
+
 }

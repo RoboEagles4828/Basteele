@@ -108,4 +108,8 @@ public class ArmThread implements Runnable {
         return armMotor.get();
     }
 
+    public boolean isIdle() {
+        return pos == target;
+    }
+
 }
