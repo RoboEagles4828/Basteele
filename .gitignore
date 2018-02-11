@@ -50,4 +50,4 @@ hs_err_pid*
 !gradle/**/*.jar
 
 # Docs
-docs/
+doc/
