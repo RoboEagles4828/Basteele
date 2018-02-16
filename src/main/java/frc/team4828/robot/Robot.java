@@ -79,8 +79,24 @@ public class Robot extends IterativeRobot {
                     drive.moveDistance(120, .5);
                     break;
                 case 1:
+                    // Start from the left edge, go fwd, turn and outtake
+                    drive.moveDistance(150, .5);
+                    drive.turnDegAbs(90, .5);
+                    lift.setLiftTarget(2);
+                    while(lift.getLiftSpeed() != 0) {
+                        Timer.delay(.1);
+                    }
+                    lift.outtake();
                     break;
                 case 2:
+                    // Start from the right edge, go fwd, turn and outtake
+                    drive.moveDistance(150, .5);
+                    drive.turnDegAbs(270, .5);
+                    lift.setLiftTarget(2);
+                    while(lift.getLiftSpeed() != 0) {
+                        Timer.delay(.1);
+                    }
+                    lift.outtake();
                     break;
                 case 3:
                     break;
