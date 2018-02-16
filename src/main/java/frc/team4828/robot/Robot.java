@@ -12,8 +12,10 @@ public class Robot extends IterativeRobot {
     private Gearbox leftGearbox, rightGearbox;
     private DoubleSolenoid dumperSol;
 
-    private Talon liftMotor, armMotor, leftGrabber, rightGrabber;
+    private Talon liftMotor, armMotor;
     private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
+
+    private Grabber grabber;
 
     private Joystick joystick;
 
@@ -42,8 +44,7 @@ public class Robot extends IterativeRobot {
 
         liftMotor = new Talon(Ports.LIFT_MOTOR);
         armMotor = new Talon(Ports.ARM_MOTOR);
-        leftGrabber = new Talon(Ports.LEFT_GRABBER);
-        rightGrabber = new Talon(Ports.RIGHT_GRABBER);
+        grabber = new Grabber();
 
         liftMin = new DigitalInput(Ports.LIFT_MIN);
         liftMax = new DigitalInput(Ports.LIFT_MAX);
