@@ -12,7 +12,7 @@ public class Lift {
     private LiftThread liftThread;
     private ArmThread armThread;
 
-    public Lift(Talon liftMotor, Talon armMotor, Talon leftGrabber, Talon rightGrabber, DigitalInput liftMin,
+    public Lift(Talon liftMotor, Talon armMotor, DigitalInput liftMin,
             DigitalInput liftMax, DigitalInput armMin, DigitalInput armMax, DigitalInput switcher) {
         this.liftMotor = liftMotor;
         this.armMotor = armMotor;
@@ -113,35 +113,4 @@ public class Lift {
     public boolean isArmIdle() {
         return armThread.isIdle();
     }
-
-    // End ArmThread methods
-
-    // Start Grabber methods
-
-    public void intake() {
-        leftGrabber.set(1);
-        rightGrabber.set(-1);
-    }
-
-    public void outtake() {
-        leftGrabber.set(-1);
-        rightGrabber.set(1);
-    }
-
-    public void stopGrabber() {
-        leftGrabber.set(0);
-        rightGrabber.set(0);
-    }
-
-    public void setGrabberSpeed(int speed) {
-        leftGrabber.set(speed);
-        rightGrabber.set(-speed);
-    }
-
-    public double getGrabberSpeed() {
-        return leftGrabber.get();
-    }
-
-    // End Grabber methods
-
 }

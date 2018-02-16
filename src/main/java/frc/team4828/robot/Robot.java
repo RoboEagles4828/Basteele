@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
 
         liftMotor = new Talon(Ports.LIFT_MOTOR);
         armMotor = new Talon(Ports.ARM_MOTOR);
-        grabber = new Grabber();
+        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER_SOLENOID[0], Ports.GRABBER_SOLENOID[1]);
 
         liftMin = new DigitalInput(Ports.LIFT_MIN);
         liftMax = new DigitalInput(Ports.LIFT_MAX);
@@ -56,7 +56,7 @@ public class Robot extends IterativeRobot {
 
         drive = new DriveTrain(leftGearbox, rightGearbox);
         dumper = new PneumaticSwitch(comp, dumperSol);
-        lift = new Lift(liftMotor, armMotor, leftGrabber, rightGrabber, liftMin, liftMax, armMin, armMax, switcher);
+        lift = new Lift(liftMotor, armMotor, liftMin, liftMax, armMin, armMax, switcher);
     }
 
     public void autonomousInit() {
@@ -87,7 +87,7 @@ public class Robot extends IterativeRobot {
                     while(lift.getLiftSpeed() != 0) {
                         Timer.delay(.1);
                     }
-                    lift.outtake();
+                    grabber.outtake();
                     break;
                 case 2:
                     // Start from the right edge, go fwd, turn and outtake
@@ -97,7 +97,7 @@ public class Robot extends IterativeRobot {
                     while(lift.getLiftSpeed() != 0) {
                         Timer.delay(.1);
                     }
-                    lift.outtake();
+                    grabber.outtake();
                     break;
                 case 3:
                     break;
@@ -109,7 +109,7 @@ public class Robot extends IterativeRobot {
                     break;
                 case 7:
                     // Outtake into the hole
-                    lift.outtake();
+                    grabber.outtake();
                     break;
                 default:
                     break;
