@@ -65,7 +65,6 @@ public class Robot extends IterativeRobot {
         dumper = new PneumaticSwitch(comp, dumperSol);
         grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         lift = new Lift(liftMotor, armMotor, liftMin, liftMax, armMin, armMax, switcher);
-
     }
 
     public void autonomousInit() {
@@ -185,7 +184,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-
+        System.out.println(liftMin.get());
     }
 
     public void disabledInit() {
