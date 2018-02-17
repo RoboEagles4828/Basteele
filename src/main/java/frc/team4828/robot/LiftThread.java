@@ -23,6 +23,7 @@ public class LiftThread implements Runnable {
     private static final int CHECK_DELAY = 10;
 
     private Thread thread;
+    private boolean manual;
 
     public LiftThread(Victor liftMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput switcher) {
         this.liftMotor = liftMotor;
@@ -96,15 +97,17 @@ public class LiftThread implements Runnable {
             setLift(0);
             pos += direction;
         }
-        if (pos > target && direction != -1 && !liftMin.get()) {
-            setLift(-1);
-        } else if (pos < target && direction != 1 && !liftMax.get()) {
-            setLift(1);
+        if (!manual) {
+            if (pos > target && direction != -1 && !liftMin.get()) {
+                setLift(-1);
+            } else if (pos < target && direction != 1 && !liftMax.get()) {
+                setLift(1);
+            }
         }
         prevState = currentState;
     }
 
-    private void setLift(int direction) {
+    public void setLift(int direction) {
         if (speed != -1) {
             liftMotor.set(speed * direction);
         } else {
@@ -124,4 +127,9 @@ public class LiftThread implements Runnable {
     public boolean isIdle() {
         return pos == target;
     }
+
+    public void setManual(boolean manual) {
+        this.manual = manual;
+    }
+
 }

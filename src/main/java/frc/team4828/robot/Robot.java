@@ -132,6 +132,7 @@ public class Robot extends IterativeRobot {
         System.out.println(" --- Start Teleop Init ---");
         lift.startLiftThread();
         lift.setManual(true);
+        lift.setLiftSpeed(0.5);
         System.out.println(" --- Start Teleop ---");
     }
 
@@ -147,11 +148,11 @@ public class Robot extends IterativeRobot {
             dumper.set(-1);
         }
         if (joystick.getRawButton(Buttons.LIFT_UP))
-            lift.setLiftSpeedAbsolute(.5);
+            lift.setLift(1);
         else if (joystick.getRawButton(Buttons.LIFT_DOWN))
-            lift.setLiftSpeedAbsolute(-.5);
+            lift.setLift(-1);
         else
-            lift.setLiftSpeedAbsolute(0);
+            lift.setLift(0);
         if (joystick.getRawButton(Buttons.GRABBER_OPEN))
             grabber.open();
         else if (joystick.getRawButton(Buttons.GRABBER_CLOSE))

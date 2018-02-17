@@ -16,10 +16,6 @@ public class Lift {
 
     // Start LiftThread methods
 
-    public void setLiftSpeedAbsolute(double speed) {
-        liftThread.setLiftAbsolute(speed);
-    }
-
     public void setLiftSpeed(double speed) {
         liftThread.setSpeed(speed);
     }
@@ -52,6 +48,14 @@ public class Lift {
         liftThread.resume();
     }
 
+    public void setLift(int direction) {
+        liftThread.setLift(direction);
+    }
+
+    public void setLiftAbsolute(double speed) {
+        liftThread.setLiftAbsolute(speed);
+    }
+
     public double getLiftSpeed() {
         return liftThread.getLift();
     }
@@ -61,11 +65,7 @@ public class Lift {
     }
 
     public void setManual(boolean manual) {
-        if (manual) {
-            liftThread.abort();
-        } else {
-            liftThread.resume();
-        }
+        liftThread.setManual(manual);
     }
 
     // End LiftThread methods
