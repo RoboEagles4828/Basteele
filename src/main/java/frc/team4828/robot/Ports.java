@@ -28,6 +28,6 @@ public class Ports {
 
     public static final int[] DUMPER = { 6, 7 };
 
-    public static final int[] AUTON_MODE = { 13, 16, 19 };
+    public static final int[] AUTON_MODE = { 0, 1, 2 };
 
 }

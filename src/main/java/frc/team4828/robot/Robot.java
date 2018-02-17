@@ -81,6 +81,8 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
         if (!doneAuton) {
             System.out.println((switch1.get()? "1":"0") + (switch2.get()? "1":"0") + (switch3.get()? "1":"0"));
+            int mode = (switch1.get()? 4:0) + (switch2.get()? 2:0) + (switch3.get()? 1:0);
+            System.out.println("Auton Mode: " + mode);
 //            switch (mode) {
 //            case 0:
 //                // Just go forward
