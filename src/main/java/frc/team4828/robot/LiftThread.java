@@ -17,6 +17,7 @@ public class LiftThread implements Runnable {
     private boolean stopThread = false;
     private boolean abort = false;
     private int direction = 0;
+    private int targetDirection = 0;
 
     private static final double DEFAULT_SPEED = 0.3;
     private static final int ABORT_DELAY = 100;
@@ -97,7 +98,13 @@ public class LiftThread implements Runnable {
             setLift(0);
             pos += direction;
         }
-        if (!manual) {
+        if (manual) {
+            if (targetDirection == -1 && direction != -1 && !liftMin.get()) {
+                setLift(-1);
+            } else if (targetDirection == 1 && direction != 1 && !liftMax.get()) {
+                setLift(1);
+            }
+        } else {
             if (pos > target && direction != -1 && !liftMin.get()) {
                 setLift(-1);
             } else if (pos < target && direction != 1 && !liftMax.get()) {
@@ -107,7 +114,7 @@ public class LiftThread implements Runnable {
         prevState = currentState;
     }
 
-    public void setLift(int direction) {
+    private void setLift(int direction) {
         if (speed != -1) {
             liftMotor.set(speed * direction);
         } else {
@@ -116,8 +123,8 @@ public class LiftThread implements Runnable {
         this.direction = direction;
     }
 
-    public void setLiftAbsolute(double speed) {
-        liftMotor.set(speed);
+    public void setTargetDirection(int targetDirection) {
+        this.targetDirection = targetDirection;
     }
 
     public double getLift() {

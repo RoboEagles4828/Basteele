@@ -147,11 +147,11 @@ public class Robot extends IterativeRobot {
             dumper.set(-1);
         }
         if (joystick.getRawButton(Buttons.LIFT_UP))
-            lift.setLift(1);
+            lift.setLiftTargetDirection(1);
         else if (joystick.getRawButton(Buttons.LIFT_DOWN))
-            lift.setLift(-1);
+            lift.setLiftTargetDirection(-1);
         else
-            lift.setLift(0);
+            lift.setLiftTargetDirection(0);
         if (joystick.getRawButton(Buttons.GRABBER_OPEN))
             grabber.open();
         else if (joystick.getRawButton(Buttons.GRABBER_CLOSE))

@@ -48,12 +48,8 @@ public class Lift {
         liftThread.resume();
     }
 
-    public void setLift(int direction) {
-        liftThread.setLift(direction);
-    }
-
-    public void setLiftAbsolute(double speed) {
-        liftThread.setLiftAbsolute(speed);
+    public void setLiftTargetDirection(int targetDirection) {
+        liftThread.setTargetDirection(targetDirection);
     }
 
     public double getLiftSpeed() {
