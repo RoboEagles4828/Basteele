@@ -1,7 +1,6 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 
 public class ArmThread implements Runnable {
@@ -9,7 +8,7 @@ public class ArmThread implements Runnable {
     private Victor armMotor;
     private DigitalInput armMin, armMax;
 
-    private int speed = -1;
+    private double speed = -1;
     private int pos = 0;
     private int target = 0;
     private boolean stopThread = false;
@@ -48,7 +47,7 @@ public class ArmThread implements Runnable {
         System.out.println("Arm Thread Stopped");
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 

@@ -3,18 +3,15 @@ package frc.team4828.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.*;
 
-import java.awt.*;
-
 public class Robot extends IterativeRobot {
 
     private TalonSRX motor1, motor2, motor3, motor4;
     private Compressor comp;
-    private DoubleSolenoid shifterSol;
-    private PneumaticSwitch switcher1, switcher2;
+    private DoubleSolenoid shifterSol, dumperSol, grabberSol;
+    private PneumaticSwitch switcher1, switcher2, grabberSwitcher;
     private Gearbox leftGearbox, rightGearbox;
-    private DoubleSolenoid dumperSol;
 
-    private Victor liftMotor, armMotor, climbLeft, climbRight;
+    private Victor liftMotor, armMotor, leftGrabberMotor, rightGrabberMotor, leftClimberMotor, rightClimberMotor;
     private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
 
     private Grabber grabber;
@@ -28,24 +25,33 @@ public class Robot extends IterativeRobot {
     private DigitalInput switch1, switch2, switch3;
     private boolean doneAuton = false;
 
-
     public void robotInit() {
         motor1 = new TalonSRX(Ports.LEFT_MOTORS[0]);
         motor2 = new TalonSRX(Ports.LEFT_MOTORS[1]);
         motor3 = new TalonSRX(Ports.RIGHT_MOTORS[0]);
         motor4 = new TalonSRX(Ports.RIGHT_MOTORS[1]);
+
         comp = new Compressor(Ports.COMPRESSOR);
         comp.setClosedLoopControl(true);
+
         shifterSol = new DoubleSolenoid(Ports.SHIFTER_SOLENOID[0], Ports.SHIFTER_SOLENOID[1]);
         switcher1 = new PneumaticSwitch(comp, shifterSol);
         switcher2 = new PneumaticSwitch(comp, shifterSol);
         leftGearbox = new Gearbox(motor1, motor2, switcher1);
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
+
         dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
 
         liftMotor = new Victor(Ports.LIFT_MOTOR);
         armMotor = new Victor(Ports.ARM_MOTOR);
-        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER_SOLENOID[0], Ports.GRABBER_SOLENOID[1]);
+
+        leftGrabberMotor = new Victor(Ports.LEFT_GRABBER);
+        rightGrabberMotor = new Victor(Ports.RIGHT_GRABBER);
+        grabberSol = new DoubleSolenoid(Ports.GRABBER_SOLENOID[0], Ports.GRABBER_SOLENOID[1]);
+        grabberSwitcher = new PneumaticSwitch(comp, grabberSol);
+
+        leftClimberMotor = new Victor(Ports.LEFT_CLIMBER);
+        rightClimberMotor = new Victor(Ports.RIGHT_CLIMBER);
 
         liftMin = new DigitalInput(Ports.LIFT_MIN);
         liftMax = new DigitalInput(Ports.LIFT_MAX);
@@ -57,9 +63,8 @@ public class Robot extends IterativeRobot {
 
         drive = new DriveTrain(leftGearbox, rightGearbox);
         dumper = new PneumaticSwitch(comp, dumperSol);
+        grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         lift = new Lift(liftMotor, armMotor, liftMin, liftMax, armMin, armMax, switcher);
-        climbLeft = new Victor(Ports.LEFT_CLIMBER);
-        climbRight = new Victor(Ports.RIGHT_CLIMBER);
 
     }
 
@@ -70,7 +75,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousPeriodic() {
-        if(!doneAuton) {
+        if (!doneAuton) {
             int mode = 0;
             if (switch1.get())
                 mode += 4;
@@ -79,44 +84,44 @@ public class Robot extends IterativeRobot {
             if (switch3.get())
                 mode += 1;
             switch (mode) {
-                case 0:
-                    // Just go forward
-                    drive.moveDistance(120, .5);
-                    break;
-                case 1:
-                    // Start from the left edge, go fwd, turn and outtake
-                    drive.moveDistance(150, .5);
-                    drive.turnDegAbs(90, .5);
-                    lift.setLiftTarget(2);
-                    while(lift.getLiftSpeed() != 0) {
-                        Timer.delay(.1);
-                    }
-                    grabber.outtake();
-                    break;
-                case 2:
-                    // Start from the right edge, go fwd, turn and outtake
-                    drive.moveDistance(150, .5);
-                    drive.turnDegAbs(270, .5);
-                    lift.setLiftTarget(2);
-                    while(lift.getLiftSpeed() != 0) {
-                        Timer.delay(.1);
-                    }
-                    grabber.outtake();
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    // Outtake into the hole
-                    grabber.outtake();
-                    break;
-                default:
-                    break;
+            case 0:
+                // Just go forward
+                drive.moveDistance(120, .5);
+                break;
+            case 1:
+                // Start from the left edge, go fwd, turn and outtake
+                drive.moveDistance(150, .5);
+                drive.turnDegAbs(90, .5);
+                lift.setLiftTarget(2);
+                while (!lift.isLiftIdle()) {
+                    Timer.delay(.1);
+                }
+                grabber.outtake();
+                break;
+            case 2:
+                // Start from the right edge, go fwd, turn and outtake
+                drive.moveDistance(150, .5);
+                drive.turnDegAbs(270, .5);
+                lift.setLiftTarget(2);
+                while (!lift.isLiftIdle()) {
+                    Timer.delay(.1);
+                }
+                grabber.outtake();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                // Outtake into the hole
+                grabber.outtake();
+                break;
+            default:
+                break;
             }
             doneAuton = true;
         }
@@ -126,6 +131,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
         lift.startLiftThread();
+        lift.setManual(true);
         System.out.println(" --- Start Teleop ---");
     }
 
@@ -140,34 +146,33 @@ public class Robot extends IterativeRobot {
         } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
             dumper.set(-1);
         }
-        lift.setManual(true);
         if (joystick.getRawButton(Buttons.LIFT_UP))
-            lift.setLiftSpeed(.5);
+            lift.setLiftSpeedAbsolute(.5);
         else if (joystick.getRawButton(Buttons.LIFT_DOWN))
-            lift.setLiftSpeed(-.5);
+            lift.setLiftSpeedAbsolute(-.5);
         else
-            lift.setLiftSpeed(0);
-        if(joystick.getRawButton(Buttons.GRABBER_SOL[0]))
-            grabber.grabOpen();
-        else if(joystick.getRawButton(Buttons.GRABBER_SOL[1]))
-            grabber.grabClose();
+            lift.setLiftSpeedAbsolute(0);
+        if (joystick.getRawButton(Buttons.GRABBER_SOL[0]))
+            grabber.open();
+        else if (joystick.getRawButton(Buttons.GRABBER_SOL[1]))
+            grabber.close();
 
-        if(joystick.getRawButton(Buttons.GRABBER_WHEELS[0]))
+        if (joystick.getRawButton(Buttons.GRABBER_WHEELS[0]))
             grabber.intake();
-        else if(joystick.getRawButton(Buttons.GRABBER_WHEELS[1]))
+        else if (joystick.getRawButton(Buttons.GRABBER_WHEELS[1]))
             grabber.outtake();
         else
             grabber.stop();
 
-        if(joystick.getRawButton(Buttons.CLIMB_UP)) {
-            climbLeft.set(.1);
-            climbRight.set(.1);
-        } else if(joystick.getRawButton(Buttons.CLIMB_DOWN)) {
-            climbLeft.set(-.1);
-            climbRight.set(-.1);
+        if (joystick.getRawButton(Buttons.CLIMB_UP)) {
+            leftClimberMotor.set(.1);
+            rightClimberMotor.set(.1);
+        } else if (joystick.getRawButton(Buttons.CLIMB_DOWN)) {
+            leftClimberMotor.set(-.1);
+            rightClimberMotor.set(-.1);
         } else {
-            climbLeft.set(0);
-            climbRight.set(0);
+            leftClimberMotor.set(0);
+            rightClimberMotor.set(0);
         }
         Timer.delay(.01);
     }

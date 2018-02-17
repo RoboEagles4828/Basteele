@@ -1,7 +1,6 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 
 public class LiftThread implements Runnable {
@@ -17,7 +16,6 @@ public class LiftThread implements Runnable {
     private int target = 0;
     private boolean stopThread = false;
     private boolean abort = false;
-    public boolean manual = false;
     private int direction = 0;
 
     private static final double DEFAULT_SPEED = 0.3;
@@ -90,25 +88,20 @@ public class LiftThread implements Runnable {
     }
 
     private void checkPos() {
-        System.out.println(manual);
-        if(manual) {
-            liftMotor.set(speed);
-        } else {
-            currentState = switcher.get();
-            if (currentState != prevState) {
-                pos += direction;
-            }
-            if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
-                setLift(0);
-                pos += direction;
-            }
-            if (pos > target && direction != -1 && !liftMin.get()) {
-                setLift(-1);
-            } else if (pos < target && direction != 1 && !liftMax.get()) {
-                setLift(1);
-            }
-            prevState = currentState;
+        currentState = switcher.get();
+        if (currentState != prevState) {
+            pos += direction;
         }
+        if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
+            setLift(0);
+            pos += direction;
+        }
+        if (pos > target && direction != -1 && !liftMin.get()) {
+            setLift(-1);
+        } else if (pos < target && direction != 1 && !liftMax.get()) {
+            setLift(1);
+        }
+        prevState = currentState;
     }
 
     private void setLift(int direction) {
@@ -118,6 +111,10 @@ public class LiftThread implements Runnable {
             liftMotor.set(DEFAULT_SPEED * direction);
         }
         this.direction = direction;
+    }
+
+    public void setLiftAbsolute(double speed) {
+        liftMotor.set(speed);
     }
 
     public double getLift() {

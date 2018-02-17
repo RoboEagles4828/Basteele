@@ -9,7 +9,7 @@ public class DriveTrain {
     private static final double TWIST_THRESH = .3;
     private static final double TWIST_FACTOR = .5;
     private static final double ENC_RATIO = 1;
-    private static final double ANG_CHECK_TIME = .1;
+    private static final double ANGLE_CHECK_DELAY = .1;
 
     Gearbox left, right;
     AHRS navx;
@@ -131,25 +131,25 @@ public class DriveTrain {
 
     public void turnDegAbs(double angle, double speed) {
         double start = navx.getAngle();
-        if(start - angle > 0) {
+        if (start > angle) {
             left.drive(speed);
             right.drive(-speed);
-            while(navx.getAngle() < angle) {
-                Timer.delay(ANG_CHECK_TIME);
+            while (navx.getAngle() > angle) {
+                Timer.delay(ANGLE_CHECK_DELAY);
             }
         } else {
             left.drive(-speed);
             right.drive(speed);
-            while(navx.getAngle() > angle) {
-                Timer.delay(ANG_CHECK_TIME);
+            while (navx.getAngle() < angle) {
+                Timer.delay(ANGLE_CHECK_DELAY);
             }
         }
         left.brake();
         right.brake();
     }
 
-    public void turnDegRel(double degree, double speed) {
-        turnDegAbs(navx.getAngle() + degree, speed);
+    public void turnDegRel(double angle, double speed) {
+        turnDegAbs(navx.getAngle() + angle, speed);
     }
 
     /**
