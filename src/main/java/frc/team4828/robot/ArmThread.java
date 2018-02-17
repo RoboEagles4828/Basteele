@@ -2,10 +2,11 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Victor;
 
 public class ArmThread implements Runnable {
 
-    private Talon armMotor;
+    private Victor armMotor;
     private DigitalInput armMin, armMax;
 
     private int speed = -1;
@@ -21,7 +22,7 @@ public class ArmThread implements Runnable {
 
     private Thread thread;
 
-    public ArmThread(Talon armMotor, DigitalInput armMin, DigitalInput armMax) {
+    public ArmThread(Victor armMotor, DigitalInput armMin, DigitalInput armMax) {
         this.armMotor = armMotor;
         this.armMin = armMin;
         this.armMax = armMax;

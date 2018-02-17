@@ -60,6 +60,7 @@ public class DriveTrain {
      * @param angle  The angle to drive (Positive is counterclockwise; Negative is clockwise).
      */
     public void arcadeDrive(double x, double y, double angle) {
+
         double[] drive = new double[2];
         if (x > 0) {
             drive[0] = y + x - angle;
@@ -161,6 +162,11 @@ public class DriveTrain {
      */
     public void debug(double x, double y, double twist) {
         System.out.println("X: " + x + " Y: " + y + " Twist: " + twist);
+    }
+
+    public void brake() {
+        left.brake();
+        right.brake();
     }
 
 }

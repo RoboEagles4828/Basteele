@@ -2,29 +2,31 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Victor;
 
 public class LiftThread implements Runnable {
 
-    private Talon liftMotor;
+    private Victor liftMotor;
     private DigitalInput liftMin, liftMax, switcher;
 
     private boolean currentState;
     private boolean prevState;
 
-    private int speed = -1;
+    private double speed = -1;
     private int pos = 0;
     private int target = 0;
     private boolean stopThread = false;
     private boolean abort = false;
+    public boolean manual = false;
     private int direction = 0;
 
-    public static final double DEFAULT_SPEED = 0.1;
-    public static final int ABORT_DELAY = 100;
-    public static final int CHECK_DELAY = 10;
+    private static final double DEFAULT_SPEED = 0.3;
+    private static final int ABORT_DELAY = 100;
+    private static final int CHECK_DELAY = 10;
 
     private Thread thread;
 
-    public LiftThread(Talon liftMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput switcher) {
+    public LiftThread(Victor liftMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput switcher) {
         this.liftMotor = liftMotor;
         this.liftMin = liftMin;
         this.liftMax = liftMax;
@@ -51,7 +53,7 @@ public class LiftThread implements Runnable {
         System.out.println("Lift Thread Stopped");
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
@@ -88,20 +90,25 @@ public class LiftThread implements Runnable {
     }
 
     private void checkPos() {
-        currentState = switcher.get();
-        if (currentState != prevState) {
-            pos += direction;
+        System.out.println(manual);
+        if(manual) {
+            liftMotor.set(speed);
+        } else {
+            currentState = switcher.get();
+            if (currentState != prevState) {
+                pos += direction;
+            }
+            if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
+                setLift(0);
+                pos += direction;
+            }
+            if (pos > target && direction != -1 && !liftMin.get()) {
+                setLift(-1);
+            } else if (pos < target && direction != 1 && !liftMax.get()) {
+                setLift(1);
+            }
+            prevState = currentState;
         }
-        if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
-            setLift(0);
-            pos += direction;
-        }
-        if (pos > target && direction != -1 && !liftMin.get()) {
-            setLift(-1);
-        } else if (pos < target && direction != 1 && !liftMax.get()) {
-            setLift(1);
-        }
-        prevState = currentState;
     }
 
     private void setLift(int direction) {
@@ -120,5 +127,4 @@ public class LiftThread implements Runnable {
     public boolean isIdle() {
         return pos == target;
     }
-
 }

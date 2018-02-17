@@ -3,17 +3,18 @@ package frc.team4828.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 
 public class Lift {
 
-    private Talon liftMotor, armMotor, leftGrabber, rightGrabber;
+    private Victor liftMotor, armMotor, leftGrabber, rightGrabber;
     private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
 
     private LiftThread liftThread;
     private ArmThread armThread;
 
-    public Lift(Talon liftMotor, Talon armMotor, DigitalInput liftMin,
-            DigitalInput liftMax, DigitalInput armMin, DigitalInput armMax, DigitalInput switcher) {
+    public Lift(Victor liftMotor, Victor armMotor, DigitalInput liftMin,
+                DigitalInput liftMax, DigitalInput armMin, DigitalInput armMax, DigitalInput switcher) {
         this.liftMotor = liftMotor;
         this.armMotor = armMotor;
         this.leftGrabber = leftGrabber;
@@ -30,7 +31,7 @@ public class Lift {
 
     // Start LiftThread methods
 
-    public void setLiftSpeed(int speed) {
+    public void setLiftSpeed(double speed) {
         liftThread.setSpeed(speed);
     }
 
@@ -69,6 +70,8 @@ public class Lift {
     public boolean isLiftIdle() {
         return liftThread.isIdle();
     }
+
+    public void setManual(boolean m) { liftThread.manual = m; }
 
     // End LiftThread methods
 

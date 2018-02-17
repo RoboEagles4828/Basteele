@@ -2,9 +2,10 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Victor;
 
 public class Grabber {
-    Talon left, right;
+    Victor left, right;
     DoubleSolenoid sol;
 
     int curr = 0;
@@ -12,8 +13,8 @@ public class Grabber {
     public static final double SPEED = 1;
 
     public Grabber(int leftp, int rightp, int pistlp, int pistrp) {
-        left = new Talon(leftp);
-        right = new Talon(rightp);
+        left = new Victor(leftp);
+        right = new Victor(rightp);
         sol = new DoubleSolenoid(pistlp, pistrp);
     }
 
@@ -46,6 +47,6 @@ public class Grabber {
 
     public void stop() {
         left.set(0);
-        left.set(0);
+        right.set(0);
     }
 }

@@ -3,16 +3,18 @@ package frc.team4828.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.*;
 
+import java.awt.*;
+
 public class Robot extends IterativeRobot {
 
     private TalonSRX motor1, motor2, motor3, motor4;
     private Compressor comp;
-    private DoubleSolenoid sol1, sol2;
+    private DoubleSolenoid shifterSol;
     private PneumaticSwitch switcher1, switcher2;
     private Gearbox leftGearbox, rightGearbox;
     private DoubleSolenoid dumperSol;
 
-    private Talon liftMotor, armMotor;
+    private Victor liftMotor, armMotor, climbLeft, climbRight;
     private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
 
     private Grabber grabber;
@@ -34,16 +36,15 @@ public class Robot extends IterativeRobot {
         motor4 = new TalonSRX(Ports.RIGHT_MOTORS[1]);
         comp = new Compressor(Ports.COMPRESSOR);
         comp.setClosedLoopControl(true);
-        sol1 = new DoubleSolenoid(Ports.LEFT_SOLENOID[0], Ports.LEFT_SOLENOID[1]);
-        sol2 = new DoubleSolenoid(Ports.RIGHT_SOLENOID[0], Ports.RIGHT_SOLENOID[1]);
-        switcher1 = new PneumaticSwitch(comp, sol1);
-        switcher2 = new PneumaticSwitch(comp, sol2);
+        shifterSol = new DoubleSolenoid(Ports.SHIFTER_SOLENOID[0], Ports.SHIFTER_SOLENOID[1]);
+        switcher1 = new PneumaticSwitch(comp, shifterSol);
+        switcher2 = new PneumaticSwitch(comp, shifterSol);
         leftGearbox = new Gearbox(motor1, motor2, switcher1);
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
         dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
 
-        liftMotor = new Talon(Ports.LIFT_MOTOR);
-        armMotor = new Talon(Ports.ARM_MOTOR);
+        liftMotor = new Victor(Ports.LIFT_MOTOR);
+        armMotor = new Victor(Ports.ARM_MOTOR);
         grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER_SOLENOID[0], Ports.GRABBER_SOLENOID[1]);
 
         liftMin = new DigitalInput(Ports.LIFT_MIN);
@@ -57,6 +58,9 @@ public class Robot extends IterativeRobot {
         drive = new DriveTrain(leftGearbox, rightGearbox);
         dumper = new PneumaticSwitch(comp, dumperSol);
         lift = new Lift(liftMotor, armMotor, liftMin, liftMax, armMin, armMax, switcher);
+        climbLeft = new Victor(Ports.LEFT_CLIMBER);
+        climbRight = new Victor(Ports.RIGHT_CLIMBER);
+
     }
 
     public void autonomousInit() {
@@ -121,29 +125,51 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
-
+        lift.startLiftThread();
         System.out.println(" --- Start Teleop ---");
     }
 
     public void teleopPeriodic() {
-        drive.jArcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
+        if (joystick.getTrigger())
+            drive.jArcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
+        else
+            drive.brake();
+        drive.debug(joystick.getX(), joystick.getY(), joystick.getTwist());
         if (joystick.getRawButton(Buttons.DUMPER_ON)) {
             dumper.set(1);
         } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
             dumper.set(-1);
         }
-        if (joystick.getRawButton(Buttons.LIFT[0])) {
-            lift.setLiftPos(0);
-        } else if (joystick.getRawButton(Buttons.LIFT[1])) {
-            lift.setLiftPos(2);
-        } else if (joystick.getRawButton(Buttons.LIFT[2])) {
-            lift.setLiftPos(4);
-        } else if (joystick.getRawButton(Buttons.LIFT[3])) {
-            lift.setLiftPos(6);
-        } else if (joystick.getRawButton(Buttons.LIFT[4])) {
-            lift.setLiftPos(8);
+        lift.setManual(true);
+        if (joystick.getRawButton(Buttons.LIFT_UP))
+            lift.setLiftSpeed(.5);
+        else if (joystick.getRawButton(Buttons.LIFT_DOWN))
+            lift.setLiftSpeed(-.5);
+        else
+            lift.setLiftSpeed(0);
+        if(joystick.getRawButton(Buttons.GRABBER_SOL[0]))
+            grabber.grabOpen();
+        else if(joystick.getRawButton(Buttons.GRABBER_SOL[1]))
+            grabber.grabClose();
+
+        if(joystick.getRawButton(Buttons.GRABBER_WHEELS[0]))
+            grabber.intake();
+        else if(joystick.getRawButton(Buttons.GRABBER_WHEELS[1]))
+            grabber.outtake();
+        else
+            grabber.stop();
+
+        if(joystick.getRawButton(Buttons.CLIMB_UP)) {
+            climbLeft.set(.1);
+            climbRight.set(.1);
+        } else if(joystick.getRawButton(Buttons.CLIMB_DOWN)) {
+            climbLeft.set(-.1);
+            climbRight.set(-.1);
+        } else {
+            climbLeft.set(0);
+            climbRight.set(0);
         }
-        Timer.delay(.1);
+        Timer.delay(.01);
     }
 
     public void testInit() {
@@ -153,11 +179,10 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        double x = joystick.getX();
-        double y = joystick.getY();
-        double twist = joystick.getTwist();
-        drive.debug(x, y, twist);
-        Timer.delay(.1);
+
     }
 
+    public void disabledInit() {
+        lift.stopLiftThread();
+    }
 }
