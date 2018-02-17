@@ -80,50 +80,50 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            System.out.println((switch1.get()? "1":"0") + (switch2.get()? "1":"0") + (switch3.get()? "1":"0"));
-            int mode = (switch1.get()? 4:0) + (switch2.get()? 2:0) + (switch3.get()? 1:0);
+            System.out.println((switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
+            int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
             System.out.println("Auton Mode: " + mode);
-//            switch (mode) {
-//            case 0:
-//                // Just go forward
-//                drive.moveDistance(120, .5);
-//                break;
-//            case 1:
-//                // Start from the left edge, go fwd, turn and outtake
-//                drive.moveDistance(150, .5);
-//                drive.turnDegAbs(90, .5);
-//                lift.setLiftTarget(2);
-//                while (!lift.isLiftIdle()) {
-//                    Timer.delay(.1);
-//                }
-//                grabber.outtake();
-//                break;
-//            case 2:
-//                // Start from the right edge, go fwd, turn and outtake
-//                drive.moveDistance(150, .5);
-//                drive.turnDegAbs(270, .5);
-//                lift.setLiftTarget(2);
-//                while (!lift.isLiftIdle()) {
-//                    Timer.delay(.1);
-//                }
-//                grabber.outtake();
-//                break;
-//            case 3:
-//                break;
-//            case 4:
-//                break;
-//            case 5:
-//                break;
-//            case 6:
-//                break;
-//            case 7:
-//                // Outtake into the hole
-//                grabber.outtake();
-//                break;
-//            default:
-//                break;
-//            }
-//            doneAuton = true;
+            switch (10) { // TODO Change to mode
+            case 0:
+                // Just go forward
+                drive.moveDistance(120, .5);
+                break;
+            case 1:
+                // Start from the left edge, go fwd, turn and outtake
+                drive.moveDistance(150, .5);
+                drive.turnDegAbs(90, .5);
+                lift.setLiftTarget(2);
+                while (!lift.isLiftIdle()) {
+                    Timer.delay(.1);
+                }
+                grabber.outtake();
+                break;
+            case 2:
+                // Start from the right edge, go fwd, turn and outtake
+                drive.moveDistance(150, .5);
+                drive.turnDegAbs(270, .5);
+                lift.setLiftTarget(2);
+                while (!lift.isLiftIdle()) {
+                    Timer.delay(.1);
+                }
+                grabber.outtake();
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                // Outtake into the hole
+                grabber.outtake();
+                break;
+            default:
+                break;
+            }
+            doneAuton = true;
         }
         Timer.delay(.1);
     }
@@ -131,7 +131,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
         lift.startLiftThread();
-        lift.setManual(true);
+//        lift.setManual(true);
         lift.setLiftSpeed(0.5);
         liftDirection = 0;
         System.out.println(" --- Start Teleop ---");
@@ -148,6 +148,17 @@ public class Robot extends IterativeRobot {
             dumper.set(1);
         } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
             dumper.set(-1);
+        }
+        if (joystick.getRawButton(Buttons.LIFT[0])) {
+            lift.setLiftTarget(0);
+        } else if (joystick.getRawButton(Buttons.LIFT[1])) {
+            lift.setLiftTarget(1);
+        } else if (joystick.getRawButton(Buttons.LIFT[2])) {
+            lift.setLiftTarget(2);
+        } else if (joystick.getRawButton(Buttons.LIFT[3])) {
+            lift.setLiftTarget(3);
+        } else if (joystick.getRawButton(Buttons.LIFT[4])) {
+            lift.setLiftTarget(4);
         }
         if (joystick.getRawButton(Buttons.LIFT_UP)) {
             if (liftDirection != 1) {
