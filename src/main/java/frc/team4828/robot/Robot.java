@@ -66,6 +66,10 @@ public class Robot extends IterativeRobot {
         dumper = new PneumaticSwitch(comp, dumperSol);
         grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         lift = new Lift(liftMotor, armMotor, liftMin, liftMax, armMin, armMax, switcher);
+
+        switch1 = new DigitalInput(Ports.AUTON_MODE[0]);
+        switch1 = new DigitalInput(Ports.AUTON_MODE[0]);
+        switch1 = new DigitalInput(Ports.AUTON_MODE[0]);
     }
 
     public void autonomousInit() {
@@ -76,54 +80,49 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            int mode = 0;
-            if (switch1.get())
-                mode += 4;
-            if (switch2.get())
-                mode += 2;
-            if (switch3.get())
-                mode += 1;
-            switch (mode) {
-            case 0:
-                // Just go forward
-                drive.moveDistance(120, .5);
-                break;
-            case 1:
-                // Start from the left edge, go fwd, turn and outtake
-                drive.moveDistance(150, .5);
-                drive.turnDegAbs(90, .5);
-                lift.setLiftTarget(2);
-                while (!lift.isLiftIdle()) {
-                    Timer.delay(.1);
-                }
-                grabber.outtake();
-                break;
-            case 2:
-                // Start from the right edge, go fwd, turn and outtake
-                drive.moveDistance(150, .5);
-                drive.turnDegAbs(270, .5);
-                lift.setLiftTarget(2);
-                while (!lift.isLiftIdle()) {
-                    Timer.delay(.1);
-                }
-                grabber.outtake();
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 6:
-                break;
-            case 7:
-                // Outtake into the hole
-                grabber.outtake();
-                break;
-            default:
-                break;
-            }
-            doneAuton = true;
+            int mode = (switch1.get()? 1:0) * 4 + (switch2.get()? 1:0) * 2 + (switch3.get()? 1:0);
+            System.out.println("Auton Mode: " + mode);
+//            switch (mode) {
+//            case 0:
+//                // Just go forward
+//                drive.moveDistance(120, .5);
+//                break;
+//            case 1:
+//                // Start from the left edge, go fwd, turn and outtake
+//                drive.moveDistance(150, .5);
+//                drive.turnDegAbs(90, .5);
+//                lift.setLiftTarget(2);
+//                while (!lift.isLiftIdle()) {
+//                    Timer.delay(.1);
+//                }
+//                grabber.outtake();
+//                break;
+//            case 2:
+//                // Start from the right edge, go fwd, turn and outtake
+//                drive.moveDistance(150, .5);
+//                drive.turnDegAbs(270, .5);
+//                lift.setLiftTarget(2);
+//                while (!lift.isLiftIdle()) {
+//                    Timer.delay(.1);
+//                }
+//                grabber.outtake();
+//                break;
+//            case 3:
+//                break;
+//            case 4:
+//                break;
+//            case 5:
+//                break;
+//            case 6:
+//                break;
+//            case 7:
+//                // Outtake into the hole
+//                grabber.outtake();
+//                break;
+//            default:
+//                break;
+//            }
+//            doneAuton = true;
         }
         Timer.delay(.1);
     }
