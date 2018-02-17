@@ -21,6 +21,7 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     private PneumaticSwitch dumper;
     private Lift lift;
+    private int liftDirection;
 
     private DigitalInput switch1, switch2, switch3;
     private boolean doneAuton = false;
@@ -132,38 +133,50 @@ public class Robot extends IterativeRobot {
         lift.startLiftThread();
         lift.setManual(true);
         lift.setLiftSpeed(0.5);
+        liftDirection = 0;
         System.out.println(" --- Start Teleop ---");
     }
 
     public void teleopPeriodic() {
-        if (joystick.getTrigger())
+        if (joystick.getTrigger()) {
             drive.jArcadeDrive(joystick.getX(), joystick.getY(), joystick.getTwist());
-        else
+        } else {
             drive.brake();
+        }
         drive.debug(joystick.getX(), joystick.getY(), joystick.getTwist());
         if (joystick.getRawButton(Buttons.DUMPER_ON)) {
             dumper.set(1);
         } else if (joystick.getRawButton(Buttons.DUMPER_OFF)) {
             dumper.set(-1);
         }
-        if (joystick.getRawButton(Buttons.LIFT_UP))
-            lift.setLiftTargetDirection(1);
-        else if (joystick.getRawButton(Buttons.LIFT_DOWN))
-            lift.setLiftTargetDirection(-1);
-        else
-            lift.setLiftTargetDirection(0);
-        if (joystick.getRawButton(Buttons.GRABBER_OPEN))
+        if (joystick.getRawButton(Buttons.LIFT_UP)) {
+            if (liftDirection != 1) {
+                lift.setLiftTargetDirection(1);
+                liftDirection = 1;
+            }
+        } else if (joystick.getRawButton(Buttons.LIFT_DOWN)) {
+            if (liftDirection != -1) {
+                lift.setLiftTargetDirection(-1);
+                liftDirection = -1;
+            }
+        } else {
+            if (liftDirection != 0) {
+                lift.setLiftTargetDirection(0);
+                liftDirection = 0;
+            }
+        }
+        if (joystick.getRawButton(Buttons.GRABBER_OPEN)) {
             grabber.open();
-        else if (joystick.getRawButton(Buttons.GRABBER_CLOSE))
+        } else if (joystick.getRawButton(Buttons.GRABBER_CLOSE)) {
             grabber.close();
-
-        if (joystick.getRawButton(Buttons.GRABBER_IN))
+        }
+        if (joystick.getRawButton(Buttons.GRABBER_IN)) {
             grabber.intake();
-        else if (joystick.getRawButton(Buttons.GRABBER_OUT))
+        } else if (joystick.getRawButton(Buttons.GRABBER_OUT)) {
             grabber.outtake();
-        else
+        } else {
             grabber.stop();
-
+        }
         if (joystick.getRawButton(Buttons.CLIMB_UP)) {
             leftClimberMotor.set(.1);
             rightClimberMotor.set(.1);

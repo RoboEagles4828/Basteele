@@ -127,10 +127,6 @@ public class LiftThread implements Runnable {
         this.direction = direction;
     }
 
-    public void setTargetDirection(int targetDirection) {
-        this.targetDirection = targetDirection;
-    }
-
     public double getLift() {
         return liftMotor.get();
     }
@@ -141,6 +137,10 @@ public class LiftThread implements Runnable {
 
     public void setManual(boolean manual) {
         this.manual = manual;
+    }
+
+    public void setTargetDirection(int targetDirection) {
+        this.targetDirection = targetDirection;
     }
 
 }

@@ -48,10 +48,6 @@ public class Lift {
         liftThread.resume();
     }
 
-    public void setLiftTargetDirection(int targetDirection) {
-        liftThread.setTargetDirection(targetDirection);
-    }
-
     public double getLiftSpeed() {
         return liftThread.getLift();
     }
@@ -62,6 +58,10 @@ public class Lift {
 
     public void setManual(boolean manual) {
         liftThread.setManual(manual);
+    }
+
+    public void setLiftTargetDirection(int targetDirection) {
+        liftThread.setTargetDirection(targetDirection);
     }
 
     // End LiftThread methods
