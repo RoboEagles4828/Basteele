@@ -152,14 +152,14 @@ public class Robot extends IterativeRobot {
             lift.setLiftSpeedAbsolute(-.5);
         else
             lift.setLiftSpeedAbsolute(0);
-        if (joystick.getRawButton(Buttons.GRABBER_SOL[0]))
+        if (joystick.getRawButton(Buttons.GRABBER_OPEN))
             grabber.open();
-        else if (joystick.getRawButton(Buttons.GRABBER_SOL[1]))
+        else if (joystick.getRawButton(Buttons.GRABBER_CLOSE))
             grabber.close();
 
-        if (joystick.getRawButton(Buttons.GRABBER_WHEELS[0]))
+        if (joystick.getRawButton(Buttons.GRABBER_IN))
             grabber.intake();
-        else if (joystick.getRawButton(Buttons.GRABBER_WHEELS[1]))
+        else if (joystick.getRawButton(Buttons.GRABBER_OUT))
             grabber.outtake();
         else
             grabber.stop();

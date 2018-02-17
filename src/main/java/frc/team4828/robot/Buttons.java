@@ -15,8 +15,10 @@ public class Buttons {
     public static final int CLIMB_UP = 7;
     public static final int CLIMB_DOWN = 8;
 
-    public static final int[] GRABBER_SOL = { 5, 6 };
-    public static final int[] GRABBER_WHEELS = { 3, 4 };
+    public static final int GRABBER_OPEN = 5;
+    public static final int GRABBER_CLOSE = 6;
+    public static final int GRABBER_IN = 3;
+    public static final int GRABBER_OUT = 4;
 
     public Buttons() {
         System.out.println("Don't instantiate the Buttons class, fool!");
