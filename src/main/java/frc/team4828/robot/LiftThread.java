@@ -38,8 +38,13 @@ public class LiftThread implements Runnable {
 
     public void run() {
         System.out.println("Lift Thread Started");
+        speed = -1;
+        pos = 0;
+        target = 0;
+        direction = 0;
+        targetDirection = 0;
         while (!stopThread) {
-            while (!abort) {
+            while (!abort && !stopThread) {
                 checkPos();
                 Timer.delay(CHECK_DELAY);
             }
