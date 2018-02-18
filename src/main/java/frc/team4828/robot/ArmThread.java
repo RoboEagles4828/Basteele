@@ -28,9 +28,12 @@ public class ArmThread implements Runnable {
     }
 
     public void run() {
-        System.out.println("Arm Thread Started");
+        System.out.println("Arm Thread Started");speed = -1;
+        pos = 0;
+        target = 0;
+        direction = 0;
         while (!stopThread) {
-            while (!abort) {
+            while (!abort && !stopThread) {
                 checkPos();
                 try {
                     Thread.sleep(CHECK_DELAY);

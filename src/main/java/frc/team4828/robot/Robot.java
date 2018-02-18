@@ -235,5 +235,6 @@ public class Robot extends IterativeRobot {
 
     public void disabledInit() {
         lift.stopLiftThread();
+        lift.stopArmThread();
     }
 }
