@@ -202,6 +202,9 @@ public class Robot extends IterativeRobot {
         } else {
             arm.setSpeed(0);
         }
+        if ((armMotor.get() > 0 && armMax.get()) || (armMotor.get() < 0 && armMin.get())) {
+            arm.setSpeed(0);
+        }
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
             grabber.open();
