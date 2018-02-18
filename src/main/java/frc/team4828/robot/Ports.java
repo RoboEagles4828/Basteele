@@ -17,9 +17,9 @@ public class Ports {
 
     public static final int LIFT_MIN = 8;
     public static final int LIFT_MAX = 5;
-    public static final int ARM_MIN = 7;
+    public static final int ARM_MIN = 9;
     public static final int ARM_MAX = 6;
-    public static final int SWITCHER = 9;
+    public static final int SWITCHER = 7;
 
     public static final int JOYSTICK = 0;
 

@@ -152,30 +152,30 @@ public class Robot extends IterativeRobot {
         if (joystick.getRawButton(Buttons.LIFT[0])) {
             lift.setLiftTarget(0);
         } else if (joystick.getRawButton(Buttons.LIFT[1])) {
-            lift.setLiftTarget(1);
-        } else if (joystick.getRawButton(Buttons.LIFT[2])) {
             lift.setLiftTarget(2);
-        } else if (joystick.getRawButton(Buttons.LIFT[3])) {
-            lift.setLiftTarget(3);
-        } else if (joystick.getRawButton(Buttons.LIFT[4])) {
+        } else if (joystick.getRawButton(Buttons.LIFT[2])) {
             lift.setLiftTarget(4);
+        } else if (joystick.getRawButton(Buttons.LIFT[3])) {
+            lift.setLiftTarget(6);
+        } else if (joystick.getRawButton(Buttons.LIFT[4])) {
+            lift.setLiftTarget(8);
         }
-        if (joystick.getRawButton(Buttons.LIFT_UP)) {
-            if (liftDirection != 1) {
-                lift.setLiftTargetDirection(1);
-                liftDirection = 1;
-            }
-        } else if (joystick.getRawButton(Buttons.LIFT_DOWN)) {
-            if (liftDirection != -1) {
-                lift.setLiftTargetDirection(-1);
-                liftDirection = -1;
-            }
-        } else {
-            if (liftDirection != 0) {
-                lift.setLiftTargetDirection(0);
-                liftDirection = 0;
-            }
-        }
+//        if (joystick.getRawButton(Buttons.LIFT_UP)) {
+//            if (liftDirection != 1) {
+//                lift.setLiftTargetDirection(1);
+//                liftDirection = 1;
+//            }
+//        } else if (joystick.getRawButton(Buttons.LIFT_DOWN)) {
+//            if (liftDirection != -1) {
+//                lift.setLiftTargetDirection(-1);
+//                liftDirection = -1;
+//            }
+//        } else {
+//            if (liftDirection != 0) {
+//                lift.setLiftTargetDirection(0);
+//                liftDirection = 0;
+//            }
+//        }
         if (joystick.getRawButton(Buttons.GRABBER_OPEN)) {
             grabber.open();
         } else if (joystick.getRawButton(Buttons.GRABBER_CLOSE)) {
