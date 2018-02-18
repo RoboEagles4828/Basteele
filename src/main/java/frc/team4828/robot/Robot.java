@@ -43,7 +43,6 @@ public class Robot extends IterativeRobot {
         motor3 = new TalonSRX(Ports.RIGHT_GEARBOX[0]);
         motor4 = new TalonSRX(Ports.RIGHT_GEARBOX[1]);
         liftMotor = new Victor(Ports.LIFT);
-        armMotor = new Talon(Ports.ARM);
         leftGrabberMotor = new Victor(Ports.LEFT_GRABBER);
         rightGrabberMotor = new Victor(Ports.RIGHT_GRABBER);
         leftClimberMotor = new Victor(Ports.LEFT_CLIMBER);
