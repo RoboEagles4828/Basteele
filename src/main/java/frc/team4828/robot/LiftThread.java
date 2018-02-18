@@ -1,6 +1,7 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
 public class LiftThread implements Runnable {
@@ -18,10 +19,12 @@ public class LiftThread implements Runnable {
     private boolean abort = false;
     private int direction = 0;
     private int targetDirection = 0;
+    private double startTime = 0;
 
     private static final double DEFAULT_SPEED = 0.3;
-    private static final int ABORT_DELAY = 100;
-    private static final int CHECK_DELAY = 10;
+    private static final double ABORT_DELAY = 0.1;
+    private static final double CHECK_DELAY = 0.01;
+    private static final double SWITCHER_DELAY = 0.05;
 
     private Thread thread;
     private boolean manual;
@@ -38,17 +41,9 @@ public class LiftThread implements Runnable {
         while (!stopThread) {
             while (!abort) {
                 checkPos();
-                try {
-                    Thread.sleep(CHECK_DELAY);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Timer.delay(CHECK_DELAY);
             }
-            try {
-                Thread.sleep(ABORT_DELAY);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Timer.delay(ABORT_DELAY);
         }
         System.out.println("Lift Thread Stopped");
     }
@@ -91,8 +86,9 @@ public class LiftThread implements Runnable {
 
     private void checkPos() {
         currentState = switcher.get();
-        if (currentState != prevState) {
+        if (currentState != prevState && Timer.getFPGATimestamp() > startTime + SWITCHER_DELAY) {
             pos += direction;
+            startTime = Timer.getFPGATimestamp();
         }
         if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
             setLift(0);
