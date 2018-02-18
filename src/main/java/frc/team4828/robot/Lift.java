@@ -6,12 +6,11 @@ import edu.wpi.first.wpilibj.Victor;
 public class Lift {
 
     private LiftThread liftThread;
-    private ArmThread armThread;
+    private Arm arm;
 
     public Lift(Victor liftMotor, Victor armMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput armMin,
             DigitalInput armMax, DigitalInput switcher) {
         liftThread = new LiftThread(liftMotor, liftMin, liftMax, switcher);
-        armThread = new ArmThread(armMotor, armMin, armMax);
     }
 
     // Start LiftThread methods
@@ -76,46 +75,4 @@ public class Lift {
     }
 
     // End LiftThread methods
-
-    // Start ArmThread methods
-
-    public void setArmSpeed(double speed) {
-        armThread.setSpeed(speed);
-    }
-
-    public void setArmPos(int pos) {
-        armThread.setPos(pos);
-    }
-
-    public void setArmTarget(int target) {
-        armThread.setTarget(target);
-    }
-
-    public void startArmThread() {
-        armThread.start();
-    }
-
-    public void stopArmThread() {
-        armThread.stop();
-    }
-
-    public void forceStopArmThread() {
-        armThread.forceStop();
-    }
-
-    public void abortArm() {
-        armThread.abort();
-    }
-
-    public void resumeArm() {
-        armThread.resume();
-    }
-
-    public double getArmSpeed() {
-        return armThread.getArm();
-    }
-
-    public boolean isArmIdle() {
-        return armThread.isIdle();
-    }
 }

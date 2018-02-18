@@ -23,6 +23,7 @@ public class Robot extends IterativeRobot {
     private Lift lift;
     private boolean liftManualPrev;
     private boolean liftManual;
+    private Arm arm;
     // Grabber
     private Grabber grabber;
     // Climber
@@ -139,9 +140,7 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
         lift.startLiftThread();
-        lift.startArmThread();
         lift.setLiftSpeed(0.5);
-        lift.setArmSpeed(0.5);
         liftManualPrev = false;
         liftManual = false;
         System.out.println(" --- Start Teleop ---");
@@ -194,9 +193,11 @@ public class Robot extends IterativeRobot {
         }
         // Arm
         if (liftStick.getRawButton(Buttons.ARM_UP)) {
-            lift.setArmTarget(0);
+            arm.setSpd(.5);
         } else if (liftStick.getRawButton(Buttons.ARM_DOWN)) {
-            lift.setArmTarget(1);
+            arm.setSpd(-.5);
+        } else {
+            arm.setSpd(0);
         }
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
@@ -235,6 +236,5 @@ public class Robot extends IterativeRobot {
 
     public void disabledInit() {
         lift.stopLiftThread();
-        lift.stopArmThread();
     }
 }
