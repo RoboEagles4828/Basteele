@@ -15,7 +15,7 @@ public class ArmThread implements Runnable {
     private boolean abort = false;
     private int direction = 0;
 
-    public static final double DEFAULT_SPEED = 0.1;
+    public static final double DEFAULT_SPEED = 0.3;
     public static final int ABORT_DELAY = 100;
     public static final int CHECK_DELAY = 10;
 

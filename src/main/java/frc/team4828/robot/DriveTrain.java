@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class DriveTrain {
 
-    private static final double TWIST_THRESH = .3;
-    private static final double TWIST_FACTOR = .5;
     private static final double ENC_RATIO = 1;
     private static final double ANGLE_CHECK_DELAY = .1;
 
@@ -72,30 +70,6 @@ public class DriveTrain {
         drive = normalize(drive);
         left.drive(drive[0]);
         right.drive(drive[1]);
-    }
-
-    /**
-     * Changes the inputs from the joystick to work with arcadeDrive.
-     * <p>
-     *
-     * @param x      The x component of the joystick.
-     * @param y      The y component of the joystick.
-     * @param twist  The twist component of the joystick.
-     */
-    public void jArcadeDrive(double x, double y, double twist) {
-        if (Math.abs(twist) < TWIST_THRESH) {
-            twist = 0;
-        } else {
-            if (twist > 0) {
-                twist -= TWIST_THRESH;
-            } else {
-                twist += TWIST_THRESH;
-            }
-        }
-        y *= -1;
-        twist *= -1;
-        twist *= TWIST_FACTOR;
-        arcadeDrive(x, y, twist);
     }
 
     /**

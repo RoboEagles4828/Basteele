@@ -60,6 +60,17 @@ public class Lift {
         liftThread.setManual(manual);
     }
 
+    public void setLiftSpeedManual(double speed) {
+        setLiftSpeed(Math.abs(speed));
+        if (speed > 0) {
+            setLiftTargetDirection(1);
+        } else if (speed < 0) {
+            setLiftTargetDirection(-1);
+        } else {
+            setLiftTargetDirection(0);
+        }
+    }
+
     public void setLiftTargetDirection(int targetDirection) {
         liftThread.setTargetDirection(targetDirection);
     }
@@ -68,7 +79,7 @@ public class Lift {
 
     // Start ArmThread methods
 
-    public void setArmSpeed(int speed) {
+    public void setArmSpeed(double speed) {
         armThread.setSpeed(speed);
     }
 
