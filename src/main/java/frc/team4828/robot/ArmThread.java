@@ -28,7 +28,8 @@ public class ArmThread implements Runnable {
     }
 
     public void run() {
-        System.out.println("Arm Thread Started");speed = -1;
+        System.out.println("Arm Thread Started");
+        speed = -1;
         pos = 0;
         target = 0;
         direction = 0;
