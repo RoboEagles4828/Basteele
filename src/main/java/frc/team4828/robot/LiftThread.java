@@ -143,5 +143,16 @@ public class LiftThread implements Runnable {
     public void setTargetDirection(int targetDirection) {
         this.targetDirection = targetDirection;
     }
+    
+    public void setLiftSpeedManual(double speed) {
+        setSpeed(Math.abs(speed));
+        if (speed > 0) {
+            setTargetDirection(1);
+        } else if (speed < 0) {
+            setTargetDirection(-1);
+        } else {
+            setTargetDirection(0);
+        }
+    }
 
 }

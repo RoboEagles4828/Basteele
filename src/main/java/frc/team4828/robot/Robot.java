@@ -20,7 +20,7 @@ public class Robot extends IterativeRobot {
     private Gearbox leftGearbox, rightGearbox;
     private DriveTrain drive;
     // Lift
-    private Lift lift;
+    private LiftThread lift;
     private boolean liftManualPrev;
     private boolean liftManual;
     // Grabber
@@ -66,7 +66,7 @@ public class Robot extends IterativeRobot {
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
         drive = new DriveTrain(leftGearbox, rightGearbox);
         // Lift
-        lift = new Lift(liftMotor, armMotor, liftMin, liftMax, armMin, armMax, switcher);
+        lift = new LiftThread(liftMotor, liftMin, liftMax, switcher);
         // Grabber
         grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         // Climber
@@ -100,8 +100,8 @@ public class Robot extends IterativeRobot {
                 // Start from the left edge, go fwd, turn and outtake
                 drive.moveDistance(150, .5);
                 drive.turnDegAbs(90, .5);
-                lift.setLiftTarget(2);
-                while (!lift.isLiftIdle()) {
+                lift.setTarget(2);
+                while (!lift.isIdle()) {
                     Timer.delay(.1);
                 }
                 grabber.outtake();
@@ -110,8 +110,8 @@ public class Robot extends IterativeRobot {
                 // Start from the right edge, go fwd, turn and outtake
                 drive.moveDistance(150, .5);
                 drive.turnDegAbs(270, .5);
-                lift.setLiftTarget(2);
-                while (!lift.isLiftIdle()) {
+                lift.setTarget(2);
+                while (!lift.isIdle()) {
                     Timer.delay(.1);
                 }
                 grabber.outtake();
@@ -138,10 +138,8 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
-        lift.startLiftThread();
-        lift.startArmThread();
-        lift.setLiftSpeed(0.5);
-        lift.setArmSpeed(0.5);
+        lift.start();
+        lift.setSpeed(0.5);
         liftManualPrev = false;
         liftManual = false;
         System.out.println(" --- Start Teleop ---");
@@ -181,22 +179,25 @@ public class Robot extends IterativeRobot {
             lift.setLiftSpeedManual(JoystickUtils.processY(liftStick.getY()));
         } else {
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
-                lift.setLiftTarget(0);
+                lift.setTarget(0);
             } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
-                lift.setLiftTarget(2);
+                lift.setTarget(2);
             } else if (liftStick.getRawButton(Buttons.LIFT[2])) {
-                lift.setLiftTarget(4);
+                lift.setTarget(4);
             } else if (liftStick.getRawButton(Buttons.LIFT[3])) {
-                lift.setLiftTarget(6);
+                lift.setTarget(6);
             } else if (liftStick.getRawButton(Buttons.LIFT[4])) {
-                lift.setLiftTarget(8);
+                lift.setTarget(8);
             }
         }
         // Arm
         if (liftStick.getRawButton(Buttons.ARM_UP)) {
-            lift.setArmTarget(0);
+            armMotor.set(0.5);
         } else if (liftStick.getRawButton(Buttons.ARM_DOWN)) {
-            lift.setArmTarget(1);
+            armMotor.set(-0.5);
+        }
+        if ((armMotor.get() > 0 && armMax.get()) || (armMotor.get() < 0 && armMin.get())) {
+            armMotor.set(0);
         }
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
@@ -234,7 +235,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void disabledInit() {
-        lift.stopLiftThread();
-        lift.stopArmThread();
+        lift.stop();
     }
 }
