@@ -95,19 +95,19 @@ public class LiftThread implements Runnable {
             pos += direction;
         }
         if (manual) {
-            if (targetDirection == -1 && direction != -1 && !liftMin.get()) {
+            if (targetDirection == -1 && !liftMin.get()) {
                 setLift(-1);
-            } else if (targetDirection == 1 && direction != 1 && !liftMax.get()) {
+            } else if (targetDirection == 1 && !liftMax.get()) {
                 setLift(1);
-            } else if (targetDirection == 0 && direction != 0) {
+            } else if (targetDirection == 0) {
                 setLift(0);
             }
         } else {
-            if (pos > target && direction != -1 && !liftMin.get()) {
+            if (pos > target && !liftMin.get()) {
                 setLift(-1);
-            } else if (pos < target && direction != 1 && !liftMax.get()) {
+            } else if (pos < target && !liftMax.get()) {
                 setLift(1);
-            } else if (pos == target && direction != 0) {
+            } else if (pos == target) {
                 setLift(0);
             }
         }
