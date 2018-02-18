@@ -9,7 +9,8 @@ public class Robot extends IterativeRobot {
     private Joystick liftStick;
     // Motors
     private TalonSRX motor1, motor2, motor3, motor4;
-    private Victor liftMotor, armMotor, leftGrabberMotor, rightGrabberMotor, leftClimberMotor, rightClimberMotor;
+    private Victor liftMotor, leftGrabberMotor, rightGrabberMotor, leftClimberMotor, rightClimberMotor;
+    private Talon armMotor;
     // DIO
     private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
     // Pneumatics
@@ -23,6 +24,7 @@ public class Robot extends IterativeRobot {
     private LiftThread lift;
     private boolean liftManualPrev;
     private boolean liftManual;
+    private Arm arm;
     // Grabber
     private Grabber grabber;
     // Climber
@@ -41,7 +43,7 @@ public class Robot extends IterativeRobot {
         motor3 = new TalonSRX(Ports.RIGHT_GEARBOX[0]);
         motor4 = new TalonSRX(Ports.RIGHT_GEARBOX[1]);
         liftMotor = new Victor(Ports.LIFT);
-        armMotor = new Victor(Ports.ARM);
+        armMotor = new Talon(Ports.ARM);
         leftGrabberMotor = new Victor(Ports.LEFT_GRABBER);
         rightGrabberMotor = new Victor(Ports.RIGHT_GRABBER);
         leftClimberMotor = new Victor(Ports.LEFT_CLIMBER);
@@ -67,6 +69,8 @@ public class Robot extends IterativeRobot {
         drive = new DriveTrain(leftGearbox, rightGearbox);
         // Lift
         lift = new LiftThread(liftMotor, liftMin, liftMax, switcher);
+        // Arm
+        arm = new Arm(armMotor);
         // Grabber
         grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         // Climber
@@ -192,12 +196,11 @@ public class Robot extends IterativeRobot {
         }
         // Arm
         if (liftStick.getRawButton(Buttons.ARM_UP)) {
-            armMotor.set(0.5);
+            arm.setSpeed(.5);
         } else if (liftStick.getRawButton(Buttons.ARM_DOWN)) {
-            armMotor.set(-0.5);
-        }
-        if ((armMotor.get() > 0 && armMax.get()) || (armMotor.get() < 0 && armMin.get())) {
-            armMotor.set(0);
+            arm.setSpeed(-.5);
+        } else {
+            arm.setSpeed(0);
         }
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
