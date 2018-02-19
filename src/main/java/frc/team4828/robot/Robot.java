@@ -157,8 +157,8 @@ public class Robot extends IterativeRobot {
         } else {
             drive.brake();
         }
-        // Drive Debug
-        drive.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+        // Drive Stick Debug
+        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
         // Dumper
         if (driveStick.getRawButton(Buttons.DUMPER_ON)) {
             dumper.set(1);
@@ -230,12 +230,14 @@ public class Robot extends IterativeRobot {
 
     public void testInit() {
         System.out.println(" --- Start Test Init ---");
-
+        drive.zeroEnc();
+        drive.arcadeDrive(0, 0.1, 0);
         System.out.println(" --- Start Test ---");
     }
 
     public void testPeriodic() {
-        System.out.println(liftMin.get());
+        drive.debugEnc();
+        Timer.delay(0.1);
     }
 
     public void disabledInit() {

@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class DriveTrain {
 
-    private static final double ENC_RATIO = 1;
+    private static final double ENC_RATIO = 0.03952;
     private static final double ANGLE_CHECK_DELAY = .1;
 
     Gearbox left, right;
@@ -79,8 +79,8 @@ public class DriveTrain {
      * @param speed     The motors' speed
      */
     public void moveDistance(double distance, double speed) {
-        double startEncL = left.getEnc();
-        double startEncR = right.getEnc();
+        double startEncL = getLeftEnc();
+        double startEncR = getRightEnc();
         double changeEncL = 0;
         double changeEncR = 0;
         double maxEnc = Math.abs(distance * ENC_RATIO);
@@ -92,8 +92,8 @@ public class DriveTrain {
             right.drive(-speed);
         }
         while (changeEncL < maxEnc || changeEncR < maxEnc) {
-            changeEncL = Math.abs(left.getEnc() - startEncL);
-            changeEncR = Math.abs(right.getEnc() - startEncR);
+            changeEncL = Math.abs(getLeftEnc() - startEncL);
+            changeEncR = Math.abs(getRightEnc() - startEncR);
             if (changeEncL >= maxEnc) {
                 left.brake();
             }
@@ -126,16 +126,21 @@ public class DriveTrain {
         turnDegAbs(navx.getAngle() + angle, speed);
     }
 
-    /**
-     * Prints debug info to the console.
-     * <p>
-     *
-     * @param x      X to print.
-     * @param y      Y to print.
-     * @param twist  Twist to print.
-     */
-    public void debug(double x, double y, double twist) {
-        System.out.println("X: " + x + " Y: " + y + " Twist: " + twist);
+    public void zeroEnc() {
+        left.zeroEnc();
+        right.zeroEnc();
+    }
+
+    public double getLeftEnc() {
+        return -left.getEnc();
+    }
+
+    public double getRightEnc() {
+        return right.getEnc();
+    }
+
+    public void debugEnc() {
+        System.out.println("Left: " + getLeftEnc() + " Right: " + getRightEnc());
     }
 
     public void brake() {

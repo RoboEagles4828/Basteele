@@ -33,8 +33,12 @@ public class Gearbox {
         motor2.set(controlMode, 0);
     }
 
+    public void zeroEnc() {
+        motor2.getSensorCollection().setQuadraturePosition(0, 0);
+    }
+
     public double getEnc() {
-        return motor1.getSensorCollection().getQuadraturePosition();
+        return motor2.getSensorCollection().getQuadraturePosition();
     }
 
     public void setSwitch(int mode) {
