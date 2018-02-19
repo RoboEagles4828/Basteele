@@ -1,77 +1,168 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
-public class Lift {
+public class Lift implements Runnable {
 
-    private LiftThread liftThread;
+    private Victor liftMotor;
+    private DigitalInput liftMin, liftMax, switcher;
 
-    public Lift(Victor liftMotor, Victor armMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput armMin,
-            DigitalInput armMax, DigitalInput switcher) {
-        liftThread = new LiftThread(liftMotor, liftMin, liftMax, switcher);
+    private boolean currentState = false;
+    private boolean prevState = false;
+    private double startTime = 0.0;
+
+    private double speed;
+    private int direction;
+
+    private int pos;
+    private int target;
+
+    private boolean manual;
+    private int targetDirection;
+
+    private static final double DEFAULT_SPEED = 0.3;
+    private static final double CHECK_DELAY = 0.01;
+    private static final double SWITCHER_DELAY = 0.05;
+
+    private Thread thread;
+    private boolean stopThread = false;
+
+    public Lift(Victor liftMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput switcher) {
+        this.liftMotor = liftMotor;
+        this.liftMin = liftMin;
+        this.liftMax = liftMax;
+        this.switcher = switcher;
     }
 
-    // Start LiftThread methods
+    public void run() {
+        System.out.println("Lift Thread Started");
+        // Init Variables
+        speed = -1;
+        direction = 0;
 
-    public void setLiftSpeed(double speed) {
-        liftThread.setSpeed(speed);
+        pos = 0;
+        target = 0;
+
+        manual = false;
+        targetDirection = 0;
+        // Main Loop
+        while (!stopThread) {
+            check();
+            set();
+            Timer.delay(CHECK_DELAY);
+        }
+        System.out.println("Lift Thread Stopped");
     }
 
-    public void setLiftPos(int pos) {
-        liftThread.setPos(pos);
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
-    public void setLiftTarget(int target) {
-        liftThread.setTarget(target);
+    // Position Control
+
+    public void setPos(int pos) {
+        this.pos = pos;
     }
 
-    public void startLiftThread() {
-        liftThread.start();
+    public void setTarget(int target) {
+        this.target = target;
     }
 
-    public void stopLiftThread() {
-        liftThread.stop();
+    public boolean isIdle() {
+        return pos == target;
     }
 
-    public void forceStopLiftThread() {
-        liftThread.forceStop();
-    }
-
-    public void abortLift() {
-        liftThread.abort();
-    }
-
-    public void resumeLift() {
-        liftThread.resume();
-    }
-
-    public double getLiftSpeed() {
-        return liftThread.getLift();
-    }
-
-    public boolean isLiftIdle() {
-        return liftThread.isIdle();
-    }
+    // Manual Control
 
     public void setManual(boolean manual) {
-        liftThread.setManual(manual);
+        this.manual = manual;
     }
 
-    public void setLiftSpeedManual(double speed) {
-        setLiftSpeed(Math.abs(speed));
+    public void setTargetDirection(int targetDirection) {
+        this.targetDirection = targetDirection;
+    }
+
+    public void setSpeedManual(double speed) {
+        setSpeed(Math.abs(speed));
         if (speed > 0) {
-            setLiftTargetDirection(1);
+            setTargetDirection(1);
         } else if (speed < 0) {
-            setLiftTargetDirection(-1);
+            setTargetDirection(-1);
         } else {
-            setLiftTargetDirection(0);
+            setTargetDirection(0);
         }
     }
 
-    public void setLiftTargetDirection(int targetDirection) {
-        liftThread.setTargetDirection(targetDirection);
+    // Thread Control
+
+    public void start() {
+        stopThread = false;
+        thread = new Thread(this);
+        thread.start();
     }
 
-    // End LiftThread methods
+    public void stop() {
+        stopThread = true;
+    }
+
+    public void forceStop() {
+        stopThread = true;
+        thread.interrupt();
+    }
+
+    // Check Loop
+
+    private void check() {
+        currentState = switcher.get();
+        // Position Check
+        if (currentState != prevState && Timer.getFPGATimestamp() > startTime + SWITCHER_DELAY) {
+            pos += direction;
+            startTime = Timer.getFPGATimestamp();
+        }
+        // Limits Check
+        if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
+            pos += direction;
+            direction = 0;
+        }
+        // Manual Check
+        if (manual) {
+            if (targetDirection == -1 && !liftMin.get()) {
+                direction = -1;
+            } else if (targetDirection == 1 && !liftMax.get()) {
+                direction = 1;
+            } else if (targetDirection == 0) {
+                direction = 0;
+            }
+        }
+        // Auto Check
+        else {
+            if (pos > target && !liftMin.get()) {
+                direction = -1;
+            } else if (pos < target && !liftMax.get()) {
+                direction = 1;
+            } else if (pos == target) {
+                direction = 0;
+            }
+        }
+        prevState = currentState;
+    }
+
+    // Set Loop
+
+    private void set() {
+        if (speed == -1) {
+            liftMotor.set(DEFAULT_SPEED * direction);
+        } else {
+            liftMotor.set(speed * direction);
+        }
+    }
+
+    // Debug
+
+    public double debug() {
+        return liftMotor.get();
+    }
+
 }

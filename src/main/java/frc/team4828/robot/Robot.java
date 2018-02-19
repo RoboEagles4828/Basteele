@@ -21,7 +21,7 @@ public class Robot extends IterativeRobot {
     private Gearbox leftGearbox, rightGearbox;
     private DriveTrain drive;
     // Lift
-    private LiftThread lift;
+    private Lift lift;
     private boolean liftManualPrev;
     private boolean liftManual;
     private Arm arm;
@@ -68,9 +68,9 @@ public class Robot extends IterativeRobot {
         rightGearbox = new Gearbox(motor3, motor4, switcher2);
         drive = new DriveTrain(leftGearbox, rightGearbox);
         // Lift
-        lift = new LiftThread(liftMotor, liftMin, liftMax, switcher);
+        lift = new Lift(liftMotor, liftMin, liftMax, switcher);
         // Arm
-        arm = new Arm(armMotor);
+        arm = new Arm(armMotor, armMin, armMax);
         // Grabber
         grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         // Climber
@@ -180,7 +180,7 @@ public class Robot extends IterativeRobot {
 //            } else {
 //                lift.setLiftTargetDirection(0);
 //            }
-            lift.setLiftSpeedManual(JoystickUtils.processY(liftStick.getY()));
+            lift.setSpeedManual(JoystickUtils.processY(liftStick.getY()));
         } else {
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
                 lift.setTarget(0);
@@ -196,14 +196,12 @@ public class Robot extends IterativeRobot {
         }
         // Arm
         if (liftStick.getRawButton(Buttons.ARM_UP)) {
-            arm.setSpeed(.5);
+            arm.up();
         } else if (liftStick.getRawButton(Buttons.ARM_DOWN)) {
-            arm.setSpeed(-.5);
-        } else {
-            arm.setSpeed(0);
+            arm.down();
         }
-        if ((armMotor.get() > 0 && armMax.get()) || (armMotor.get() < 0 && armMin.get())) {
-            arm.setSpeed(0);
+        if (arm.check()) {
+            arm.stop();
         }
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
