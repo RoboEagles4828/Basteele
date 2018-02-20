@@ -122,7 +122,7 @@ public class Robot extends IterativeRobot {
                 }
                 break;
             case 2:
-                // Switch from Left
+                // Switch from right
                 // Check left or right side
                 switch(data.charAt(0)) {
                 case 'R':
@@ -143,9 +143,65 @@ public class Robot extends IterativeRobot {
                 }
                 break;
             case 3:
-                // Scale from Left
+                switch(data.charAt(1)) {
+                    case 'R':
+                        drive.moveDistance(5, 1);
+                        drive.turnDegAbs(27, .5);
+                        drive.moveDistance(300, 1);
+                        drive.turnDegAbs(0, .5);
+                        drive.moveDistance(190,1);
+                        drive.turnDegAbs(270,0.5);
+                        drive.moveDistance(10,1);
+                        lift.setSpeed(1);
+                        while (!lift.isIdle()){
+                            Timer.delay(0.2);
+                        }
+                        grabber.outtake();
+
+
+                        break;
+                    case 'L':
+                        drive.moveDistance(310, 1);
+                        drive.turnDegAbs(90,0.5);
+                        drive.moveDistance(10,1);
+                        lift.setSpeed(1);
+                        while (!lift.isIdle()){
+                            Timer.delay(0.2);
+                        }
+                        grabber.outtake();
+                        break;
+                    }
                 break;
+                // Scale from Left
+
+
             case 4:
+                switch(data.charAt(0)) {
+                    case 'R':
+                        drive.moveDistance(310, 1);
+                        drive.turnDegAbs(270, .5);
+                        drive.moveDistance(10, 1);
+                        while (!lift.isIdle()){
+                            Timer.delay(0.2);
+                        }
+                        grabber.outtake();
+
+                        break;
+                    case 'L':
+                        drive.moveDistance(5, 1);
+                        drive.turnDegAbs(-27, .5);
+                        drive.moveDistance(300, 1);
+                        drive.turnDegAbs(0, .5);
+                        drive.moveDistance(190, 1);
+                        drive.turnDegAbs(90, .5);
+                        drive.moveDistance(10, 1);
+                        while (!lift.isIdle()){
+                            Timer.delay(0.2);
+                        }
+                        grabber.outtake();
+                        break;
+                }
+
                 // Scale from Right
                 break;
             case 5:
