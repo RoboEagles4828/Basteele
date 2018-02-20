@@ -149,10 +149,16 @@ public class Robot extends IterativeRobot {
                 // Scale from Right
                 break;
             case 5:
+                drive.moveDistance(210, 1);
+                drive.turnDegAbs(90,0.5);
+                drive.moveDistance(40,1);
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 break;
             case 6:
+                drive.moveDistance(210, 1);
+                drive.turnDegAbs(270,0.5);
+                drive.moveDistance(40,1);
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 break;
