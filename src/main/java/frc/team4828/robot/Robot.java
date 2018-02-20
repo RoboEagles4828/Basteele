@@ -32,6 +32,7 @@ public class Robot extends IterativeRobot {
     // Auton
     private DigitalInput switch1, switch2, switch3;
     private boolean doneAuton;
+    private String data;
 
     public void robotInit() {
         // Joysticks
@@ -85,7 +86,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousInit() {
         System.out.println(" --- Start Auton Init ---");
-
+        data = DriverStation.getInstance().getGameSpecificMessage();
         System.out.println(" --- Start Auton ---");
     }
 
@@ -100,35 +101,66 @@ public class Robot extends IterativeRobot {
                 drive.moveDistance(120, .5);
                 break;
             case 1:
-                // Start from the left edge, go fwd, turn and outtake
-                drive.moveDistance(150, .5);
-                drive.turnDegAbs(90, .5);
-                lift.setTarget(2);
-                while (!lift.isIdle()) {
-                    Timer.delay(.1);
+                // Switch from Left
+                // Check left or right side
+                switch(data.charAt(0)) {
+                case 'L':
+                    drive.moveDistance(150, 1);
+                    drive.turnDegAbs(-90, .5);
+                    drive.moveDistance(-10, 1);
+                    dumper.set(1);
+                    break;
+                case 'R':
+                    drive.moveDistance(5, 1);
+                    drive.turnDegAbs(27, .5);
+                    drive.moveDistance(300, 1);
+                    drive.turnDegAbs(0, .5);
+                    drive.moveDistance(60, 1);
+                    drive.turnDegAbs(90, .5);
+                    drive.moveDistance(-10, 1);
+                    dumper.set(1);
                 }
-                grabber.outtake();
                 break;
             case 2:
-                // Start from the right edge, go fwd, turn and outtake
-                drive.moveDistance(150, .5);
-                drive.turnDegAbs(270, .5);
-                lift.setTarget(2);
-                while (!lift.isIdle()) {
-                    Timer.delay(.1);
+                // Switch from Left
+                // Check left or right side
+                switch(data.charAt(0)) {
+                case 'R':
+                    drive.moveDistance(150, 1);
+                    drive.turnDegAbs(90, .5);
+                    drive.moveDistance(-10, 1);
+                    dumper.set(1);
+                    break;
+                case 'L':
+                    drive.moveDistance(5, 1);
+                    drive.turnDegAbs(-27, .5);
+                    drive.moveDistance(300, 1);
+                    drive.turnDegAbs(0, .5);
+                    drive.moveDistance(60, 1);
+                    drive.turnDegAbs(-90, .5);
+                    drive.moveDistance(-10, 1);
+                    dumper.set(1);
                 }
-                grabber.outtake();
                 break;
             case 3:
+                // Scale from Left
                 break;
             case 4:
+                // Scale from Right
                 break;
             case 5:
+                // Out of the way left
+                // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 break;
             case 6:
+                // Out of the way right
+                // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 break;
             case 7:
                 // Outtake into the hole
+                // Shake a bit to drop the grabber
+                drive.moveDistance(-10, 1);
+                drive.moveDistance(5, 1);
                 grabber.outtake();
                 break;
             default:
