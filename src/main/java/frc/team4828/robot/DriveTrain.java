@@ -79,8 +79,8 @@ public class DriveTrain {
      * @param speed     The motors' speed
      */
     public void moveDistance(double distance, double speed) {
-        double startEncL = getLeftEnc();
-        double startEncR = getRightEnc();
+        double startEncL = left.getEnc();
+        double startEncR = right.getEnc();
         double changeEncL = 0;
         double changeEncR = 0;
         double maxEnc = Math.abs(distance * ENC_RATIO);
@@ -92,8 +92,8 @@ public class DriveTrain {
             right.drive(-speed);
         }
         while (changeEncL < maxEnc || changeEncR < maxEnc) {
-            changeEncL = Math.abs(getLeftEnc() - startEncL);
-            changeEncR = Math.abs(getRightEnc() - startEncR);
+            changeEncL = Math.abs(left.getEnc() - startEncL);
+            changeEncR = Math.abs(right.getEnc() - startEncR);
             if (changeEncL >= maxEnc) {
                 left.brake();
             }
@@ -131,16 +131,8 @@ public class DriveTrain {
         right.zeroEnc();
     }
 
-    public double getLeftEnc() {
-        return -left.getEnc();
-    }
-
-    public double getRightEnc() {
-        return right.getEnc();
-    }
-
     public void debugEnc() {
-        System.out.println("Left: " + getLeftEnc() + " Right: " + getRightEnc());
+        System.out.println("Left: " + left.getEnc() + " Right: " + right.getEnc());
     }
 
     public void brake() {
