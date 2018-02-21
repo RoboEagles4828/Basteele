@@ -9,6 +9,9 @@ public class DriveTrain {
     private static final double ENC_RATIO = 0.03952;
     private static final double ANGLE_CHECK_DELAY = .1;
 
+    private static final double TIMEOUT = 10;
+    private static final double P = 0.2;
+
     Gearbox left, right;
     AHRS navx;
 
@@ -55,17 +58,17 @@ public class DriveTrain {
      * 
      * @param x      The x component to drive (Positive is right; Negative is left).
      * @param y      The y component to drive (Positive is up; Negative is down).
-     * @param angle  The angle to drive (Positive is counterclockwise; Negative is clockwise).
+     * @param angle  The angle to drive (Positive is clockwise; Negative is counterclockwise).
      */
     public void arcadeDrive(double x, double y, double angle) {
 
         double[] drive = new double[2];
         if (x > 0) {
-            drive[0] = y + x - angle;
-            drive[1] = y + angle;
+            drive[0] = y + x + angle;
+            drive[1] = y - angle;
         } else {
-            drive[0] = y - angle;
-            drive[1] = y - x + angle;
+            drive[0] = y + angle;
+            drive[1] = y - x - angle;
         }
         drive = normalize(drive);
         left.drive(drive[0]);
@@ -75,46 +78,53 @@ public class DriveTrain {
     /**
      * Moves a certain distance forward. Distance is in meters.
      *
-     * @param distance  The distance in feet
+     * @param distance  The distance in inches
      * @param speed     The motors' speed
      */
     public void moveDistance(double distance, double speed) {
+        double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
         double changeEncL = 0;
         double changeEncR = 0;
+        double startAngle = navx.getAngle();
         double maxEnc = Math.abs(distance * ENC_RATIO);
-        if (distance > 0) {
+        if (distance < 0) {
+            speed *= -1;
+        }
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
             left.drive(speed);
             right.drive(speed);
-        } else {
-            left.drive(-speed);
-            right.drive(-speed);
-        }
-        while (changeEncL < maxEnc || changeEncR < maxEnc) {
+            while ((navx.getAngle() - startAngle > 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
+                left.change((startAngle - navx.getAngle()) * P);
+                Timer.delay(ANGLE_CHECK_DELAY);
+            }
+            while ((navx.getAngle() - startAngle < 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
+                right.change((navx.getAngle() - startAngle) * P);
+                Timer.delay(ANGLE_CHECK_DELAY);
+            }
             changeEncL = Math.abs(left.getEnc() - startEncL);
             changeEncR = Math.abs(right.getEnc() - startEncR);
-            if (changeEncL >= maxEnc) {
+            if (changeEncL >= maxEnc && changeEncR >= maxEnc) {
                 left.brake();
-            }
-            if (changeEncR >= maxEnc) {
                 right.brake();
+                break;
             }
         }
     }
 
     public void turnDegAbs(double angle, double speed) {
         double start = navx.getAngle();
-        if (start > angle) {
+        if (start < angle) {
             left.drive(speed);
             right.drive(-speed);
-            while (navx.getAngle() > angle) {
+            while (navx.getAngle() < angle) {
                 Timer.delay(ANGLE_CHECK_DELAY);
             }
         } else {
             left.drive(-speed);
             right.drive(speed);
-            while (navx.getAngle() < angle) {
+            while (navx.getAngle() > angle) {
                 Timer.delay(ANGLE_CHECK_DELAY);
             }
         }

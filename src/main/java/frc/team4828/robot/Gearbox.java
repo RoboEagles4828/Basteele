@@ -9,8 +9,9 @@ public class Gearbox {
     private TalonSRX motor;
     private PneumaticSwitch switcher;
 
-    private ControlMode controlMode = ControlMode.PercentOutput;
     private final double DEFAULT_SPEED = 0.500;
+
+    private double speed = 0;
 
     public Gearbox(TalonSRX motor, TalonSRX motor1, PneumaticSwitch switcher, boolean reverseEnc) {
         this.motor = motor;
@@ -20,16 +21,32 @@ public class Gearbox {
         motor1.set(ControlMode.Follower, motor.getDeviceID());
     }
 
+    public void update() {
+        motor.set(ControlMode.PercentOutput, speed);
+    }
+
     public void drive() {
-        motor.set(controlMode, DEFAULT_SPEED);
+        speed = DEFAULT_SPEED;
+        update();
     }
 
     public void drive(double speed) {
-        motor.set(controlMode, speed);
+        this.speed = speed;
+        update();
     }
 
     public void brake() {
-        motor.set(controlMode, 0);
+        speed = 0;
+        update();
+    }
+
+    public void change(double change) {
+        if (speed >= 0) {
+            speed += change;
+        } else {
+            speed -= change;
+        }
+        update();
     }
 
     public void zeroEnc() {

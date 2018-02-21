@@ -34,7 +34,6 @@ public class JoystickUtils {
                 twist += ANGLE_THRESHOLD;
             }
         }
-        twist *= -1;
         return twist;
     }
 
