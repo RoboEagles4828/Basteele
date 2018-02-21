@@ -64,8 +64,8 @@ public class Robot extends IterativeRobot {
         grabberSwitcher = new PneumaticSwitch(comp, grabberSol);
         dumper = new PneumaticSwitch(comp, dumperSol);
         // Drive
-        leftGearbox = new Gearbox(motor1, motor2, switcher1);
-        rightGearbox = new Gearbox(motor3, motor4, switcher2);
+        leftGearbox = new Gearbox(motor2, motor1, switcher1, true);
+        rightGearbox = new Gearbox(motor4, motor3, switcher2, false);
         drive = new DriveTrain(leftGearbox, rightGearbox);
         // Lift
         lift = new Lift(liftMotor, liftMin, liftMax, switcher);
@@ -103,7 +103,7 @@ public class Robot extends IterativeRobot {
             case 1:
                 // Switch from Left
                 // Check left or right side
-                switch(data.charAt(0)) {
+                switch (data.charAt(0)) {
                 case 'L':
                     drive.moveDistance(150, 1);
                     drive.turnDegAbs(-90, .5);
@@ -124,7 +124,7 @@ public class Robot extends IterativeRobot {
             case 2:
                 // Switch from right
                 // Check left or right side
-                switch(data.charAt(0)) {
+                switch (data.charAt(0)) {
                 case 'R':
                     drive.moveDistance(150, 1);
                     drive.turnDegAbs(90, .5);
@@ -143,78 +143,76 @@ public class Robot extends IterativeRobot {
                 }
                 break;
             case 3:
-                switch(data.charAt(1)) {
-                    case 'R':
-                        drive.moveDistance(5, 1);
-                        drive.turnDegAbs(27, .5);
-                        drive.moveDistance(300, 1);
-                        drive.turnDegAbs(0, .5);
-                        drive.moveDistance(190,1);
-                        drive.turnDegAbs(270,0.5);
-                        drive.moveDistance(10,1);
-                        lift.setSpeed(1);
-                        while (!lift.isIdle()){
-                            Timer.delay(0.2);
-                        }
-                        grabber.outtake();
-
-
-                        break;
-                    case 'L':
-                        drive.moveDistance(310, 1);
-                        drive.turnDegAbs(90,0.5);
-                        drive.moveDistance(10,1);
-                        lift.setSpeed(1);
-                        while (!lift.isIdle()){
-                            Timer.delay(0.2);
-                        }
-                        grabber.outtake();
-                        break;
+                switch (data.charAt(1)) {
+                case 'R':
+                    drive.moveDistance(5, 1);
+                    drive.turnDegAbs(27, .5);
+                    drive.moveDistance(300, 1);
+                    drive.turnDegAbs(0, .5);
+                    drive.moveDistance(190, 1);
+                    drive.turnDegAbs(270, 0.5);
+                    drive.moveDistance(10, 1);
+                    lift.setSpeed(1);
+                    while (!lift.isIdle()) {
+                        Timer.delay(0.2);
                     }
-                break;
-                // Scale from Left
+                    grabber.outtake();
 
+                    break;
+                case 'L':
+                    drive.moveDistance(310, 1);
+                    drive.turnDegAbs(90, 0.5);
+                    drive.moveDistance(10, 1);
+                    lift.setSpeed(1);
+                    while (!lift.isIdle()) {
+                        Timer.delay(0.2);
+                    }
+                    grabber.outtake();
+                    break;
+                }
+                break;
+            // Scale from Left
 
             case 4:
-                switch(data.charAt(0)) {
-                    case 'R':
-                        drive.moveDistance(310, 1);
-                        drive.turnDegAbs(270, .5);
-                        drive.moveDistance(10, 1);
-                        while (!lift.isIdle()){
-                            Timer.delay(0.2);
-                        }
-                        grabber.outtake();
+                switch (data.charAt(0)) {
+                case 'R':
+                    drive.moveDistance(310, 1);
+                    drive.turnDegAbs(270, .5);
+                    drive.moveDistance(10, 1);
+                    while (!lift.isIdle()) {
+                        Timer.delay(0.2);
+                    }
+                    grabber.outtake();
 
-                        break;
-                    case 'L':
-                        drive.moveDistance(5, 1);
-                        drive.turnDegAbs(-27, .5);
-                        drive.moveDistance(300, 1);
-                        drive.turnDegAbs(0, .5);
-                        drive.moveDistance(190, 1);
-                        drive.turnDegAbs(90, .5);
-                        drive.moveDistance(10, 1);
-                        while (!lift.isIdle()){
-                            Timer.delay(0.2);
-                        }
-                        grabber.outtake();
-                        break;
+                    break;
+                case 'L':
+                    drive.moveDistance(5, 1);
+                    drive.turnDegAbs(-27, .5);
+                    drive.moveDistance(300, 1);
+                    drive.turnDegAbs(0, .5);
+                    drive.moveDistance(190, 1);
+                    drive.turnDegAbs(90, .5);
+                    drive.moveDistance(10, 1);
+                    while (!lift.isIdle()) {
+                        Timer.delay(0.2);
+                    }
+                    grabber.outtake();
+                    break;
                 }
 
                 // Scale from Right
                 break;
             case 5:
                 drive.moveDistance(210, 1);
-                drive.turnDegAbs(90,0.5);
-                drive.moveDistance(40,1);
+                drive.turnDegAbs(90, 0.5);
+                drive.moveDistance(40, 1);
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 break;
             case 6:
                 drive.moveDistance(210, 1);
-                drive.turnDegAbs(270,0.5);
-                drive.moveDistance(40,1);
+                drive.turnDegAbs(270, 0.5);
+                drive.moveDistance(40, 1);
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 break;
