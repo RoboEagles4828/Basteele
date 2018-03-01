@@ -24,7 +24,6 @@ public class Robot extends IterativeRobot {
     private Lift lift;
     private boolean liftManualPrev;
     private boolean liftManual;
-    private Arm arm;
     // Grabber
     private Grabber grabber;
     // Climber
@@ -69,8 +68,6 @@ public class Robot extends IterativeRobot {
         drive = new DriveTrain(leftGearbox, rightGearbox);
         // Lift
         lift = new Lift(liftMotor, liftMin, liftMax, switcher);
-        // Arm
-        arm = new Arm(armMotor, armMin, armMax);
         // Grabber
         grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
         // Climber
@@ -95,7 +92,7 @@ public class Robot extends IterativeRobot {
             System.out.println((switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
             int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
             System.out.println("Auton Mode: " + mode);
-            switch (10) { // TODO Change to mode
+            switch (7) { // TODO Change to mode
             case 0:
                 // Just go forward
                 drive.moveDistance(120, .5);
@@ -112,7 +109,7 @@ public class Robot extends IterativeRobot {
                     break;
                 case 'R':
                     drive.moveDistance(5, 1);
-                    drive.turnDegAbs(24, .5);
+                    drive.turnDegAbs(24 , .5);
                     drive.moveDistance(288, 1);
                     drive.turnDegAbs(0, .5);
                     drive.moveDistance(60, 1);
@@ -220,8 +217,8 @@ public class Robot extends IterativeRobot {
             case 7:
                 // Outtake into the hole
                 // Shake a bit to drop the grabber
-                drive.moveDistance(-20, 1);
-                drive.moveDistance(5, 1);
+                drive.moveDistance(-5, .5);
+                drive.moveDistance(5, .5);
                 grabber.outtake();
                 break;
             default:
@@ -243,14 +240,10 @@ public class Robot extends IterativeRobot {
 
     public void teleopPeriodic() {
         // Drive
-        if (driveStick.getTrigger()) {
-            drive.arcadeDrive(JoystickUtils.processX(driveStick.getX()), JoystickUtils.processY(driveStick.getY()),
-                    JoystickUtils.processTwist(driveStick.getTwist()));
-        } else {
-            drive.brake();
-        }
+        drive.arcadeDrive(JoystickUtils.processX(driveStick.getX()), JoystickUtils.processY(driveStick.getY()),
+                JoystickUtils.processTwist(driveStick.getTwist()));
         // Drive Stick Debug
-        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+        //JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
         // Dumper
         if (driveStick.getRawButton(Buttons.DUMPER_ON)) {
             dumper.set(1);
@@ -285,15 +278,6 @@ public class Robot extends IterativeRobot {
             } else if (liftStick.getRawButton(Buttons.LIFT[4])) {
                 lift.setTarget(8);
             }
-        }
-        // Arm
-        if (liftStick.getRawButton(Buttons.ARM_UP)) {
-            arm.up();
-        } else if (liftStick.getRawButton(Buttons.ARM_DOWN)) {
-            arm.down();
-        }
-        if (arm.check()) {
-            arm.stop();
         }
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
