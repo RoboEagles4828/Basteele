@@ -4,7 +4,7 @@
 
 |Master|
 |:----:|
-[![BuildStatus](https://travis-ci.org/RoboEagles4828/Basteel.svg?branch=master)](https://travis-ci.org/RoboEagles4828/Basteel)]
+[![BuildStatus](https://travis-ci.org/RoboEagles4828/Basteel.svg?branch=master)](https://travis-ci.org/RoboEagles4828/Basteel)
 
 ## Want to contribute?
 Take a look at our [Guide](https://github.com/RoboEagles4828/Basteel/blob/master/CONTRIBUTING.md).
