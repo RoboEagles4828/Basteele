@@ -245,16 +245,16 @@ public class Robot extends IterativeRobot {
         // Drive Stick Debug
         //JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
         // Dumper
-        if (driveStick.getRawButton(Buttons.DUMPER_ON)) {
+        if (driveStick.getRawButton(Buttons.DUMPER)) {
             dumper.set(1);
-        } else if (driveStick.getRawButton(Buttons.DUMPER_OFF)) {
+        } else {
             dumper.set(-1);
         }
         // Lift Set Manual
-        if (liftStick.getRawButton(Buttons.LIFT_MANUAL) && !liftManualPrev) {
-            liftManual = !liftManual;
-            lift.setManual(liftManual);
-        }
+//        if (liftStick.getRawButton(Buttons.LIFT_MANUAL) && !liftManualPrev) {
+//            liftManual = !liftManual;
+//            lift.setManual(liftManual);
+//        }
         liftManualPrev = liftStick.getRawButton(Buttons.LIFT_MANUAL);
         // Lift
         if (liftManual) {
@@ -265,7 +265,7 @@ public class Robot extends IterativeRobot {
 //            } else {
 //                lift.setLiftTargetDirection(0);
 //            }
-            lift.setSpeedManual(JoystickUtils.processY(liftStick.getY()));
+            lift.setSpeedManual(JoystickUtils.processY(-liftStick.getY()));
         } else {
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
                 lift.setTarget(0);
@@ -282,16 +282,18 @@ public class Robot extends IterativeRobot {
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
             grabber.open();
-        } else if (liftStick.getRawButton(Buttons.GRABBER_CLOSE)) {
+        } else if (liftStick.getRawButton(Buttons.GRABBER_CLOSE[0])
+                || liftStick.getRawButton(Buttons.GRABBER_CLOSE[1])
+                || liftStick.getRawButton(Buttons.GRABBER_CLOSE[2])
+                || liftStick.getRawButton(Buttons.GRABBER_CLOSE[3])) {
             grabber.close();
-        }
-        if (liftStick.getRawButton(Buttons.GRABBER_IN)) {
             grabber.intake();
         } else if (liftStick.getRawButton(Buttons.GRABBER_OUT)) {
             grabber.outtake();
         } else {
             grabber.stop();
         }
+
         // Climber
         if (driveStick.getRawButton(Buttons.CLIMB_UP)) {
             climber.up();
@@ -300,6 +302,14 @@ public class Robot extends IterativeRobot {
         } else {
             climber.stop();
         }
+
+        // Gear Shift
+        if (driveStick.getRawButton(Buttons.GEAR_SWITCH[0])) {
+            drive.gearSwitch(1);
+        } else if (driveStick.getRawButton(Buttons.GEAR_SWITCH[1])) {
+            drive.gearSwitch(-1);
+        }
+
 
         Timer.delay(.01);
     }

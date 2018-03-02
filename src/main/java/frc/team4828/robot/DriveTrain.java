@@ -145,6 +145,11 @@ public class DriveTrain {
         System.out.println("Left: " + left.getEnc() + " Right: " + right.getEnc());
     }
 
+    public void gearSwitch(int state) {
+        left.setSwitch(state);
+        right.setSwitch(state);
+    }
+
     public void brake() {
         left.brake();
         right.brake();

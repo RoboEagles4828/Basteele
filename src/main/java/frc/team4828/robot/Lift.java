@@ -45,7 +45,7 @@ public class Lift implements Runnable {
         pos = 0;
         target = 0;
 
-        manual = false;
+        manual = true;
         targetDirection = 0;
         // Main Loop
         while (!stopThread) {
