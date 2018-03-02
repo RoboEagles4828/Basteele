@@ -10,9 +10,8 @@ public class Robot extends IterativeRobot {
     // Motors
     private TalonSRX motor1, motor2, motor3, motor4;
     private Victor liftMotor, leftGrabberMotor, rightGrabberMotor, leftClimberMotor, rightClimberMotor;
-    private Talon armMotor;
     // DIO
-    private DigitalInput liftMin, liftMax, armMin, armMax, switcher;
+    private DigitalInput liftMin, liftMax, switcher;
     // Pneumatics
     private Compressor comp;
     private DoubleSolenoid shifterSol, dumperSol, grabberSol;
@@ -50,8 +49,6 @@ public class Robot extends IterativeRobot {
         // DIO
         liftMin = new DigitalInput(Ports.LIFT_MIN);
         liftMax = new DigitalInput(Ports.LIFT_MAX);
-        armMin = new DigitalInput(Ports.ARM_MIN);
-        armMax = new DigitalInput(Ports.ARM_MAX);
         switcher = new DigitalInput(Ports.SWITCHER);
         // Pneumatics
         comp = new Compressor(Ports.COMPRESSOR);
@@ -109,7 +106,7 @@ public class Robot extends IterativeRobot {
                     break;
                 case 'R':
                     drive.moveDistance(5, 1);
-                    drive.turnDegAbs(24 , .5);
+                    drive.turnDegAbs(24, .5);
                     drive.moveDistance(288, 1);
                     drive.turnDegAbs(0, .5);
                     drive.moveDistance(60, 1);
@@ -255,7 +252,7 @@ public class Robot extends IterativeRobot {
 //            liftManual = !liftManual;
 //            lift.setManual(liftManual);
 //        }
-        liftManualPrev = liftStick.getRawButton(Buttons.LIFT_MANUAL);
+//        liftManualPrev = liftStick.getRawButton(Buttons.LIFT_MANUAL);
         // Lift
         if (liftManual) {
 //            if (liftStick.getRawButton(Buttons.LIFT_UP)) {
@@ -265,7 +262,7 @@ public class Robot extends IterativeRobot {
 //            } else {
 //                lift.setLiftTargetDirection(0);
 //            }
-            lift.setSpeedManual(JoystickUtils.processY(-liftStick.getY()));
+            lift.setSpeedManual(JoystickUtils.processY(liftStick.getY()));
         } else {
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
                 lift.setTarget(0);
@@ -282,8 +279,7 @@ public class Robot extends IterativeRobot {
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
             grabber.open();
-        } else if (liftStick.getRawButton(Buttons.GRABBER_CLOSE[0])
-                || liftStick.getRawButton(Buttons.GRABBER_CLOSE[1])
+        } else if (liftStick.getRawButton(Buttons.GRABBER_CLOSE[0]) || liftStick.getRawButton(Buttons.GRABBER_CLOSE[1])
                 || liftStick.getRawButton(Buttons.GRABBER_CLOSE[2])
                 || liftStick.getRawButton(Buttons.GRABBER_CLOSE[3])) {
             grabber.close();
@@ -309,7 +305,6 @@ public class Robot extends IterativeRobot {
         } else if (driveStick.getRawButton(Buttons.GEAR_SWITCH[1])) {
             drive.gearSwitch(-1);
         }
-
 
         Timer.delay(.01);
     }
