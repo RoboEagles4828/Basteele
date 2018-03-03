@@ -1,44 +1,59 @@
 package frc.team4828.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Gearbox {
 
-    private TalonSRX motor1;
-    private TalonSRX motor2;
-    private PneumaticSwitch switcher;
+    private TalonSRX mainMotor;
+    private DoubleSolenoid switcher;
 
-    private ControlMode controlMode = ControlMode.PercentOutput;
-    private final double DEFAULT_SPEED = 0.500;
+    private double speed = 0;
 
-    public Gearbox(TalonSRX motor1, TalonSRX motor2, PneumaticSwitch switcher) {
-        this.motor1 = motor1;
-        this.motor2 = motor2;
-        this.switcher = switcher;
+    Gearbox(int motorPort, int followPort, int[] switcherPort, boolean reverseEnc) {
+        mainMotor = new TalonSRX(motorPort);
+        TalonSRX followMotor = new TalonSRX(followPort);
+        switcher = new DoubleSolenoid(switcherPort[0], switcherPort[1]);
+        mainMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+        mainMotor.setSensorPhase(reverseEnc);
+        followMotor.set(ControlMode.Follower, mainMotor.getDeviceID());
     }
 
-    public void drive() {
-        motor1.set(controlMode, DEFAULT_SPEED);
-        motor2.set(controlMode, DEFAULT_SPEED);
+    private void update() {
+        mainMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void drive(double speed) {
-        motor1.set(controlMode, speed);
-        motor2.set(controlMode, speed);
+        this.speed = speed;
+        update();
     }
 
     public void brake() {
-        motor1.set(controlMode, 0);
-        motor2.set(controlMode, 0);
+        speed = 0;
+        update();
+    }
+
+    public void change(double change) {
+        if (speed >= 0) {
+            speed += change;
+        } else {
+            speed -= change;
+        }
+        update();
+    }
+
+    public void zeroEnc() {
+        mainMotor.setSelectedSensorPosition(0, 0, 10);
     }
 
     public double getEnc() {
-        return motor1.getSensorCollection().getQuadraturePosition();
+        return mainMotor.getSelectedSensorPosition(0);
     }
 
-    public void setSwitch(int mode) {
+    public void setSwitcher(Value mode) {
         switcher.set(mode);
     }
 }
