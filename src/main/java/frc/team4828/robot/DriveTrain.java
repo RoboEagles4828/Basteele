@@ -141,13 +141,7 @@ public class DriveTrain {
     }
 
     public void gearSwitch(int state) {
-        switch (state) {
-            case 1:
-                left.switchFwd();
-                right.switchFwd();
-            case 2:
-                left.switchBack();
-                right.switchBack();
-        }
+        left.setSwitcher(state);
+        right.setSwitcher(state);
     }
 }

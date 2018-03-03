@@ -52,10 +52,12 @@ public class Gearbox {
         return mainMotor.getSelectedSensorPosition(0);
     }
 
-    public void switchFwd() {
-        switcher.set(DoubleSolenoid.Value.kForward);
-    }
-    public void switchBack() {
-        switcher.set(DoubleSolenoid.Value.kReverse);
+    public void setSwitcher(int mode) {
+        switch (mode) {
+            case 1:
+                switcher.set(DoubleSolenoid.Value.kForward);
+            case -1:
+                switcher.set(DoubleSolenoid.Value.kReverse);
+        }
     }
 }
