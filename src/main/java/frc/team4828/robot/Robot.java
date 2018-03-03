@@ -211,7 +211,7 @@ public class Robot extends IterativeRobot {
 
         // Dumper
         if (driveStick.getRawButton(Buttons.DUMPER)) {
-            if(!dumper.isOpen()) {
+            if (!dumper.isOpen()) {
                 dumper.open();
                 Timer.delay(.1);
             }
