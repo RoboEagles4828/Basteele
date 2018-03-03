@@ -9,7 +9,6 @@ public class DriveTrain {
 
     private static final double ENC_RATIO = 0.03952;
     private static final double ANGLE_CHECK_DELAY = .1;
-
     private static final double TIMEOUT = 10;
     private static final double P = 0.2;
 
@@ -24,9 +23,9 @@ public class DriveTrain {
      * @param left  Left Gearbox.
      * @param right Right Gearbox.
      */
-    DriveTrain(int[] left, int[] right, int[] shifter) {
-        left = new Gearbox(left[0], left[1], shifter, false);
-        right = new Gearbox(right[0], right[1], shifter, false);
+    public DriveTrain(int[] leftPorts, int[] rightPorts, int[] shifterPorts) {
+        left = new Gearbox(leftPorts[0], leftPorts[1], shifterPorts, false);
+        right = new Gearbox(rightPorts[0], rightPorts[1], shifterPorts, false);
         navx = new AHRS(SerialPort.Port.kMXP);
     }
 

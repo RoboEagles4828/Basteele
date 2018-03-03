@@ -10,7 +10,7 @@ public class Grabber {
     private Victor leftMotor, rightMotor;
     private DoubleSolenoid switcher;
 
-    Grabber(int leftMotorPort, int rightMotorPort, int[] switcherPorts) {
+    public Grabber(int leftMotorPort, int rightMotorPort, int[] switcherPorts) {
         leftMotor = new Victor(leftMotorPort);
         rightMotor = new Victor(rightMotorPort);
         switcher = new DoubleSolenoid(switcherPorts[0], switcherPorts[1]);

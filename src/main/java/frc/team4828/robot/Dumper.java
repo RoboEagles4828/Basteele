@@ -14,7 +14,7 @@ public class Dumper {
     private DigitalInput prox;
     private boolean state = false;
 
-    Dumper(int[] dumperPorts, int servoPort, int proxPort) {
+    public Dumper(int[] dumperPorts, int servoPort, int proxPort) {
         dumper = new DoubleSolenoid(dumperPorts[0], dumperPorts[1]);
         servo = new Servo(servoPort);
         prox = new DigitalInput(proxPort);

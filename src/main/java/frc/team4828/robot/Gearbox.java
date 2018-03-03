@@ -13,7 +13,7 @@ public class Gearbox {
 
     private double speed = 0;
 
-    Gearbox(int motorPort, int followPort, int[] switcherPort, boolean reverseEnc) {
+    public Gearbox(int motorPort, int followPort, int[] switcherPort, boolean reverseEnc) {
         mainMotor = new TalonSRX(motorPort);
         TalonSRX followMotor = new TalonSRX(followPort);
         switcher = new DoubleSolenoid(switcherPort[0], switcherPort[1]);

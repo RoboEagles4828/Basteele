@@ -7,7 +7,7 @@ public class Climber {
     private static final double DEFAULT_SPEED = 0.5;
     private Victor leftMotor, rightMotor;
 
-    Climber(int leftMotorPort, int rightMotorPort) {
+    public Climber(int leftMotorPort, int rightMotorPort) {
         leftMotor = new Victor(leftMotorPort);
         rightMotor = new Victor(rightMotorPort);
     }
