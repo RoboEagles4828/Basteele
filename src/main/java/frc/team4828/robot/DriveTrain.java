@@ -25,8 +25,8 @@ public class DriveTrain {
      * @param right Right Gearbox.
      */
     DriveTrain(int[] left, int[] right, int[] shifter) {
-        this.left = new Gearbox(left[0], left[1], shifter, false);
-        this.right = new Gearbox(right[0], right[1], shifter, false);
+        left = new Gearbox(left[0], left[1], shifter, false);
+        right = new Gearbox(right[0], right[1], shifter, false);
         navx = new AHRS(SerialPort.Port.kMXP);
     }
 
