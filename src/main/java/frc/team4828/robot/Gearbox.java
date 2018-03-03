@@ -3,26 +3,28 @@ package frc.team4828.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Compressor;
 
 public class Gearbox {
 
-    private TalonSRX motor;
+    private TalonSRX mainMotor, followMotor;
     private PneumaticSwitch switcher;
 
     private final double DEFAULT_SPEED = 0.500;
 
     private double speed = 0;
 
-    public Gearbox(TalonSRX motor, TalonSRX motor1, PneumaticSwitch switcher, boolean reverseEnc) {
-        this.motor = motor;
-        this.switcher = switcher;
-        motor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
-        motor.setSensorPhase(reverseEnc);
-        motor1.set(ControlMode.Follower, motor.getDeviceID());
+    public Gearbox(int motorPort, int followPort, int[] switcherPort, boolean reverseEnc, Compressor comp) {
+        this.mainMotor = new TalonSRX(motorPort);
+        this.followMotor = new TalonSRX(followPort);
+        this.switcher = new PneumaticSwitch(comp, switcherPort);
+        mainMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
+        mainMotor.setSensorPhase(reverseEnc);
+        followMotor.set(ControlMode.Follower, mainMotor.getDeviceID());
     }
 
     public void update() {
-        motor.set(ControlMode.PercentOutput, speed);
+        mainMotor.set(ControlMode.PercentOutput, speed);
     }
 
     public void drive() {
@@ -50,11 +52,11 @@ public class Gearbox {
     }
 
     public void zeroEnc() {
-        motor.setSelectedSensorPosition(0, 0, 10);
+        mainMotor.setSelectedSensorPosition(0, 0, 10);
     }
 
     public double getEnc() {
-        return motor.getSelectedSensorPosition(0);
+        return mainMotor.getSelectedSensorPosition(0);
     }
 
     public void setSwitch(int mode) {

@@ -29,11 +29,11 @@ public class Lift implements Runnable {
     private Thread thread;
     private boolean stopThread = false;
 
-    public Lift(Victor liftMotor, DigitalInput liftMin, DigitalInput liftMax, DigitalInput switcher) {
-        this.liftMotor = liftMotor;
-        this.liftMin = liftMin;
-        this.liftMax = liftMax;
-        this.switcher = switcher;
+    public Lift(int liftMotor, int liftMin, int liftMax, int switcher) {
+        this.liftMotor = new Victor(liftMotor);
+        this.liftMin = new DigitalInput(liftMin);
+        this.liftMax = new DigitalInput(liftMax);
+        this.switcher = new DigitalInput(switcher);
     }
 
     public void run() {

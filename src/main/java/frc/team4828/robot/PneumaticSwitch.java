@@ -8,9 +8,9 @@ public class PneumaticSwitch {
     private Compressor comp;
     private DoubleSolenoid sol;
 
-    PneumaticSwitch(Compressor comp, DoubleSolenoid sol) {
+    PneumaticSwitch(Compressor comp, int[] solPorts) {
         this.comp = comp;
-        this.sol = sol;
+        this.sol = new DoubleSolenoid(solPorts[0], solPorts[1]);
     }
 
     public boolean enabled() {

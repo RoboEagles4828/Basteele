@@ -1,6 +1,7 @@
 package frc.team4828.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -23,9 +24,9 @@ public class DriveTrain {
      * @param left   Left Gearbox.
      * @param right  Right Gearbox.
      */
-    public DriveTrain(Gearbox left, Gearbox right) {
-        this.left = left;
-        this.right = right;
+    public DriveTrain(int[] left, int[] right, int[] shifter, Compressor comp) {
+        this.left = new Gearbox(left[0], left[1], shifter, false, comp);
+        this.right = new Gearbox(right[0], right[1], shifter, false, comp);
         navx = new AHRS(SerialPort.Port.kMXP);
     }
 

@@ -1,5 +1,6 @@
 package frc.team4828.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Grabber {
@@ -11,10 +12,10 @@ public class Grabber {
 
     public static final double SPEED = 1;
 
-    public Grabber(Victor leftMotor, Victor rightMotor, PneumaticSwitch switcher) {
-        this.leftMotor = leftMotor;
-        this.rightMotor = rightMotor;
-        this.switcher = switcher;
+    public Grabber(int leftMotor, int rightMotor, int[] switcher, Compressor comp) {
+        this.leftMotor = new Victor(leftMotor);
+        this.rightMotor = new Victor(rightMotor);
+        this.switcher = new PneumaticSwitch(comp, switcher);
     }
 
     public void open() {

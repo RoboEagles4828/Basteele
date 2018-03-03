@@ -1,23 +1,12 @@
 package frc.team4828.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.*;
 
 public class Robot extends IterativeRobot {
     // Joysticks
     private Joystick driveStick;
     private Joystick liftStick;
-    // Motors
-    private TalonSRX motor1, motor2, motor3, motor4;
-    private Victor liftMotor, leftGrabberMotor, rightGrabberMotor, leftClimberMotor, rightClimberMotor;
-    // DIO
-    private DigitalInput liftMin, liftMax, switcher;
-    // Pneumatics
-    private Compressor comp;
-    private DoubleSolenoid shifterSol, dumperSol, grabberSol;
-    private PneumaticSwitch switcher1, switcher2, grabberSwitcher, dumper;
     // Drive
-    private Gearbox leftGearbox, rightGearbox;
     private DriveTrain drive;
     // Lift
     private Lift lift;
@@ -29,65 +18,47 @@ public class Robot extends IterativeRobot {
     private DigitalInput switch1, switch2, switch3;
     private boolean doneAuton;
     private String data;
+    // Dumper
+    private Dumper dumper;
 
     public void robotInit() {
         // Joysticks
         driveStick = new Joystick(Ports.DRIVE_STICK);
         liftStick = new Joystick(Ports.LIFT_STICK);
-        // Motors
-        motor1 = new TalonSRX(Ports.LEFT_GEARBOX[0]);
-        motor2 = new TalonSRX(Ports.LEFT_GEARBOX[1]);
-        motor3 = new TalonSRX(Ports.RIGHT_GEARBOX[0]);
-        motor4 = new TalonSRX(Ports.RIGHT_GEARBOX[1]);
-        liftMotor = new Victor(Ports.LIFT);
-        leftGrabberMotor = new Victor(Ports.LEFT_GRABBER);
-        rightGrabberMotor = new Victor(Ports.RIGHT_GRABBER);
-        leftClimberMotor = new Victor(Ports.LEFT_CLIMBER);
-        rightClimberMotor = new Victor(Ports.RIGHT_CLIMBER);
         // DIO
-        liftMin = new DigitalInput(Ports.LIFT_MIN);
-        liftMax = new DigitalInput(Ports.LIFT_MAX);
-        switcher = new DigitalInput(Ports.SWITCHER);
         // Pneumatics
-        comp = new Compressor(Ports.COMPRESSOR);
-        shifterSol = new DoubleSolenoid(Ports.SHIFTER[0], Ports.SHIFTER[1]);
-        dumperSol = new DoubleSolenoid(Ports.DUMPER[0], Ports.DUMPER[1]);
-        grabberSol = new DoubleSolenoid(Ports.GRABBER[0], Ports.GRABBER[1]);
-        switcher1 = new PneumaticSwitch(comp, shifterSol);
-        switcher2 = new PneumaticSwitch(comp, shifterSol);
-        grabberSwitcher = new PneumaticSwitch(comp, grabberSol);
-        dumper = new PneumaticSwitch(comp, dumperSol);
+        Compressor comp = new Compressor(Ports.COMPRESSOR);
         // Drive
-        leftGearbox = new Gearbox(motor2, motor1, switcher1, true);
-        rightGearbox = new Gearbox(motor4, motor3, switcher2, false);
-        drive = new DriveTrain(leftGearbox, rightGearbox);
+        drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER, comp);
         // Lift
-        lift = new Lift(liftMotor, liftMin, liftMax, switcher);
+        lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, Ports.SWITCHER);
         // Grabber
-        grabber = new Grabber(leftGrabberMotor, rightGrabberMotor, grabberSwitcher);
+        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER, comp);
         // Climber
-        climber = new Climber(leftClimberMotor, rightClimberMotor);
+        climber = new Climber(Ports.LEFT_CLIMBER, Ports.RIGHT_CLIMBER);
         // Auton
         switch1 = new DigitalInput(Ports.AUTON[0]);
         switch2 = new DigitalInput(Ports.AUTON[1]);
         switch3 = new DigitalInput(Ports.AUTON[2]);
         doneAuton = false;
 
+        dumper = new Dumper(Ports.DUMPER, Ports.SERVO, comp);
+
         comp.setClosedLoopControl(true);
     }
 
     public void autonomousInit() {
-        System.out.println(" --- Start Auton Init ---");
+        System.out.println(" --- Start Autonomous Init ---");
         data = DriverStation.getInstance().getGameSpecificMessage();
-        System.out.println(" --- Start Auton ---");
+        System.out.println(" --- Start Autonomous ---");
     }
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
             System.out.println((switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
             int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
-            System.out.println("Auton Mode: " + mode);
-            switch (7) { // TODO Change to mode
+            System.out.println("Autonomous Mode: " + mode);
+            switch (9001) { // TODO Change to mode
             case 0:
                 // Just go forward
                 drive.moveDistance(120, .5);
@@ -245,7 +216,6 @@ public class Robot extends IterativeRobot {
         } else {
             dumper.set(-1);
         }
-
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
             lift.setManual(true);
