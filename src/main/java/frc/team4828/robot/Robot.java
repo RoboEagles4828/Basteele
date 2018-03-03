@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
         switch3 = new DigitalInput(Ports.AUTON[2]);
         doneAuton = false;
 
-        dumper = new Dumper(Ports.DUMPER, Ports.SERVO);
+        dumper = new Dumper(Ports.DUMPER, Ports.SERVO, Ports.PROX);
 
         comp.setClosedLoopControl(true);
     }
@@ -210,6 +210,11 @@ public class Robot extends IterativeRobot {
 //        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
 
         // Dumper
+        if(dumper.hasBlock()) {
+            dumper.close();
+        } else {
+            dumper.open();
+        }
         if (driveStick.getRawButton(Buttons.DUMPER)) {
             if (!dumper.isOpen()) {
                 dumper.open();
@@ -217,7 +222,6 @@ public class Robot extends IterativeRobot {
             }
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
-            dumper.close();
             dumper.set(DoubleSolenoid.Value.kReverse);
         }
         // Lift

@@ -17,6 +17,7 @@ public class Ports {
     public static final int LIFT_MIN = 8;
     public static final int LIFT_MAX = 5;
     public static final int SWITCHER = 7;
+    public static final int PROX = 6;
     // Pneumatics
     public static final int COMPRESSOR = 0;
     public static final int[] SHIFTER = { 0, 4 };
@@ -25,6 +26,6 @@ public class Ports {
     // Auton
     public static final int[] AUTON = { 0, 1, 2 };
     // Servo
-    public static final int SERVO = 0;
+    public static final int SERVO = 6;
 
 }
