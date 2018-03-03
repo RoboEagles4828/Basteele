@@ -25,7 +25,6 @@ public class Robot extends IterativeRobot {
         // Joysticks
         driveStick = new Joystick(Ports.DRIVE_STICK);
         liftStick = new Joystick(Ports.LIFT_STICK);
-        // DIO
         // Pneumatics
         Compressor comp = new Compressor(Ports.COMPRESSOR);
         // Drive
@@ -42,7 +41,7 @@ public class Robot extends IterativeRobot {
         switch3 = new DigitalInput(Ports.AUTON[2]);
         doneAuton = false;
 
-        dumper = new Dumper(Ports.DUMPER, Ports.SERVO, comp);
+        dumper = new Dumper(comp, Ports.DUMPER, Ports.SERVO);
 
         comp.setClosedLoopControl(true);
     }
