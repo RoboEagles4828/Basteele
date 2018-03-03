@@ -210,11 +210,6 @@ public class Robot extends IterativeRobot {
 //        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
 
         // Dumper
-        if (dumper.hasBlock()) {
-            dumper.close();
-        } else {
-            dumper.open();
-        }
         if (driveStick.getRawButton(Buttons.DUMPER)) {
             if (!dumper.isOpen()) {
                 dumper.open();
@@ -222,6 +217,11 @@ public class Robot extends IterativeRobot {
             }
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
+            if (dumper.hasBlock()) {
+                dumper.close();
+            } else {
+                dumper.open();
+            }
             dumper.set(DoubleSolenoid.Value.kReverse);
         }
         // Lift
