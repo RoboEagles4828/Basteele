@@ -7,13 +7,12 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class Dumper {
 
+    private static final double OPEN_VALUE = 0;
+    private static final double CLOSE_VALUE = .5;
     private DoubleSolenoid dumper;
     private Servo servo;
     private DigitalInput prox;
     private boolean state = false;
-
-    private static final double OPEN_VALUE = 0;
-    private static final double CLOSE_VALUE = .5;
 
     Dumper(int[] dumperPorts, int servoPort, int proxPort) {
         dumper = new DoubleSolenoid(dumperPorts[0], dumperPorts[1]);

@@ -4,9 +4,8 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Climber {
 
-    private Victor leftMotor, rightMotor;
-
     private static final double DEFAULT_SPEED = 0.5;
+    private Victor leftMotor, rightMotor;
 
     Climber(int leftMotor, int rightMotor) {
         this.leftMotor = new Victor(leftMotor);

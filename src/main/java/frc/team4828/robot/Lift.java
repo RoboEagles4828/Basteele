@@ -6,25 +6,19 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Lift implements Runnable {
 
-    private Victor liftMotor;
-    private DigitalInput liftMin, liftMax, switcher;
-
-    private boolean prevState = false;
-    private double startTime = 0.0;
-
-    private double speed;
-    private int direction;
-
-    private int pos;
-    private int target;
-
-    private boolean manual;
-    private int targetDirection;
-
     private static final double DEFAULT_SPEED = 0.3;
     private static final double CHECK_DELAY = 0.01;
     private static final double SWITCHER_DELAY = 0.05;
-
+    private Victor liftMotor;
+    private DigitalInput liftMin, liftMax, switcher;
+    private boolean prevState = false;
+    private double startTime = 0.0;
+    private double speed;
+    private int direction;
+    private int pos;
+    private int target;
+    private boolean manual;
+    private int targetDirection;
     private boolean stopThread = false;
 
     Lift(int liftMotor, int liftMin, int liftMax, int switcher) {

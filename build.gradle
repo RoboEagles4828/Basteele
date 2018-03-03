@@ -54,8 +54,8 @@ task wrapper(type: Wrapper) {
 }
 
 def robotManifest = {
-  attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
-  attributes 'Robot-Class': frc.robotClass
+    attributes 'Main-Class': 'edu.wpi.first.wpilibj.RobotBase'
+    attributes 'Robot-Class': frc.robotClass
 }
 
 test {

@@ -6,10 +6,9 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Grabber {
 
+    private static final double SPEED = 1;
     private Victor leftMotor, rightMotor;
     private DoubleSolenoid switcher;
-
-    private static final double SPEED = 1;
 
     Grabber(int leftMotor, int rightMotor, int[] switcher) {
         this.leftMotor = new Victor(leftMotor);

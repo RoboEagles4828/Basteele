@@ -1,7 +1,6 @@
 package frc.team4828.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
@@ -22,8 +21,8 @@ public class DriveTrain {
      * <p>
      * Note: Takes in Gearbox Object, not the port.
      *
-     * @param left   Left Gearbox.
-     * @param right  Right Gearbox.
+     * @param left  Left Gearbox.
+     * @param right Right Gearbox.
      */
     DriveTrain(int[] left, int[] right, int[] shifter) {
         this.left = new Gearbox(left[0], left[1], shifter, false);
@@ -35,8 +34,8 @@ public class DriveTrain {
      * Scales inputs so that they remain within 1.
      * <p>
      *
-     * @param input  An input array of doubles that is to be normalized.
-     * @return       A same sized array that is normalized.
+     * @param input An input array of doubles that is to be normalized.
+     * @return A same sized array that is normalized.
      */
     private double[] normalize(double[] input) {
         double max = 0;
@@ -57,10 +56,10 @@ public class DriveTrain {
     /**
      * Takes in x, y, and an angle to produce speeds for left and right gearboxes.
      * <p>
-     * 
-     * @param x      The x component to drive (Positive is right; Negative is left).
-     * @param y      The y component to drive (Positive is up; Negative is down).
-     * @param angle  The angle to drive (Positive is clockwise; Negative is counterclockwise).
+     *
+     * @param x     The x component to drive (Positive is right; Negative is left).
+     * @param y     The y component to drive (Positive is up; Negative is down).
+     * @param angle The angle to drive (Positive is clockwise; Negative is counterclockwise).
      */
     public void arcadeDrive(double x, double y, double angle) {
         angle /= 2;
@@ -80,8 +79,8 @@ public class DriveTrain {
     /**
      * Moves a certain distance forward. Distance is in meters.
      *
-     * @param distance  The distance in inches
-     * @param speed     The motors' speed
+     * @param distance The distance in inches
+     * @param speed    The motors' speed
      */
     public void moveDistance(double distance, double speed) {
         double startTime = Timer.getFPGATimestamp();
