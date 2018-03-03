@@ -21,8 +21,6 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     // Lift
     private Lift lift;
-    private boolean liftManualPrev;
-    private boolean liftManual;
     // Grabber
     private Grabber grabber;
     // Climber
@@ -230,8 +228,6 @@ public class Robot extends IterativeRobot {
         System.out.println(" --- Start Teleop Init ---");
         lift.start();
         lift.setSpeed(0.5);
-        liftManualPrev = false;
-        liftManual = false;
         System.out.println(" --- Start Teleop ---");
     }
 
@@ -239,31 +235,23 @@ public class Robot extends IterativeRobot {
         // Drive
         drive.arcadeDrive(JoystickUtils.processX(driveStick.getX()), JoystickUtils.processY(driveStick.getY()),
                 JoystickUtils.processTwist(driveStick.getTwist()));
+
         // Drive Stick Debug
-        //JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+//        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
+
         // Dumper
         if (driveStick.getRawButton(Buttons.DUMPER)) {
             dumper.set(1);
         } else {
             dumper.set(-1);
         }
-        // Lift Set Manual
-//        if (liftStick.getRawButton(Buttons.LIFT_MANUAL) && !liftManualPrev) {
-//            liftManual = !liftManual;
-//            lift.setManual(liftManual);
-//        }
-//        liftManualPrev = liftStick.getRawButton(Buttons.LIFT_MANUAL);
+
         // Lift
-        if (liftManual) {
-//            if (liftStick.getRawButton(Buttons.LIFT_UP)) {
-//                lift.setLiftTargetDirection(1);
-//            } else if (liftStick.getRawButton(Buttons.LIFT_DOWN)) {
-//                lift.setLiftTargetDirection(-1);
-//            } else {
-//                lift.setLiftTargetDirection(0);
-//            }
+        if (JoystickUtils.processY(liftStick.getY()) != 0) {
+            lift.setManual(true);
             lift.setSpeedManual(JoystickUtils.processY(liftStick.getY()));
         } else {
+            lift.setManual(false);
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
                 lift.setTarget(0);
             } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
@@ -276,6 +264,7 @@ public class Robot extends IterativeRobot {
                 lift.setTarget(8);
             }
         }
+
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
             grabber.open();
