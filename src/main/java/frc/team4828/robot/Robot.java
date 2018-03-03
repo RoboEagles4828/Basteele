@@ -28,11 +28,11 @@ public class Robot extends IterativeRobot {
         // Pneumatics
         Compressor comp = new Compressor(Ports.COMPRESSOR);
         // Drive
-        drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER, comp);
+        drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER);
         // Lift
         lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, Ports.SWITCHER);
         // Grabber
-        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER, comp);
+        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER);
         // Climber
         climber = new Climber(Ports.LEFT_CLIMBER, Ports.RIGHT_CLIMBER);
         // Auton
@@ -41,7 +41,7 @@ public class Robot extends IterativeRobot {
         switch3 = new DigitalInput(Ports.AUTON[2]);
         doneAuton = false;
 
-        dumper = new Dumper(comp, Ports.DUMPER, Ports.SERVO);
+        dumper = new Dumper(Ports.DUMPER, Ports.SERVO);
 
         comp.setClosedLoopControl(true);
     }
@@ -112,7 +112,7 @@ public class Robot extends IterativeRobot {
                 case 'L':
                     drive.moveDistance(310, 1);
                     lift.setTarget(6);
-                    while (!lift.isIdle()) {
+                    while (lift.isNotIdle()) {
                         Timer.delay(0.1);
                     }
                     drive.turnDegAbs(90, 0.5);
@@ -126,7 +126,7 @@ public class Robot extends IterativeRobot {
                     drive.turnDegAbs(0, .5);
                     drive.moveDistance(190, 1);
                     lift.setTarget(6);
-                    while (!lift.isIdle()) {
+                    while (lift.isNotIdle()) {
                         Timer.delay(0.1);
                     }
                     drive.turnDegAbs(270, 0.5);
@@ -145,7 +145,7 @@ public class Robot extends IterativeRobot {
                     drive.turnDegAbs(0, .5);
                     drive.moveDistance(190, 1);
                     lift.setTarget(6);
-                    while (!lift.isIdle()) {
+                    while (lift.isNotIdle()) {
                         Timer.delay(0.1);
                     }
                     drive.turnDegAbs(90, .5);
@@ -155,7 +155,7 @@ public class Robot extends IterativeRobot {
                 case 'R':
                     drive.moveDistance(310, 1);
                     lift.setTarget(6);
-                    while (!lift.isIdle()) {
+                    while (lift.isNotIdle()) {
                         Timer.delay(0.1);
                     }
                     drive.turnDegAbs(288, .5);

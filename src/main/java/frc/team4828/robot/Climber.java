@@ -8,7 +8,7 @@ public class Climber {
 
     private static final double DEFAULT_SPEED = 0.5;
 
-    public Climber(int leftMotor, int rightMotor) {
+    Climber(int leftMotor, int rightMotor) {
         this.leftMotor = new Victor(leftMotor);
         this.rightMotor = new Victor(rightMotor);
     }
@@ -18,19 +18,9 @@ public class Climber {
         rightMotor.set(DEFAULT_SPEED);
     }
 
-    public void up(double speed) {
-        leftMotor.set(speed);
-        rightMotor.set(speed);
-    }
-
     public void down() {
         leftMotor.set(-DEFAULT_SPEED);
         rightMotor.set(-DEFAULT_SPEED);
-    }
-
-    public void down(double speed) {
-        leftMotor.set(-speed);
-        rightMotor.set(-speed);
     }
 
     public void stop() {

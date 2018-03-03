@@ -9,7 +9,6 @@ public class Lift implements Runnable {
     private Victor liftMotor;
     private DigitalInput liftMin, liftMax, switcher;
 
-    private boolean currentState = false;
     private boolean prevState = false;
     private double startTime = 0.0;
 
@@ -26,10 +25,9 @@ public class Lift implements Runnable {
     private static final double CHECK_DELAY = 0.01;
     private static final double SWITCHER_DELAY = 0.05;
 
-    private Thread thread;
     private boolean stopThread = false;
 
-    public Lift(int liftMotor, int liftMin, int liftMax, int switcher) {
+    Lift(int liftMotor, int liftMin, int liftMax, int switcher) {
         this.liftMotor = new Victor(liftMotor);
         this.liftMin = new DigitalInput(liftMin);
         this.liftMax = new DigitalInput(liftMax);
@@ -62,16 +60,12 @@ public class Lift implements Runnable {
 
     // Position Control
 
-    public void setPos(int pos) {
-        this.pos = pos;
-    }
-
     public void setTarget(int target) {
         this.target = target;
     }
 
-    public boolean isIdle() {
-        return pos == target;
+    public boolean isNotIdle() {
+        return pos != target;
     }
 
     // Manual Control
@@ -80,7 +74,7 @@ public class Lift implements Runnable {
         this.manual = manual;
     }
 
-    public void setTargetDirection(int targetDirection) {
+    private void setTargetDirection(int targetDirection) {
         this.targetDirection = targetDirection;
     }
 
@@ -99,7 +93,7 @@ public class Lift implements Runnable {
 
     public void start() {
         stopThread = false;
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
     }
 
@@ -107,15 +101,10 @@ public class Lift implements Runnable {
         stopThread = true;
     }
 
-    public void forceStop() {
-        stopThread = true;
-        thread.interrupt();
-    }
-
     // Check Loop
 
     private void check() {
-        currentState = switcher.get();
+        boolean currentState = switcher.get();
         // Position Check
         if (currentState != prevState && Timer.getFPGATimestamp() > startTime + SWITCHER_DELAY) {
             pos += direction;
@@ -158,11 +147,4 @@ public class Lift implements Runnable {
             liftMotor.set(speed * direction);
         }
     }
-
-    // Debug
-
-    public double debug() {
-        return liftMotor.get();
-    }
-
 }

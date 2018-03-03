@@ -1,7 +1,6 @@
 package frc.team4828.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -13,8 +12,8 @@ public class DriveTrain {
     private static final double TIMEOUT = 10;
     private static final double P = 0.2;
 
-    Gearbox left, right;
-    AHRS navx;
+    private Gearbox left, right;
+    private AHRS navx;
 
     /**
      * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
@@ -24,9 +23,9 @@ public class DriveTrain {
      * @param left   Left Gearbox.
      * @param right  Right Gearbox.
      */
-    public DriveTrain(int[] left, int[] right, int[] shifter, Compressor comp) {
-        this.left = new Gearbox(left[0], left[1], shifter, false, comp);
-        this.right = new Gearbox(right[0], right[1], shifter, false, comp);
+    DriveTrain(int[] left, int[] right, int[] shifter) {
+        this.left = new Gearbox(left[0], left[1], shifter, false);
+        this.right = new Gearbox(right[0], right[1], shifter, false);
         navx = new AHRS(SerialPort.Port.kMXP);
     }
 
@@ -37,10 +36,10 @@ public class DriveTrain {
      * @param input  An input array of doubles that is to be normalized.
      * @return       A same sized array that is normalized.
      */
-    public double[] normalize(double[] input) {
+    private double[] normalize(double[] input) {
         double max = 0;
-        for (int i = 0; i < input.length; i++) {
-            double hold = Math.abs(input[i]);
+        for (double anInput : input) {
+            double hold = Math.abs(anInput);
             if (hold > max) {
                 max = hold;
             }
@@ -86,8 +85,7 @@ public class DriveTrain {
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
-        double changeEncL = 0;
-        double changeEncR = 0;
+        double changeEncL, changeEncR;
         double startAngle = navx.getAngle();
         double maxEnc = Math.abs(distance * ENC_RATIO);
         if (distance < 0) {
@@ -133,10 +131,6 @@ public class DriveTrain {
         right.brake();
     }
 
-    public void turnDegRel(double angle, double speed) {
-        turnDegAbs(navx.getAngle() + angle, speed);
-    }
-
     public void zeroEnc() {
         left.zeroEnc();
         right.zeroEnc();
@@ -147,13 +141,13 @@ public class DriveTrain {
     }
 
     public void gearSwitch(int state) {
-        left.setSwitch(state);
-        right.setSwitch(state);
+        switch (state) {
+            case 1:
+                left.switchFwd();
+                right.switchFwd();
+            case 2:
+                left.switchBack();
+                right.switchBack();
+        }
     }
-
-    public void brake() {
-        left.brake();
-        right.brake();
-    }
-
 }

@@ -19,7 +19,6 @@ public class JoystickUtils {
     }
 
     public static double processY(double y) {
-        processX(y);
         y *= -1;
         return y;
     }
@@ -36,17 +35,4 @@ public class JoystickUtils {
         }
         return twist;
     }
-
-    /**
-     * Prints debug info to the console.
-     * <p>
-     *
-     * @param x      X to print.
-     * @param y      Y to print.
-     * @param twist  Twist to print.
-     */
-    public static void debug(double x, double y, double twist) {
-        System.out.println("X: " + x + " Y: " + y + " Twist: " + twist);
-    }
-
 }
