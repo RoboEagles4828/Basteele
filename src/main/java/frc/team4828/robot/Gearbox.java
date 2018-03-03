@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 public class Gearbox {
 
@@ -52,12 +53,7 @@ public class Gearbox {
         return mainMotor.getSelectedSensorPosition(0);
     }
 
-    public void setSwitcher(int mode) {
-        switch (mode) {
-            case 1:
-                switcher.set(DoubleSolenoid.Value.kForward);
-            case -1:
-                switcher.set(DoubleSolenoid.Value.kReverse);
-        }
+    public void setSwitcher(Value mode) {
+        switcher.set(mode);
     }
 }

@@ -70,7 +70,7 @@ public class Robot extends IterativeRobot {
                     drive.moveDistance(150, 1);
                     drive.turnDegAbs(-90, .5);
                     drive.moveDistance(-10, 1);
-                    dumper.set(1);
+                    dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 case 'R':
                     drive.moveDistance(5, 1);
@@ -80,7 +80,7 @@ public class Robot extends IterativeRobot {
                     drive.moveDistance(60, 1);
                     drive.turnDegAbs(90, .5);
                     drive.moveDistance(-10, 1);
-                    dumper.set(1);
+                    dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 }
                 break;
@@ -96,13 +96,13 @@ public class Robot extends IterativeRobot {
                     drive.moveDistance(60, 1);
                     drive.turnDegAbs(-90, .5);
                     drive.moveDistance(-10, 1);
-                    dumper.set(1);
+                    dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 case 'R':
                     drive.moveDistance(150, 1);
                     drive.turnDegAbs(90, .5);
                     drive.moveDistance(-10, 1);
-                    dumper.set(1);
+                    dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 }
                 break;
@@ -215,10 +215,10 @@ public class Robot extends IterativeRobot {
                 dumper.open();
                 Timer.delay(.1);
             }
-            dumper.set(1);
+            dumper.set(DoubleSolenoid.Value.kForward);
         } else {
             dumper.close();
-            dumper.set(-1);
+            dumper.set(DoubleSolenoid.Value.kReverse);
         }
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
@@ -241,11 +241,11 @@ public class Robot extends IterativeRobot {
 
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
-            grabber.open();
+            grabber.set(DoubleSolenoid.Value.kForward);
         } else if (liftStick.getRawButton(Buttons.GRABBER_CLOSE[0]) || liftStick.getRawButton(Buttons.GRABBER_CLOSE[1])
                 || liftStick.getRawButton(Buttons.GRABBER_CLOSE[2])
                 || liftStick.getRawButton(Buttons.GRABBER_CLOSE[3])) {
-            grabber.close();
+            grabber.set(DoubleSolenoid.Value.kReverse);
             grabber.intake();
         } else if (liftStick.getRawButton(Buttons.GRABBER_OUT)) {
             grabber.outtake();
@@ -264,9 +264,9 @@ public class Robot extends IterativeRobot {
 
         // Gear Shift
         if (driveStick.getRawButton(Buttons.GEAR_SWITCH[0])) {
-            drive.gearSwitch(1);
+            drive.gearSwitch(DoubleSolenoid.Value.kForward);
         } else if (driveStick.getRawButton(Buttons.GEAR_SWITCH[1])) {
-            drive.gearSwitch(-1);
+            drive.gearSwitch(DoubleSolenoid.Value.kReverse);
         }
 
         Timer.delay(.01);

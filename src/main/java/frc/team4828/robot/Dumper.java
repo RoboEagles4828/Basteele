@@ -1,9 +1,11 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Servo;
 
 public class Dumper {
+
     private DoubleSolenoid dumper;
     private Servo servo;
     private boolean state = false;
@@ -16,15 +18,8 @@ public class Dumper {
         this.servo = new Servo(servoPort);
     }
 
-    public void set(int mode) {
-        switch (mode) {
-            case 1:
-                dumper.set(DoubleSolenoid.Value.kForward);
-            case -1:
-                dumper.set(DoubleSolenoid.Value.kReverse);
-            default:
-                dumper.set(DoubleSolenoid.Value.kOff);
-        }
+    public void set(Value mode) {
+        dumper.set(mode);
     }
 
     public void open() {

@@ -1,6 +1,7 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Victor;
 
 public class Grabber {
@@ -16,12 +17,8 @@ public class Grabber {
         this.switcher = new DoubleSolenoid(switcher[0], switcher[1]);
     }
 
-    public void open() {
-        switcher.set(DoubleSolenoid.Value.kForward);
-    }
-
-    public void close() {
-        switcher.set(DoubleSolenoid.Value.kReverse);
+    public void set(Value mode) {
+        switcher.set(mode);
     }
 
     public void intake() {

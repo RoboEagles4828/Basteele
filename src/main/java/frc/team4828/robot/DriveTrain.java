@@ -1,6 +1,8 @@
 package frc.team4828.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -140,8 +142,8 @@ public class DriveTrain {
         System.out.println("Left: " + left.getEnc() + " Right: " + right.getEnc());
     }
 
-    public void gearSwitch(int state) {
-        left.setSwitcher(state);
-        right.setSwitcher(state);
+    public void gearSwitch(Value mode) {
+        left.setSwitcher(mode);
+        right.setSwitcher(mode);
     }
 }
