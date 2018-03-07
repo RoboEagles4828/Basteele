@@ -57,7 +57,8 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            SmartDashboard.putString("Auton Mode Raw", (switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
+            SmartDashboard.putString("Auton Mode Raw",
+                    (switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
             int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
             SmartDashboard.putNumber("Autonomous Mode: ", mode);
             switch (mode) { // TODO Change to mode
@@ -209,7 +210,6 @@ public class Robot extends IterativeRobot {
         drive.arcadeDrive(JoystickUtils.processX(driveStick.getX()), JoystickUtils.processY(driveStick.getY()),
                 JoystickUtils.processTwist(driveStick.getTwist()));
 
-
         // Drive Stick Debug
 //        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
 
@@ -276,8 +276,8 @@ public class Robot extends IterativeRobot {
         } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
             drive.gearSwitch(DoubleSolenoid.Value.kReverse);
         }
-        drive.update();
-        dumper.update();
+        drive.updateDashboard();
+        dumper.updateDashboard();
         Timer.delay(.01);
     }
 
@@ -288,13 +288,13 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        dumper.update();
-        drive.update();
-        if(liftStick.getRawButton(1))
+        dumper.updateDashboard();
+        drive.updateDashboard();
+        if (liftStick.getRawButton(1))
             dumper.set(DoubleSolenoid.Value.kForward);
         else
             dumper.set(DoubleSolenoid.Value.kReverse);
-        if(liftStick.getRawButton(2))
+        if (liftStick.getRawButton(2))
             dumper.open();
         else
             dumper.close();

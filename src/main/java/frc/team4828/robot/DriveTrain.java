@@ -150,10 +150,9 @@ public class DriveTrain {
         shifter.set(mode);
     }
 
-    public void update() {
-        double[] speeds = {left.get(), right.get()};
-        double[] enc = {left.getEnc(), right.getEnc()};
-
+    public void updateDashboard() {
+        double[] speeds = { left.get(), right.get() };
+        double[] enc = { left.getEnc(), right.getEnc() };
         SmartDashboard.putNumberArray("Drive", speeds);
         SmartDashboard.putNumber("Angle", navx.getAngle());
         SmartDashboard.putNumberArray("Encoders", enc);

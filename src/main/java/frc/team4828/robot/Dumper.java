@@ -43,7 +43,7 @@ public class Dumper {
         return !prox.get();
     }
 
-    public void update() {
+    public void updateDashboard() {
         SmartDashboard.putBoolean("HasBlock", hasBlock());
         SmartDashboard.putBoolean("IsOpen", isOpen());
     }
