@@ -285,21 +285,22 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        dumper.updateDashboard();
         drive.updateDashboard();
-        if (liftStick.getRawButton(1))
+        dumper.updateDashboard();
+        if (liftStick.getRawButton(1)) {
             dumper.set(DoubleSolenoid.Value.kForward);
-        else
+        } else {
             dumper.set(DoubleSolenoid.Value.kReverse);
-        if (liftStick.getRawButton(2))
+        }
+        if (liftStick.getRawButton(2)) {
             dumper.open();
-        else
+        } else {
             dumper.close();
+        }
         SmartDashboard.putBoolean("Pressure", comp.getPressureSwitchValue());
         SmartDashboard.putBoolean("TooHigh", comp.getCompressorCurrentTooHighFault());
         SmartDashboard.putBoolean("NotConnected", comp.getCompressorNotConnectedFault());
         SmartDashboard.putBoolean("Shorted", comp.getCompressorShortedFault());
-
         Timer.delay(0.1);
     }
 
