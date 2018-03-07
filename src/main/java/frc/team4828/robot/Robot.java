@@ -232,6 +232,7 @@ public class Robot extends IterativeRobot {
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
             lift.setManual(true);
             lift.setSpeedManual(JoystickUtils.processY(-liftStick.getY()));
+            lift.resetTarget();
         } else {
             lift.setManual(false);
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
@@ -240,10 +241,6 @@ public class Robot extends IterativeRobot {
                 lift.setTarget(2);
             } else if (liftStick.getRawButton(Buttons.LIFT[2])) {
                 lift.setTarget(4);
-            } else if (liftStick.getRawButton(Buttons.LIFT[3])) {
-                lift.setTarget(6);
-            } else if (liftStick.getRawButton(Buttons.LIFT[4])) {
-                lift.setTarget(8);
             }
         }
 

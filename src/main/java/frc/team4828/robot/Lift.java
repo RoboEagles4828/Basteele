@@ -58,6 +58,14 @@ public class Lift implements Runnable {
         this.target = target;
     }
 
+    public void resetTarget() {
+        target = pos;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
     public boolean isNotIdle() {
         return pos != target;
     }
