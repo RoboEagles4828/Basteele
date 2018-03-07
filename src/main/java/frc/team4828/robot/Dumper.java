@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Dumper {
 
@@ -39,6 +40,11 @@ public class Dumper {
     }
 
     public boolean hasBlock() {
-        return prox.get();
+        return !prox.get();
+    }
+
+    public void update() {
+        SmartDashboard.putBoolean("HasBlock", hasBlock());
+        SmartDashboard.putBoolean("IsOpen", isOpen());
     }
 }

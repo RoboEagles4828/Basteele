@@ -9,14 +9,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 public class Gearbox {
 
     private TalonSRX mainMotor;
-    private DoubleSolenoid switcher;
 
     private double speed = 0;
 
-    public Gearbox(int motorPort, int followPort, int[] switcherPort, boolean reverseEnc) {
+    public Gearbox(int motorPort, int followPort, boolean reverseEnc) {
         mainMotor = new TalonSRX(motorPort);
         TalonSRX followMotor = new TalonSRX(followPort);
-        switcher = new DoubleSolenoid(switcherPort[0], switcherPort[1]);
         mainMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 10);
         mainMotor.setSensorPhase(reverseEnc);
         followMotor.set(ControlMode.Follower, mainMotor.getDeviceID());
@@ -53,7 +51,7 @@ public class Gearbox {
         return mainMotor.getSelectedSensorPosition(0);
     }
 
-    public void setSwitcher(Value mode) {
-        switcher.set(mode);
+    public double get() {
+        return speed;
     }
 }

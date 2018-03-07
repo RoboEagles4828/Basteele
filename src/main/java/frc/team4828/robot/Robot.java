@@ -1,6 +1,7 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
     // Joysticks
@@ -20,13 +21,15 @@ public class Robot extends IterativeRobot {
     private String data;
     // Dumper
     private Dumper dumper;
+    private Compressor comp;
 
     public void robotInit() {
         // Joysticks
         driveStick = new Joystick(Ports.DRIVE_STICK);
         liftStick = new Joystick(Ports.LIFT_STICK);
         // Pneumatics
-        Compressor comp = new Compressor(Ports.COMPRESSOR);
+        comp = new Compressor(Ports.COMPRESSOR);
+        comp.setClosedLoopControl(true);
         // Drive
         drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER);
         // Lift
@@ -54,9 +57,9 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            System.out.println((switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
+            SmartDashboard.putString("Auton Mode Raw", (switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
             int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
-            System.out.println("Autonomous Mode: " + mode);
+            SmartDashboard.putNumber("Autonomous Mode: ", mode);
             switch (mode) { // TODO Change to mode
             case 0:
                 // Just go forward
@@ -206,6 +209,7 @@ public class Robot extends IterativeRobot {
         drive.arcadeDrive(JoystickUtils.processX(driveStick.getX()), JoystickUtils.processY(driveStick.getY()),
                 JoystickUtils.processTwist(driveStick.getTwist()));
 
+
         // Drive Stick Debug
 //        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
 
@@ -213,7 +217,7 @@ public class Robot extends IterativeRobot {
         if (driveStick.getRawButton(Buttons.DUMPER)) {
             if (!dumper.isOpen()) {
                 dumper.open();
-                Timer.delay(.1);
+                Timer.delay(.4);
             }
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
@@ -272,19 +276,33 @@ public class Robot extends IterativeRobot {
         } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
             drive.gearSwitch(DoubleSolenoid.Value.kReverse);
         }
-
+        drive.update();
+        dumper.update();
         Timer.delay(.01);
     }
 
     public void testInit() {
         System.out.println(" --- Start Test Init ---");
-        drive.zeroEnc();
-        drive.arcadeDrive(0, 0.1, 0);
+
         System.out.println(" --- Start Test ---");
     }
 
     public void testPeriodic() {
-        drive.debugEnc();
+        dumper.update();
+        drive.update();
+        if(liftStick.getRawButton(1))
+            dumper.set(DoubleSolenoid.Value.kForward);
+        else
+            dumper.set(DoubleSolenoid.Value.kReverse);
+        if(liftStick.getRawButton(2))
+            dumper.open();
+        else
+            dumper.close();
+        SmartDashboard.putBoolean("Pressure", comp.getPressureSwitchValue());
+        SmartDashboard.putBoolean("TooHigh", comp.getCompressorCurrentTooHighFault());
+        SmartDashboard.putBoolean("NotConnected", comp.getCompressorNotConnectedFault());
+        SmartDashboard.putBoolean("Shorted", comp.getCompressorShortedFault());
+
         Timer.delay(0.1);
     }
 

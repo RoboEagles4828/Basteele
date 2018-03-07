@@ -1,9 +1,11 @@
 package frc.team4828.robot;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 
@@ -14,19 +16,18 @@ public class DriveTrain {
 
     private Gearbox left, right;
     private AHRS navx;
+    private DoubleSolenoid shifter;
 
     /**
      * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
      * <p>
      * Note: Takes in Gearbox Object, not the port.
-     *
-     * @param left  Left Gearbox.
-     * @param right Right Gearbox.
      */
     public DriveTrain(int[] leftPorts, int[] rightPorts, int[] shifterPorts) {
-        left = new Gearbox(leftPorts[0], leftPorts[1], shifterPorts, false);
-        right = new Gearbox(rightPorts[0], rightPorts[1], shifterPorts, false);
+        left = new Gearbox(leftPorts[0], leftPorts[1], false);
+        right = new Gearbox(rightPorts[0], rightPorts[1], false);
         navx = new AHRS(SerialPort.Port.kMXP);
+        shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
     }
 
     /**
@@ -104,6 +105,9 @@ public class DriveTrain {
             }
             changeEncL = Math.abs(left.getEnc() - startEncL);
             changeEncR = Math.abs(right.getEnc() - startEncR);
+            SmartDashboard.putNumber("Current L Enc", changeEncL);
+            SmartDashboard.putNumber("Current R Enc", changeEncR);
+
             if (changeEncL >= maxEnc && changeEncR >= maxEnc) {
                 left.brake();
                 right.brake();
@@ -118,12 +122,14 @@ public class DriveTrain {
             left.drive(speed);
             right.drive(-speed);
             while (navx.getAngle() < angle) {
+                SmartDashboard.putNumber("Angle", navx.getAngle());
                 Timer.delay(ANGLE_CHECK_DELAY);
             }
         } else {
             left.drive(-speed);
             right.drive(speed);
             while (navx.getAngle() > angle) {
+                SmartDashboard.putNumber("Angle", navx.getAngle());
                 Timer.delay(ANGLE_CHECK_DELAY);
             }
         }
@@ -141,7 +147,15 @@ public class DriveTrain {
     }
 
     public void gearSwitch(Value mode) {
-        left.setSwitcher(mode);
-        right.setSwitcher(mode);
+        shifter.set(mode);
+    }
+
+    public void update() {
+        double[] speeds = {left.get(), right.get()};
+        double[] enc = {left.getEnc(), right.getEnc()};
+
+        SmartDashboard.putNumberArray("Drive", speeds);
+        SmartDashboard.putNumber("Angle", navx.getAngle());
+        SmartDashboard.putNumberArray("Encoders", enc);
     }
 }
