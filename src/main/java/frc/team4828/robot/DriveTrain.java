@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 
-    private static final double ENC_RATIO = 0.03952;
+    private static final double ENC_RATIO = 0.0393;
     private static final double ANGLE_CHECK_DELAY = .1;
     private static final double TIMEOUT = 10;
     private static final double P = 0.2;
@@ -24,7 +24,7 @@ public class DriveTrain {
      * Note: Takes in Gearbox Object, not the port.
      */
     public DriveTrain(int[] leftPorts, int[] rightPorts, int[] shifterPorts) {
-        left = new Gearbox(leftPorts[0], leftPorts[1], false);
+        left = new Gearbox(leftPorts[0], leftPorts[1], true);
         right = new Gearbox(rightPorts[0], rightPorts[1], false);
         navx = new AHRS(SerialPort.Port.kMXP);
         shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
@@ -94,15 +94,15 @@ public class DriveTrain {
         }
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
             left.drive(speed);
-            right.drive(speed);
-            while ((navx.getAngle() - startAngle > 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
-                left.change((startAngle - navx.getAngle()) * P);
-                Timer.delay(ANGLE_CHECK_DELAY);
-            }
-            while ((navx.getAngle() - startAngle < 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
-                right.change((navx.getAngle() - startAngle) * P);
-                Timer.delay(ANGLE_CHECK_DELAY);
-            }
+            right.drive(speed); // TODO: Fix PID and Check why left doesnt move.
+//            while ((navx.getAngle() - startAngle > 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
+//                left.change((startAngle - navx.getAngle()) * P);
+//                Timer.delay(ANGLE_CHECK_DELAY);
+//            }
+//            while ((navx.getAngle() - startAngle < 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
+//                right.change((navx.getAngle() - startAngle) * P);
+//                Timer.delay(ANGLE_CHECK_DELAY);
+//            }
             changeEncL = Math.abs(left.getEnc() - startEncL);
             changeEncR = Math.abs(right.getEnc() - startEncR);
             SmartDashboard.putNumber("Current L Enc", changeEncL);

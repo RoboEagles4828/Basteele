@@ -52,6 +52,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         System.out.println(" --- Start Autonomous Init ---");
         data = DriverStation.getInstance().getGameSpecificMessage();
+        doneAuton = false;
         System.out.println(" --- Start Autonomous ---");
     }
 
@@ -61,7 +62,7 @@ public class Robot extends IterativeRobot {
                     (switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
             int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
             SmartDashboard.putNumber("Autonomous Mode: ", mode);
-            switch (mode) { // TODO Change to mode
+            switch (1) { // TODO Change to mode
             case 0:
                 // Just go forward
                 drive.moveDistance(120, .5);
@@ -143,7 +144,7 @@ public class Robot extends IterativeRobot {
                 // Scale from Right
                 switch (data.charAt(0)) {
                 case 'L':
-                    drive.moveDistance(5, 1);
+                    drive.moveDistance(5, 1); //TODO: Lower Speed
                     drive.turnDegAbs(-24, .5);
                     drive.moveDistance(300, 1);
                     drive.turnDegAbs(0, .5);
@@ -202,6 +203,7 @@ public class Robot extends IterativeRobot {
         System.out.println(" --- Start Teleop Init ---");
         lift.start();
         lift.setSpeed(0.5);
+        drive.zeroEnc();
         System.out.println(" --- Start Teleop ---");
     }
 
@@ -275,6 +277,7 @@ public class Robot extends IterativeRobot {
         }
         drive.updateDashboard();
         dumper.updateDashboard();
+        drive.debugEnc();
         Timer.delay(.01);
     }
 
