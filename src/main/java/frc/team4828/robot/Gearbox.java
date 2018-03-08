@@ -8,8 +8,6 @@ public class Gearbox {
 
     private TalonSRX mainMotor;
 
-    private double speed = 0;
-
     public Gearbox(int motorPort, int followPort, boolean reverseEnc) {
         mainMotor = new TalonSRX(motorPort);
         TalonSRX followMotor = new TalonSRX(followPort);
@@ -18,27 +16,12 @@ public class Gearbox {
         followMotor.set(ControlMode.Follower, mainMotor.getDeviceID());
     }
 
-    private void update() {
+    public void drive(double speed) {
         mainMotor.set(ControlMode.PercentOutput, speed);
     }
 
-    public void drive(double speed) {
-        this.speed = speed;
-        update();
-    }
-
     public void brake() {
-        speed = 0;
-        update();
-    }
-
-    public void change(double change) {
-        if (speed >= 0) {
-            speed += change;
-        } else {
-            speed -= change;
-        }
-        update();
+        mainMotor.set(ControlMode.PercentOutput, 0);
     }
 
     public void zeroEnc() {
@@ -50,6 +33,6 @@ public class Gearbox {
     }
 
     public double get() {
-        return speed;
+        return mainMotor.getMotorOutputPercent();
     }
 }

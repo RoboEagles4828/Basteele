@@ -9,14 +9,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 
-    private static final double ENC_RATIO = 0.0393;
-    private static final double ANGLE_CHECK_DELAY = .1;
-    private static final double TIMEOUT = 10;
-    private static final double P = 0.2;
-
     private Gearbox left, right;
     private AHRS navx;
     private DoubleSolenoid shifter;
+
+    // MoveDistance Constants
+    private static final double ENC_RATIO = 17.51; // [ NU / Inch ] => [ NU / Rotations / 6π ]
+    private static final double P = 0.2;
+    private static final double ANGLE_THRESH = 0.01;
+    private static final double ANGLE_CHECK_DELAY = .1;
+    private static final double TIMEOUT = 10;
 
     /**
      * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
@@ -76,6 +78,32 @@ public class DriveTrain {
         right.drive(drive[1]);
     }
 
+    public void drive(double speed) {
+        left.drive(speed);
+        right.drive(speed);
+    }
+
+    public void brake() {
+        left.brake();
+        right.brake();
+    }
+
+    public void adjustSpeed(double speed, double change) {
+        if (speed > 0) {
+            if (change > 0) {
+                right.drive(speed - change);
+            } else {
+                left.drive(speed + change);
+            }
+        } else {
+            if (change > 0) {
+                left.drive(speed + change);
+            } else {
+                right.drive(speed - change);
+            }
+        }
+    }
+
     /**
      * Moves a certain distance forward. Distance is in meters.
      *
@@ -88,29 +116,27 @@ public class DriveTrain {
         double startEncR = right.getEnc();
         double changeEncL, changeEncR;
         double startAngle = navx.getAngle();
+        double changeAngle;
         double maxEnc = Math.abs(distance * ENC_RATIO);
         if (distance < 0) {
             speed *= -1;
         }
+        drive(speed);
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
-            left.drive(speed);
-            right.drive(speed); // TODO: Fix PID and Check why left doesnt move.
-//            while ((navx.getAngle() - startAngle > 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
-//                left.change((startAngle - navx.getAngle()) * P);
-//                Timer.delay(ANGLE_CHECK_DELAY);
-//            }
-//            while ((navx.getAngle() - startAngle < 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
-//                right.change((navx.getAngle() - startAngle) * P);
-//                Timer.delay(ANGLE_CHECK_DELAY);
-//            }
+            changeAngle = navx.getAngle() - startAngle;
+            if (changeAngle > ANGLE_THRESH) { // Positive angle change
+                adjustSpeed(speed, -changeAngle * P);
+            } else if (changeAngle < -ANGLE_THRESH) { // Negative angle change
+                adjustSpeed(speed, -changeAngle * P);
+            } else { // Negligible angle change
+                drive(speed);
+            }
             changeEncL = Math.abs(left.getEnc() - startEncL);
             changeEncR = Math.abs(right.getEnc() - startEncR);
             SmartDashboard.putNumber("Current L Enc", changeEncL);
             SmartDashboard.putNumber("Current R Enc", changeEncR);
-
             if (changeEncL >= maxEnc && changeEncR >= maxEnc) {
-                left.brake();
-                right.brake();
+                brake();
                 break;
             }
         }
