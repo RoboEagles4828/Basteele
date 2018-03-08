@@ -139,6 +139,7 @@ public class DriveTrain {
                 brake();
                 break;
             }
+            Timer.delay(ANGLE_CHECK_DELAY);
         }
     }
 
