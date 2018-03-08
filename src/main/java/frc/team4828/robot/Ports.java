@@ -6,8 +6,8 @@ public class Ports {
     public static final int DRIVE_STICK = 0;
     public static final int LIFT_STICK = 1;
     // Motors
-    public static final int[] LEFT_GEARBOX = { 1, 2 };
-    public static final int[] RIGHT_GEARBOX = { 3, 4 };
+    public static final int[] LEFT_GEARBOX = { 2, 1 };
+    public static final int[] RIGHT_GEARBOX = { 4, 3 };
     public static final int LIFT = 8;
     public static final int LEFT_GRABBER = 3;
     public static final int RIGHT_GRABBER = 2;
