@@ -1,10 +1,8 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.hal.PDPJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lift implements Runnable {
@@ -12,6 +10,7 @@ public class Lift implements Runnable {
     private static final double DEFAULT_SPEED = 0.3;
     private static final double CHECK_DELAY = 0.01;
     private static final double SWITCHER_DELAY = 0.05;
+    private static final int POS_MAX = 2;
     private Victor liftMotor;
     private DigitalInput liftMin, liftMax, switcher;
     private boolean prevState = false;
@@ -23,7 +22,6 @@ public class Lift implements Runnable {
     private boolean manual;
     private int targetDirection;
     private boolean stopThread = false;
-    private double pastCurrent = 0;
 
     public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort) {
         liftMotor = new Victor(liftMotorPort);
@@ -120,6 +118,9 @@ public class Lift implements Runnable {
         if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
             pos += direction;
             direction = 0;
+        }
+        if ((liftMin.get() && direction == 1 && pos == 0) || (liftMax.get() && direction == -1 && pos == POS_MAX)) {
+            pos += direction;
         }
         // Manual Check
         if (manual) {

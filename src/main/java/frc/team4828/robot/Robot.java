@@ -2,9 +2,6 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import javafx.scene.Camera;
-
-import java.sql.Time;
 
 public class Robot extends IterativeRobot {
     // Joysticks
@@ -72,7 +69,7 @@ public class Robot extends IterativeRobot {
             switch (2) { // TODO Change to mode
             case 0:
                 // Just go forward
-                drive.arcadeDrive(0,.4,0);
+                drive.arcadeDrive(0, .4, 0);
                 Timer.delay(6);
                 drive.brake();
                 //drive.turnDegAbs(75,.3);
@@ -131,62 +128,62 @@ public class Robot extends IterativeRobot {
                 break;
             case 3:
                 // Scale from Left
-//                switch (data.charAt(1)) {
-//                case 'L':
-//                    drive.moveDistance(310, .9);
-//                    lift.setTarget(6);
-//                    while (lift.isNotIdle()) {
-//                        Timer.delay(0.1);
-//                    }
-//                    drive.turnDegAbs(90, .3);
-//                    drive.moveDistance(10, .4);
-//                    grabber.outtake();
-//                    break;
-//                case 'R':
-//                    drive.moveDistance(5, .9);
-//                    drive.turnDegAbs(24, .3);
-//                    drive.moveDistance(288, .9);
-//                    drive.turnDegAbs(0, .3);
-//                    drive.moveDistance(190, .9);
-//                    lift.setTarget(6);
-//                    while (lift.isNotIdle()) {
-//                        Timer.delay(0.1);
-//                    }
-//                    drive.turnDegAbs(270, .3);
-//                    drive.moveDistance(10, .4);
-//                    grabber.outtake();
-//                    break;
-//                }
+                switch (data.charAt(1)) {
+                case 'L':
+                    drive.moveDistance(310, .9);
+                    lift.setTarget(2);
+                    while (lift.isNotIdle()) {
+                        Timer.delay(0.1);
+                    }
+                    drive.turnDegAbs(90, .3);
+                    drive.moveDistance(10, .4);
+                    grabber.outtake();
+                    break;
+                case 'R':
+                    drive.moveDistance(5, .9);
+                    drive.turnDegAbs(24, .3);
+                    drive.moveDistance(288, .9);
+                    drive.turnDegAbs(0, .3);
+                    drive.moveDistance(190, .9);
+                    lift.setTarget(2);
+                    while (lift.isNotIdle()) {
+                        Timer.delay(0.1);
+                    }
+                    drive.turnDegAbs(270, .3);
+                    drive.moveDistance(10, .4);
+                    grabber.outtake();
+                    break;
+                }
                 break;
             case 4:
                 // Scale from Right
-//                switch (data.charAt(0)) {
-//                case 'L':
-//                    drive.moveDistance(5, .9); //TODO: Lower Speed
-//                    drive.turnDegAbs(-24, .3);
-//                    drive.moveDistance(300, .9);
-//                    drive.turnDegAbs(0, .3);
-//                    drive.moveDistance(190, .9);
-//                    lift.setTarget(6);
-//                    while (lift.isNotIdle()) {
-//                        Timer.delay(0.1);
-//                    }
-//                    drive.turnDegAbs(90, .3);
-//                    drive.moveDistance(10, .4);
-//                    grabber.outtake();
-//                    break;
-//                case 'R':
-//                    drive.moveDistance(310, .9);
-//                    lift.setTarget(6);
-//                    while (lift.isNotIdle()) {
-//                        Timer.delay(0.1);
-//                    }
-//                    drive.turnDegAbs(288, .3);
-//                    drive.moveDistance(10, .4);
-//                    grabber.outtake();
-//
-//                    break;
-//                }
+                switch (data.charAt(0)) {
+                case 'L':
+                    drive.moveDistance(5, .9); //TODO: Lower Speed
+                    drive.turnDegAbs(-24, .3);
+                    drive.moveDistance(300, .9);
+                    drive.turnDegAbs(0, .3);
+                    drive.moveDistance(190, .9);
+                    lift.setTarget(2);
+                    while (lift.isNotIdle()) {
+                        Timer.delay(0.1);
+                    }
+                    drive.turnDegAbs(90, .3);
+                    drive.moveDistance(10, .4);
+                    grabber.outtake();
+                    break;
+                case 'R':
+                    drive.moveDistance(310, .9);
+                    lift.setTarget(2);
+                    while (lift.isNotIdle()) {
+                        Timer.delay(0.1);
+                    }
+                    drive.turnDegAbs(288, .3);
+                    drive.moveDistance(10, .4);
+                    grabber.outtake();
+
+                    break;
+                }
                 break;
             case 5:
                 // Out of the way left
@@ -261,8 +258,6 @@ public class Robot extends IterativeRobot {
                 lift.setTarget(0);
             } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
                 lift.setTarget(2);
-            } else if (liftStick.getRawButton(Buttons.LIFT[2])) {
-                lift.setTarget(4);
             }
         }
 
