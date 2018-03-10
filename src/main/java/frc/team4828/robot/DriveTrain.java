@@ -14,10 +14,10 @@ public class DriveTrain {
     private DoubleSolenoid shifter;
 
     // MoveDistance Constants
-    private static final double ENC_RATIO = 17.51; // [ NU / Inch ] => [ NU / Rotations / 6π ]
-    private static final double P = 0.2;
-    private static final double ANGLE_THRESH = 0.01;
-    private static final double ANGLE_CHECK_DELAY = .1;
+    private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
+    private static final double P = 0.01;
+    private static final double ANGLE_THRESH = 0.1;
+    private static final double ANGLE_CHECK_DELAY = 0;
     private static final double TIMEOUT = 10;
 
     /**
@@ -30,6 +30,7 @@ public class DriveTrain {
         right = new Gearbox(rightPorts[0], rightPorts[1], false);
         navx = new AHRS(SerialPort.Port.kMXP);
         shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
+        navx.reset();
     }
 
     /**
@@ -111,6 +112,7 @@ public class DriveTrain {
      * @param speed    The motors' speed
      */
     public void moveDistance(double distance, double speed) {
+        zeroEnc();
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
@@ -122,12 +124,13 @@ public class DriveTrain {
             speed *= -1;
         }
         drive(speed);
+        SmartDashboard.putString("Current Action", "Moving " + maxEnc);
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
             changeAngle = navx.getAngle() - startAngle;
             if (changeAngle > ANGLE_THRESH) { // Positive angle change
-                adjustSpeed(speed, -changeAngle * P);
+                adjustSpeed(speed, -P);
             } else if (changeAngle < -ANGLE_THRESH) { // Negative angle change
-                adjustSpeed(speed, -changeAngle * P);
+                adjustSpeed(speed, P);
             } else { // Negligible angle change
                 drive(speed);
             }
@@ -141,32 +144,43 @@ public class DriveTrain {
             }
             Timer.delay(ANGLE_CHECK_DELAY);
         }
+        zeroEnc();
     }
 
     public void turnDegAbs(double angle, double speed) {
+        if(angle > navx.getAngle()) {
+            angle -= 15;
+        } else {
+            angle += 15;
+        }
+        SmartDashboard.putString("Current Action", "Turning");
         double start = navx.getAngle();
+        SmartDashboard.putNumber("Start", start);
         if (start < angle) {
             left.drive(speed);
             right.drive(-speed);
             while (navx.getAngle() < angle) {
                 SmartDashboard.putNumber("Angle", navx.getAngle());
-                Timer.delay(ANGLE_CHECK_DELAY);
+                //Timer.delay(ANGLE_CHECK_DELAY);
             }
         } else {
             left.drive(-speed);
             right.drive(speed);
             while (navx.getAngle() > angle) {
                 SmartDashboard.putNumber("Angle", navx.getAngle());
-                Timer.delay(ANGLE_CHECK_DELAY);
+                //Timer.delay(ANGLE_CHECK_DELAY);
             }
         }
-        left.brake();
-        right.brake();
+        brake();
     }
 
     public void zeroEnc() {
         left.zeroEnc();
         right.zeroEnc();
+    }
+
+    public void reset() {
+        navx.reset();
     }
 
     public void debugEnc() {

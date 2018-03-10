@@ -2,6 +2,9 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import javafx.scene.Camera;
+
+import java.sql.Time;
 
 public class Robot extends IterativeRobot {
     // Joysticks
@@ -47,6 +50,8 @@ public class Robot extends IterativeRobot {
         dumper = new Dumper(Ports.DUMPER, Ports.SERVO, Ports.PROX);
 
         comp.setClosedLoopControl(true);
+
+        CameraServer.getInstance().startAutomaticCapture();
     }
 
     public void autonomousInit() {
@@ -58,33 +63,42 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
+            drive.reset();
             SmartDashboard.putString("Auton Mode Raw",
                     (switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
             int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
             SmartDashboard.putNumber("Autonomous Mode: ", mode);
-            switch (1) { // TODO Change to mode
+            dumper.close();
+            switch (2) { // TODO Change to mode
             case 0:
                 // Just go forward
-                drive.moveDistance(120, .5);
+                drive.arcadeDrive(0,.4,0);
+                Timer.delay(6);
+                drive.brake();
+                //drive.turnDegAbs(75,.3);
                 break;
             case 1:
                 // Switch from Left
                 // Check left or right side
                 switch (data.charAt(0)) {
                 case 'L':
-                    drive.moveDistance(150, 1);
-                    drive.turnDegAbs(-90, .5);
-                    drive.moveDistance(-10, 1);
+                    drive.moveDistance(130, .9);
+                    drive.turnDegAbs(-90, .3);
+                    drive.moveDistance(-30, .9);
+                    dumper.open();
+                    Timer.delay(.5);
                     dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 case 'R':
-                    drive.moveDistance(5, 1);
-                    drive.turnDegAbs(24, .5);
-                    drive.moveDistance(288, 1);
-                    drive.turnDegAbs(0, .5);
-                    drive.moveDistance(60, 1);
-                    drive.turnDegAbs(90, .5);
-                    drive.moveDistance(-10, 1);
+                    drive.moveDistance(5, .9);
+                    drive.turnDegAbs(24, .3);
+                    drive.moveDistance(288, .9);
+                    drive.turnDegAbs(0, .3);
+                    drive.moveDistance(60, .9);
+                    drive.turnDegAbs(90, .3);
+                    drive.moveDistance(-30, .9);
+                    dumper.open();
+                    Timer.delay(.5);
                     dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 }
@@ -94,102 +108,106 @@ public class Robot extends IterativeRobot {
                 // Check left or right side
                 switch (data.charAt(0)) {
                 case 'L':
-                    drive.moveDistance(5, 1);
+                    drive.moveDistance(5, .9);
                     drive.turnDegAbs(-24, .5);
-                    drive.moveDistance(288, 1);
+                    drive.moveDistance(288, .9);
                     drive.turnDegAbs(0, .5);
-                    drive.moveDistance(60, 1);
+                    drive.moveDistance(60, .9);
                     drive.turnDegAbs(-90, .5);
-                    drive.moveDistance(-10, 1);
+                    drive.moveDistance(-30, .9);
+                    dumper.open();
+                    Timer.delay(.5);
                     dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 case 'R':
-                    drive.moveDistance(150, 1);
-                    drive.turnDegAbs(90, .5);
-                    drive.moveDistance(-10, 1);
+                    drive.moveDistance(130, .9);
+                    drive.turnDegAbs(90, .3);
+                    drive.moveDistance(-30, .9);
+                    dumper.open();
+                    Timer.delay(.5);
                     dumper.set(DoubleSolenoid.Value.kForward);
                     break;
                 }
                 break;
             case 3:
                 // Scale from Left
-                switch (data.charAt(1)) {
-                case 'L':
-                    drive.moveDistance(310, 1);
-                    lift.setTarget(6);
-                    while (lift.isNotIdle()) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(90, 0.5);
-                    drive.moveDistance(10, 1);
-                    grabber.outtake();
-                    break;
-                case 'R':
-                    drive.moveDistance(5, 1);
-                    drive.turnDegAbs(24, .5);
-                    drive.moveDistance(288, 1);
-                    drive.turnDegAbs(0, .5);
-                    drive.moveDistance(190, 1);
-                    lift.setTarget(6);
-                    while (lift.isNotIdle()) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(270, 0.5);
-                    drive.moveDistance(10, 1);
-                    grabber.outtake();
-                    break;
-                }
+//                switch (data.charAt(1)) {
+//                case 'L':
+//                    drive.moveDistance(310, .9);
+//                    lift.setTarget(6);
+//                    while (lift.isNotIdle()) {
+//                        Timer.delay(0.1);
+//                    }
+//                    drive.turnDegAbs(90, .3);
+//                    drive.moveDistance(10, .4);
+//                    grabber.outtake();
+//                    break;
+//                case 'R':
+//                    drive.moveDistance(5, .9);
+//                    drive.turnDegAbs(24, .3);
+//                    drive.moveDistance(288, .9);
+//                    drive.turnDegAbs(0, .3);
+//                    drive.moveDistance(190, .9);
+//                    lift.setTarget(6);
+//                    while (lift.isNotIdle()) {
+//                        Timer.delay(0.1);
+//                    }
+//                    drive.turnDegAbs(270, .3);
+//                    drive.moveDistance(10, .4);
+//                    grabber.outtake();
+//                    break;
+//                }
                 break;
             case 4:
                 // Scale from Right
-                switch (data.charAt(0)) {
-                case 'L':
-                    drive.moveDistance(5, 1); //TODO: Lower Speed
-                    drive.turnDegAbs(-24, .5);
-                    drive.moveDistance(300, 1);
-                    drive.turnDegAbs(0, .5);
-                    drive.moveDistance(190, 1);
-                    lift.setTarget(6);
-                    while (lift.isNotIdle()) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(90, .5);
-                    drive.moveDistance(10, 1);
-                    grabber.outtake();
-                    break;
-                case 'R':
-                    drive.moveDistance(310, 1);
-                    lift.setTarget(6);
-                    while (lift.isNotIdle()) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(288, .5);
-                    drive.moveDistance(10, 1);
-                    grabber.outtake();
-
-                    break;
-                }
+//                switch (data.charAt(0)) {
+//                case 'L':
+//                    drive.moveDistance(5, .9); //TODO: Lower Speed
+//                    drive.turnDegAbs(-24, .3);
+//                    drive.moveDistance(300, .9);
+//                    drive.turnDegAbs(0, .3);
+//                    drive.moveDistance(190, .9);
+//                    lift.setTarget(6);
+//                    while (lift.isNotIdle()) {
+//                        Timer.delay(0.1);
+//                    }
+//                    drive.turnDegAbs(90, .3);
+//                    drive.moveDistance(10, .4);
+//                    grabber.outtake();
+//                    break;
+//                case 'R':
+//                    drive.moveDistance(310, .9);
+//                    lift.setTarget(6);
+//                    while (lift.isNotIdle()) {
+//                        Timer.delay(0.1);
+//                    }
+//                    drive.turnDegAbs(288, .3);
+//                    drive.moveDistance(10, .4);
+//                    grabber.outtake();
+//
+//                    break;
+//                }
                 break;
             case 5:
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
-                drive.moveDistance(210, 1);
-                drive.turnDegAbs(90, 0.5);
-                drive.moveDistance(40, 1);
+                drive.moveDistance(210, .9);
+                drive.turnDegAbs(90, 0.3);
+                drive.moveDistance(40, .9);
                 break;
             case 6:
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
-                drive.moveDistance(210, 1);
-                drive.turnDegAbs(-90, 0.5);
-                drive.moveDistance(40, 1);
+                drive.moveDistance(210, .9);
+                drive.turnDegAbs(-90, 0.3);
+                drive.moveDistance(40, .9);
                 break;
             case 7:
-                // Outtake into the hole
-                // Shake a bit to drop the grabber
-                drive.moveDistance(-5, .5);
-                drive.moveDistance(5, .5);
-                grabber.outtake();
+//                // Outtake into the hole
+//                // Shake a bit to drop the grabber
+//                drive.moveDistance(-5, .5);
+//                drive.moveDistance(5, .5);
+//                grabber.outtake();
                 break;
             default:
                 break;
@@ -197,6 +215,8 @@ public class Robot extends IterativeRobot {
             doneAuton = true;
         }
         Timer.delay(.1);
+
+        System.out.println("Finished Auto");
     }
 
     public void teleopInit() {
@@ -277,6 +297,7 @@ public class Robot extends IterativeRobot {
         }
         drive.updateDashboard();
         dumper.updateDashboard();
+        lift.updateDashboard();
         drive.debugEnc();
         Timer.delay(.01);
     }
