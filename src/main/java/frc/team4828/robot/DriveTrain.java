@@ -15,10 +15,13 @@ public class DriveTrain {
 
     // MoveDistance Constants
     private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
-    private static final double P = 0.01;
+    private static final double CORRECTION_FACTOR = 0.05;
     private static final double ANGLE_THRESH = 0.1;
-    private static final double ANGLE_CHECK_DELAY = 0;
+    private static final double ANGLE_CHECK_DELAY = 0.01;
     private static final double TIMEOUT = 10;
+
+    // TurnDegrees Constants
+    private static final double TURN_FACTOR = 0.01;
 
     /**
      * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
@@ -90,19 +93,22 @@ public class DriveTrain {
     }
 
     public void adjustSpeed(double speed, double change) {
-        if (speed > 0) {
-            if (change > 0) {
-                right.drive(speed - change);
-            } else {
-                left.drive(speed + change);
-            }
-        } else {
-            if (change > 0) {
-                left.drive(speed + change);
-            } else {
-                right.drive(speed - change);
-            }
+        if (Math.abs(change) > Math.abs(speed)) {
+            change *= Math.abs(speed) / Math.abs(change);
         }
+        if (speed * change > 0) {
+            right.drive(speed - change);
+        } else {
+            left.drive(speed + change);
+        }
+    }
+
+    public void adjustTurnSpeed(double speedMax, double speed) {
+        if (Math.abs(speed) > speedMax) {
+            speed *= speedMax / Math.abs(speed);
+        }
+        left.drive(speed);
+        right.drive(-speed);
     }
 
     /**
@@ -112,66 +118,43 @@ public class DriveTrain {
      * @param speed    The motors' speed
      */
     public void moveDistance(double distance, double speed) {
-        zeroEnc();
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
-        double changeEncL, changeEncR;
         double startAngle = navx.getAngle();
-        double changeAngle;
         double maxEnc = Math.abs(distance * ENC_RATIO);
+        double changeAngle;
         if (distance < 0) {
             speed *= -1;
         }
-        drive(speed);
-        SmartDashboard.putString("Current Action", "Moving " + maxEnc);
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
-            changeAngle = navx.getAngle() - startAngle;
-            if (changeAngle > ANGLE_THRESH) { // Positive angle change
-                adjustSpeed(speed, -P);
-            } else if (changeAngle < -ANGLE_THRESH) { // Negative angle change
-                adjustSpeed(speed, P);
-            } else { // Negligible angle change
+            changeAngle = startAngle - navx.getAngle();
+            if (Math.abs(changeAngle) > ANGLE_THRESH) {
+                adjustSpeed(speed, changeAngle * CORRECTION_FACTOR);
+            } else {
                 drive(speed);
             }
-            changeEncL = Math.abs(left.getEnc() - startEncL);
-            changeEncR = Math.abs(right.getEnc() - startEncR);
-            SmartDashboard.putNumber("Current L Enc", changeEncL);
-            SmartDashboard.putNumber("Current R Enc", changeEncR);
-            if (changeEncL >= maxEnc && changeEncR >= maxEnc) {
+            if (Math.abs(left.getEnc() - startEncL) >= maxEnc && Math.abs(right.getEnc() - startEncR) >= maxEnc) {
                 brake();
                 break;
             }
             Timer.delay(ANGLE_CHECK_DELAY);
         }
-        zeroEnc();
     }
 
     public void turnDegAbs(double angle, double speed) {
-        if(angle > navx.getAngle()) {
-            angle -= 15;
-        } else {
-            angle += 15;
-        }
-        SmartDashboard.putString("Current Action", "Turning");
-        double start = navx.getAngle();
-        SmartDashboard.putNumber("Start", start);
-        if (start < angle) {
-            left.drive(speed);
-            right.drive(-speed);
-            while (navx.getAngle() < angle) {
-                SmartDashboard.putNumber("Angle", navx.getAngle());
-                //Timer.delay(ANGLE_CHECK_DELAY);
+        double startTime = Timer.getFPGATimestamp();
+        double changeAngle;
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
+            changeAngle = angle - navx.getAngle();
+            if (Math.abs(changeAngle) > ANGLE_THRESH) {
+                adjustTurnSpeed(speed, changeAngle * TURN_FACTOR);
+            } else {
+                brake();
+                break;
             }
-        } else {
-            left.drive(-speed);
-            right.drive(speed);
-            while (navx.getAngle() > angle) {
-                SmartDashboard.putNumber("Angle", navx.getAngle());
-                //Timer.delay(ANGLE_CHECK_DELAY);
-            }
+            Timer.delay(ANGLE_CHECK_DELAY);
         }
-        brake();
     }
 
     public void zeroEnc() {
