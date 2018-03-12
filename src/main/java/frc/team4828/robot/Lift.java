@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lift implements Runnable {
 
-    private static final double DEFAULT_SPEED = 0.3;
+    private static final double DEFAULT_SPEED = 0.5;
     private static final double CHECK_DELAY = 0.01;
     private static final double SWITCHER_DELAY = 0.05;
     private Victor liftMotor;
@@ -36,9 +36,9 @@ public class Lift implements Runnable {
         // Init Variables
         speed = -1;
         direction = 0;
-        pos = 0;
-        target = 0;
-        manual = true;
+        pos = 1;
+        target = 1;
+        manual = false;
         targetDirection = 0;
         // Main Loop
         while (!stopThread) {

@@ -7,6 +7,8 @@ public class Robot extends IterativeRobot {
     // Joysticks
     private Joystick driveStick;
     private Joystick liftStick;
+    // Pneumatics
+    private Compressor comp;
     // Drive
     private DriveTrain drive;
     // Lift
@@ -19,9 +21,9 @@ public class Robot extends IterativeRobot {
     private DigitalInput switch1, switch2, switch3;
     private boolean doneAuton;
     private String data;
+    private int mode;
     // Dumper
     private Dumper dumper;
-    private Compressor comp;
 
     public void robotInit() {
         // Joysticks
@@ -42,31 +44,29 @@ public class Robot extends IterativeRobot {
         switch1 = new DigitalInput(Ports.AUTON[0]);
         switch2 = new DigitalInput(Ports.AUTON[1]);
         switch3 = new DigitalInput(Ports.AUTON[2]);
-        doneAuton = false;
-
+        // Dumper
         dumper = new Dumper(Ports.DUMPER, Ports.SERVO, Ports.PROX);
-
-        comp.setClosedLoopControl(true);
 
         CameraServer.getInstance().startAutomaticCapture();
     }
 
     public void autonomousInit() {
         System.out.println(" --- Start Autonomous Init ---");
-        data = DriverStation.getInstance().getGameSpecificMessage();
         doneAuton = false;
+        data = DriverStation.getInstance().getGameSpecificMessage();
+        mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
+        SmartDashboard.putNumber("Autonomous Mode", mode);
+
+        drive.reset();
+        drive.zeroEnc();
+        lift.start();
+
         System.out.println(" --- Start Autonomous ---");
     }
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            drive.reset();
-            SmartDashboard.putString("Auton Mode Raw",
-                    (switch1.get() ? "1" : "0") + (switch2.get() ? "1" : "0") + (switch3.get() ? "1" : "0"));
-            int mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
-            SmartDashboard.putNumber("Autonomous Mode: ", mode);
-            dumper.close();
-            switch (2) { // TODO Change to mode
+            switch (mode) {
             case 0:
                 // Just go forward
                 drive.arcadeDrive(0, .4, 0);
@@ -181,7 +181,6 @@ public class Robot extends IterativeRobot {
                     drive.turnDegAbs(288, .3);
                     drive.moveDistance(10, .4);
                     grabber.outtake();
-
                     break;
                 }
                 break;
@@ -202,25 +201,24 @@ public class Robot extends IterativeRobot {
             case 7:
                 // Outtake into the hole
                 // Shake a bit to drop the grabber
-//                drive.moveDistance(-5, .5);
-//                drive.moveDistance(5, .5);
-//                grabber.outtake();
+                drive.moveDistance(-5, .5);
+                drive.moveDistance(5, .5);
+                grabber.outtake();
                 break;
             default:
                 break;
             }
             doneAuton = true;
         }
-        Timer.delay(.1);
-
-        System.out.println("Finished Auto");
+        Timer.delay(0.1);
+        System.out.println("Finished Auton");
     }
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
+
         lift.start();
-        lift.setSpeed(0.5);
-        drive.zeroEnc();
+
         System.out.println(" --- Start Teleop ---");
     }
 
@@ -229,14 +227,11 @@ public class Robot extends IterativeRobot {
         drive.arcadeDrive(JoystickUtils.processX(driveStick.getX()), JoystickUtils.processY(driveStick.getY()),
                 JoystickUtils.processTwist(driveStick.getTwist()));
 
-        // Drive Stick Debug
-//        JoystickUtils.debug(driveStick.getX(), driveStick.getY(), driveStick.getTwist());
-
         // Dumper
         if (driveStick.getRawButton(Buttons.DUMPER)) {
             if (!dumper.isOpen()) {
                 dumper.open();
-                Timer.delay(.4);
+                Timer.delay(0.5);
             }
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
@@ -247,6 +242,7 @@ public class Robot extends IterativeRobot {
             }
             dumper.set(DoubleSolenoid.Value.kReverse);
         }
+
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
             lift.setManual(true);
@@ -258,6 +254,8 @@ public class Robot extends IterativeRobot {
                 lift.setTarget(0);
             } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
                 lift.setTarget(2);
+            } else if (liftStick.getRawButton(Buttons.LIFT_RESET)) {
+                lift.resetTarget();
             }
         }
 
@@ -290,11 +288,12 @@ public class Robot extends IterativeRobot {
         } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
             drive.gearSwitch(DoubleSolenoid.Value.kReverse);
         }
+
         drive.updateDashboard();
         dumper.updateDashboard();
         lift.updateDashboard();
         drive.debugEnc();
-        Timer.delay(.01);
+        Timer.delay(0.01);
     }
 
     public void testInit() {
@@ -304,8 +303,6 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        drive.updateDashboard();
-        dumper.updateDashboard();
         if (liftStick.getRawButton(1)) {
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
@@ -316,14 +313,18 @@ public class Robot extends IterativeRobot {
         } else {
             dumper.close();
         }
+        drive.updateDashboard();
+        dumper.updateDashboard();
+        lift.updateDashboard();
         SmartDashboard.putBoolean("Pressure", comp.getPressureSwitchValue());
         SmartDashboard.putBoolean("TooHigh", comp.getCompressorCurrentTooHighFault());
         SmartDashboard.putBoolean("NotConnected", comp.getCompressorNotConnectedFault());
         SmartDashboard.putBoolean("Shorted", comp.getCompressorShortedFault());
-        Timer.delay(0.1);
+        Timer.delay(0.01);
     }
 
     public void disabledInit() {
         lift.stop();
     }
+
 }
