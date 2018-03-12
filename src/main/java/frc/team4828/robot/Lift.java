@@ -10,9 +10,9 @@ public class Lift implements Runnable {
     private static final double DEFAULT_SPEED = 0.3;
     private static final double CHECK_DELAY = 0.01;
     private static final double SWITCHER_DELAY = 0.05;
-    private static final int POS_MAX = 2;
     private Victor liftMotor;
     private DigitalInput liftMin, liftMax, switcher;
+    private int posMax;
     private boolean prevState = false;
     private double startTime = 0.0;
     private double speed;
@@ -23,11 +23,12 @@ public class Lift implements Runnable {
     private int targetDirection;
     private boolean stopThread = false;
 
-    public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort) {
+    public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort, int amount) {
         liftMotor = new Victor(liftMotorPort);
         liftMin = new DigitalInput(liftMinPort);
         liftMax = new DigitalInput(liftMaxPort);
         switcher = new DigitalInput(switcherPort);
+        posMax = amount * 2 + 2;
     }
 
     public void run() {
@@ -35,10 +36,8 @@ public class Lift implements Runnable {
         // Init Variables
         speed = -1;
         direction = 0;
-
         pos = 0;
         target = 0;
-
         manual = true;
         targetDirection = 0;
         // Main Loop
@@ -57,7 +56,7 @@ public class Lift implements Runnable {
     // Position Control
 
     public void setTarget(int target) {
-        this.target = target;
+        this.target = target * 2;
     }
 
     public void resetTarget() {
@@ -68,7 +67,7 @@ public class Lift implements Runnable {
         return pos;
     }
 
-    public boolean isNotIdle() {
+    public boolean isBusy() {
         return pos != target;
     }
 
@@ -78,7 +77,7 @@ public class Lift implements Runnable {
         this.manual = manual;
     }
 
-    private void setTargetDirection(int targetDirection) {
+    public void setTargetDirection(int targetDirection) {
         this.targetDirection = targetDirection;
     }
 
@@ -110,35 +109,36 @@ public class Lift implements Runnable {
     private void check() {
         boolean currentState = switcher.get();
         // Position Check
-        if (currentState != prevState && Timer.getFPGATimestamp() > startTime + SWITCHER_DELAY) {
+        if (currentState != prevState && Timer.getFPGATimestamp() - startTime > SWITCHER_DELAY) {
             pos += direction;
             startTime = Timer.getFPGATimestamp();
         }
         // Limits Check
-        if ((liftMin.get() && direction == -1) || (liftMax.get() && direction == 1)) {
-            pos += direction;
+        if (liftMin.get() && direction == -1) {
             direction = 0;
+            pos = 0;
+            return;
+        } else if (liftMin.get()) {
+            pos = direction;
         }
-        if ((liftMin.get() && direction == 1 && pos == 0) || (liftMax.get() && direction == -1 && pos == POS_MAX)) {
-            pos += direction;
+        if (liftMax.get() && direction == 1) {
+            direction = 0;
+            pos = posMax;
+            return;
+        } else if (liftMax.get()) {
+            pos = posMax + direction;
         }
         // Manual Check
         if (manual) {
-            if (targetDirection == -1 && !liftMin.get()) {
-                direction = -1;
-            } else if (targetDirection == 1 && !liftMax.get()) {
-                direction = 1;
-            } else if (targetDirection == 0) {
-                direction = 0;
-            }
+            direction = targetDirection;
         }
         // Auto Check
         else {
-            if (pos > target && !liftMin.get()) {
+            if (pos > target) {
                 direction = -1;
-            } else if (pos < target && !liftMax.get()) {
+            } else if (pos < target) {
                 direction = 1;
-            } else if (pos == target) {
+            } else {
                 direction = 0;
             }
         }
@@ -156,7 +156,14 @@ public class Lift implements Runnable {
     }
 
     public void updateDashboard() {
-        SmartDashboard.putBoolean("Min", liftMin.get());
-        SmartDashboard.putBoolean("Max", liftMax.get());
+        SmartDashboard.putBoolean("Lift Min", liftMin.get());
+        SmartDashboard.putBoolean("Lift Max", liftMax.get());
+        SmartDashboard.putNumber("Lift Speed", speed);
+        SmartDashboard.putNumber("Lift Direction", direction);
+        SmartDashboard.putNumber("Lift Position", pos);
+        SmartDashboard.putNumber("Lift Target", target);
+        SmartDashboard.putBoolean("Lift Manual", manual);
+        SmartDashboard.putNumber("Lift Target Direction", targetDirection);
     }
+
 }
