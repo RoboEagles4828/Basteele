@@ -284,9 +284,9 @@ public class Robot extends IterativeRobot {
 
         // Gear Shift
         if (driveStick.getRawButton(Buttons.GEAR_HIGH)) {
-            drive.gearSwitch(DoubleSolenoid.Value.kForward);
+            drive.setGear(DoubleSolenoid.Value.kForward);
         } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
-            drive.gearSwitch(DoubleSolenoid.Value.kReverse);
+            drive.setGear(DoubleSolenoid.Value.kReverse);
         }
 
         drive.updateDashboard();
