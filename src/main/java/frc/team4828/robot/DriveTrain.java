@@ -3,7 +3,7 @@ package frc.team4828.robot;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -33,7 +33,7 @@ public class DriveTrain {
     public DriveTrain(int[] leftPorts, int[] rightPorts, int[] shifterPorts) {
         left = new Gearbox(leftPorts[0], leftPorts[1], true);
         right = new Gearbox(rightPorts[0], rightPorts[1], false);
-        navx = new AHRS(SerialPort.Port.kMXP);
+        navx = new AHRS(SPI.Port.kMXP);
         shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
         navx.reset();
     }
