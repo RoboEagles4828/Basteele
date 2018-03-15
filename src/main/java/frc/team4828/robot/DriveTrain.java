@@ -1,42 +1,44 @@
 package frc.team4828.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain {
 
-    private static final double ENC_RATIO = 0.03952;
-    private static final double ANGLE_CHECK_DELAY = .1;
-
-    private static final double TIMEOUT = 10;
-    private static final double P = 0.2;
-
     private Gearbox left, right;
     private AHRS navx;
+    private DoubleSolenoid shifter;
+
+    // MoveDistance Constants
+    private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
+    private static final double P = 0.01;
+    private static final double ANGLE_THRESH = 0.1;
+    private static final double ANGLE_CHECK_DELAY = 0;
+    private static final double TIMEOUT = 10;
 
     /**
      * DriveTrain for the Robot. Takes in a left and right Gearbox and uses arcade drive.
      * <p>
      * Note: Takes in Gearbox Object, not the port.
-     *
-     * @param left   Left Gearbox.
-     * @param right  Right Gearbox.
      */
-    DriveTrain(int[] left, int[] right, int[] shifter) {
-        this.left = new Gearbox(left[0], left[1], shifter, false);
-        this.right = new Gearbox(right[0], right[1], shifter, false);
+    public DriveTrain(int[] leftPorts, int[] rightPorts, int[] shifterPorts) {
+        left = new Gearbox(leftPorts[0], leftPorts[1], true);
+        right = new Gearbox(rightPorts[0], rightPorts[1], false);
         navx = new AHRS(SerialPort.Port.kMXP);
+        shifter = new DoubleSolenoid(shifterPorts[0], shifterPorts[1]);
+        navx.reset();
     }
 
     /**
      * Scales inputs so that they remain within 1.
      * <p>
      *
-     * @param input  An input array of doubles that is to be normalized.
-     * @return       A same sized array that is normalized.
+     * @param input An input array of doubles that is to be normalized.
+     * @return A same sized array that is normalized.
      */
     private double[] normalize(double[] input) {
         double max = 0;
@@ -57,10 +59,10 @@ public class DriveTrain {
     /**
      * Takes in x, y, and an angle to produce speeds for left and right gearboxes.
      * <p>
-     * 
-     * @param x      The x component to drive (Positive is right; Negative is left).
-     * @param y      The y component to drive (Positive is up; Negative is down).
-     * @param angle  The angle to drive (Positive is clockwise; Negative is counterclockwise).
+     *
+     * @param x     The x component to drive (Positive is right; Negative is left).
+     * @param y     The y component to drive (Positive is up; Negative is down).
+     * @param angle The angle to drive (Positive is clockwise; Negative is counterclockwise).
      */
     public void arcadeDrive(double x, double y, double angle) {
         angle /= 2;
@@ -77,60 +79,99 @@ public class DriveTrain {
         right.drive(drive[1]);
     }
 
+    public void drive(double speed) {
+        left.drive(speed);
+        right.drive(speed);
+    }
+
+    public void brake() {
+        left.brake();
+        right.brake();
+    }
+
+    public void adjustSpeed(double speed, double change) {
+        if (speed > 0) {
+            if (change > 0) {
+                right.drive(speed - change);
+            } else {
+                left.drive(speed + change);
+            }
+        } else {
+            if (change > 0) {
+                left.drive(speed + change);
+            } else {
+                right.drive(speed - change);
+            }
+        }
+    }
+
     /**
      * Moves a certain distance forward. Distance is in meters.
      *
-     * @param distance  The distance in inches
-     * @param speed     The motors' speed
+     * @param distance The distance in inches
+     * @param speed    The motors' speed
      */
     public void moveDistance(double distance, double speed) {
+        zeroEnc();
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
         double changeEncL, changeEncR;
         double startAngle = navx.getAngle();
+        double changeAngle;
         double maxEnc = Math.abs(distance * ENC_RATIO);
         if (distance < 0) {
             speed *= -1;
         }
+        drive(speed);
+        SmartDashboard.putString("Current Action", "Moving " + maxEnc);
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
-            left.drive(speed);
-            right.drive(speed);
-            while ((navx.getAngle() - startAngle > 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
-                left.change((startAngle - navx.getAngle()) * P);
-                Timer.delay(ANGLE_CHECK_DELAY);
-            }
-            while ((navx.getAngle() - startAngle < 0) && (Timer.getFPGATimestamp() - startTime < TIMEOUT)) {
-                right.change((navx.getAngle() - startAngle) * P);
-                Timer.delay(ANGLE_CHECK_DELAY);
+            changeAngle = navx.getAngle() - startAngle;
+            if (changeAngle > ANGLE_THRESH) { // Positive angle change
+                adjustSpeed(speed, -P);
+            } else if (changeAngle < -ANGLE_THRESH) { // Negative angle change
+                adjustSpeed(speed, P);
+            } else { // Negligible angle change
+                drive(speed);
             }
             changeEncL = Math.abs(left.getEnc() - startEncL);
             changeEncR = Math.abs(right.getEnc() - startEncR);
+            SmartDashboard.putNumber("Current L Enc", changeEncL);
+            SmartDashboard.putNumber("Current R Enc", changeEncR);
             if (changeEncL >= maxEnc && changeEncR >= maxEnc) {
-                left.brake();
-                right.brake();
+                brake();
                 break;
             }
+            Timer.delay(ANGLE_CHECK_DELAY);
         }
+        zeroEnc();
     }
 
     public void turnDegAbs(double angle, double speed) {
+        if(angle > navx.getAngle()) {
+            angle -= 15;
+        } else {
+            angle += 15;
+        }
+        SmartDashboard.putString("Current Action", "Turning");
         double start = navx.getAngle();
+        SmartDashboard.putNumber("Start", start);
         if (start < angle) {
             left.drive(speed);
             right.drive(-speed);
             while (navx.getAngle() < angle) {
-                Timer.delay(ANGLE_CHECK_DELAY);
+                SmartDashboard.putNumber("Angle", navx.getAngle());
+                //Timer.delay(ANGLE_CHECK_DELAY);
             }
         } else {
             left.drive(-speed);
             right.drive(speed);
             while (navx.getAngle() > angle) {
-                Timer.delay(ANGLE_CHECK_DELAY);
+                SmartDashboard.putNumber("Angle", navx.getAngle());
+                //Timer.delay(ANGLE_CHECK_DELAY);
             }
         }
-        left.brake();
-        right.brake();
+        brake();
     }
 
     public void zeroEnc() {
@@ -138,12 +179,23 @@ public class DriveTrain {
         right.zeroEnc();
     }
 
+    public void reset() {
+        navx.reset();
+    }
+
     public void debugEnc() {
         System.out.println("Left: " + left.getEnc() + " Right: " + right.getEnc());
     }
 
     public void gearSwitch(Value mode) {
-        left.setSwitcher(mode);
-        right.setSwitcher(mode);
+        shifter.set(mode);
+    }
+
+    public void updateDashboard() {
+        double[] speeds = { left.get(), right.get() };
+        double[] enc = { left.getEnc(), right.getEnc() };
+        SmartDashboard.putNumberArray("Drive", speeds);
+        SmartDashboard.putNumber("Angle", navx.getAngle());
+        SmartDashboard.putNumberArray("Encoders", enc);
     }
 }

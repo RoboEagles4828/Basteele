@@ -27,6 +27,8 @@ build/
 dist/
 sysProps.xml
 workbench.xmi
+build.xml
+build.properties
 
 # Eclipse
 .project

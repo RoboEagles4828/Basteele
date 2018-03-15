@@ -1,37 +1,35 @@
 package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.hal.PDPJNI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lift implements Runnable {
-
-    private Victor liftMotor;
-    private DigitalInput liftMin, liftMax, switcher;
-
-    private boolean prevState = false;
-    private double startTime = 0.0;
-
-    private double speed;
-    private int direction;
-
-    private int pos;
-    private int target;
-
-    private boolean manual;
-    private int targetDirection;
 
     private static final double DEFAULT_SPEED = 0.3;
     private static final double CHECK_DELAY = 0.01;
     private static final double SWITCHER_DELAY = 0.05;
-
+    private Victor liftMotor;
+    private DigitalInput liftMin, liftMax, switcher;
+    private boolean prevState = false;
+    private double startTime = 0.0;
+    private double speed;
+    private int direction;
+    private int pos;
+    private int target;
+    private boolean manual;
+    private int targetDirection;
     private boolean stopThread = false;
+    private double pastCurrent = 0;
 
-    Lift(int liftMotor, int liftMin, int liftMax, int switcher) {
-        this.liftMotor = new Victor(liftMotor);
-        this.liftMin = new DigitalInput(liftMin);
-        this.liftMax = new DigitalInput(liftMax);
-        this.switcher = new DigitalInput(switcher);
+    public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort) {
+        liftMotor = new Victor(liftMotorPort);
+        liftMin = new DigitalInput(liftMinPort);
+        liftMax = new DigitalInput(liftMaxPort);
+        switcher = new DigitalInput(switcherPort);
     }
 
     public void run() {
@@ -62,6 +60,14 @@ public class Lift implements Runnable {
 
     public void setTarget(int target) {
         this.target = target;
+    }
+
+    public void resetTarget() {
+        target = pos;
+    }
+
+    public int getPos() {
+        return pos;
     }
 
     public boolean isNotIdle() {
@@ -146,5 +152,10 @@ public class Lift implements Runnable {
         } else {
             liftMotor.set(speed * direction);
         }
+    }
+
+    public void updateDashboard() {
+        SmartDashboard.putBoolean("Min", liftMin.get());
+        SmartDashboard.putBoolean("Max", liftMax.get());
     }
 }

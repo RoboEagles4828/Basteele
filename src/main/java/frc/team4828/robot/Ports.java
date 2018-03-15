@@ -6,8 +6,8 @@ public class Ports {
     public static final int DRIVE_STICK = 0;
     public static final int LIFT_STICK = 1;
     // Motors
-    public static final int[] LEFT_GEARBOX = { 1, 2 };
-    public static final int[] RIGHT_GEARBOX = { 3, 4 };
+    public static final int[] LEFT_GEARBOX = { 2, 1 };
+    public static final int[] RIGHT_GEARBOX = { 4, 3 };
     public static final int LIFT = 8;
     public static final int LEFT_GRABBER = 3;
     public static final int RIGHT_GRABBER = 2;
@@ -17,6 +17,7 @@ public class Ports {
     public static final int LIFT_MIN = 8;
     public static final int LIFT_MAX = 5;
     public static final int SWITCHER = 7;
+    public static final int PROX = 6;
     // Pneumatics
     public static final int COMPRESSOR = 0;
     public static final int[] SHIFTER = { 0, 4 };
@@ -25,6 +26,6 @@ public class Ports {
     // Auton
     public static final int[] AUTON = { 0, 1, 2 };
     // Servo
-    public static final int SERVO = 0;
+    public static final int SERVO = 6;
 
 }
