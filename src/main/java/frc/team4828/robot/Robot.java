@@ -48,7 +48,6 @@ public class Robot extends IterativeRobot {
 
     public void autonomousInit() {
         System.out.println(" --- Start Autonomous Init ---");
-        data = DriverStation.getInstance().getGameSpecificMessage();
         doneAuton = false;
         data = DriverStation.getInstance().getGameSpecificMessage();
         mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
@@ -66,12 +65,12 @@ public class Robot extends IterativeRobot {
         if (!doneAuton) {
             switch (mode) {
             case 0:
-//                // Do Switch From Front
+                // Do Switch From Front
                 drive.moveDistance(-10, .5);
-                if(data.charAt(0) == 'L') {
-                      drive.turnDegAbs(90, .3);
-                      drive.moveDistance(94, .9);
-                      drive.turnDegAbs(0,.3);
+                if (data.charAt(0) == 'L') {
+                    drive.turnDegAbs(90, .3);
+                    drive.moveDistance(94, .9);
+                    drive.turnDegAbs(0, .3);
                 }
                 drive.arcadeDrive(0, -.7, 0);
                 Timer.delay(2);
@@ -269,7 +268,7 @@ public class Robot extends IterativeRobot {
         drive.updateDashboard();
         dumper.updateDashboard();
         lift.updateDashboard();
-        
+
         Timer.delay(0.01);
     }
 
