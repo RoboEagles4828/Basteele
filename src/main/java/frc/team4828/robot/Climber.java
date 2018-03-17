@@ -8,12 +8,11 @@ public class Climber {
     private Victor leftMotor, rightMotor;
 
     /**
-     * Climber Code. Pretty self explanatory, up to go up, down to go down, stop to stop.
-     * Takes in 2 ports.
-     * @param leftMotorPort  Left Motor Port
-     * @param rightMotorPort Right Motor Port
+     * Climber for the robot.
+     * 
+     * @param leftMotorPort Left motor port.
+     * @param rightMotorPort Right motor port.
      */
-
     public Climber(int leftMotorPort, int rightMotorPort) {
         leftMotor = new Victor(leftMotorPort);
         rightMotor = new Victor(rightMotorPort);
