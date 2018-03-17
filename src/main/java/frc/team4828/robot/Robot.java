@@ -2,14 +2,11 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.CameraServer;
 
 public class Robot extends IterativeRobot {
     // Joysticks
     private Joystick driveStick;
     private Joystick liftStick;
-    // Pneumatics
-    private Compressor comp;
     // Drive
     private DriveTrain drive;
     // Lift
@@ -31,8 +28,6 @@ public class Robot extends IterativeRobot {
         driveStick = new Joystick(Ports.DRIVE_STICK);
         liftStick = new Joystick(Ports.LIFT_STICK);
         // Pneumatics
-        comp = new Compressor(Ports.COMPRESSOR);
-        comp.setClosedLoopControl(true);
         // Drive
         drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER);
         // Lift
@@ -53,6 +48,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousInit() {
         System.out.println(" --- Start Autonomous Init ---");
+        data = DriverStation.getInstance().getGameSpecificMessage();
         doneAuton = false;
         data = DriverStation.getInstance().getGameSpecificMessage();
         mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
@@ -61,6 +57,7 @@ public class Robot extends IterativeRobot {
         drive.reset();
         drive.zeroEnc();
         lift.start();
+        dumper.close();
 
         System.out.println(" --- Start Autonomous ---");
     }
@@ -69,11 +66,19 @@ public class Robot extends IterativeRobot {
         if (!doneAuton) {
             switch (mode) {
             case 0:
-                // Do Switch From Front
-                drive.arcadeDrive(0, .4, 0);
-                Timer.delay(6);
+//                // Do Switch From Front
+                drive.moveDistance(-10, .5);
+                if(data.charAt(0) == 'L') {
+                      drive.turnDegAbs(90, .3);
+                      drive.moveDistance(94, .9);
+                      drive.turnDegAbs(0,.3);
+                }
+                drive.arcadeDrive(0, -.7, 0);
+                Timer.delay(2);
                 drive.brake();
-                //drive.turnDegAbs(75,.3);
+                dumper.open();
+                Timer.delay(.5);
+                dumper.set(DoubleSolenoid.Value.kForward);
                 break;
             case 1:
                 // Scale from Left
@@ -166,9 +171,7 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
-
         lift.start();
-
         System.out.println(" --- Start Teleop ---");
     }
 
@@ -266,15 +269,11 @@ public class Robot extends IterativeRobot {
         drive.updateDashboard();
         dumper.updateDashboard();
         lift.updateDashboard();
-        SmartDashboard.putBoolean("Pressure", comp.getPressureSwitchValue());
-        SmartDashboard.putBoolean("TooHigh", comp.getCompressorCurrentTooHighFault());
-        SmartDashboard.putBoolean("NotConnected", comp.getCompressorNotConnectedFault());
-        SmartDashboard.putBoolean("Shorted", comp.getCompressorShortedFault());
+        
         Timer.delay(0.01);
     }
 
     public void disabledInit() {
         lift.stop();
     }
-
 }

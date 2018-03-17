@@ -107,7 +107,8 @@ public class Lift implements Runnable {
     // Check Loop
 
     private void check() {
-        boolean currentState = switcher.get();
+        //boolean currentState = switcher.get();
+        boolean currentState = false;
         // Position Check
         if (currentState != prevState && Timer.getFPGATimestamp() - startTime > SWITCHER_DELAY) {
             pos += direction;
