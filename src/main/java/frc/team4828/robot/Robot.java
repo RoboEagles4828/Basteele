@@ -2,7 +2,7 @@ package frc.team4828.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.CameraServer;
 public class Robot extends IterativeRobot {
     // Joysticks
     private Joystick driveStick;
@@ -68,65 +68,13 @@ public class Robot extends IterativeRobot {
         if (!doneAuton) {
             switch (mode) {
             case 0:
-                // Just go forward
+                // Do Switch From Front
                 drive.arcadeDrive(0, .4, 0);
                 Timer.delay(6);
                 drive.brake();
                 //drive.turnDegAbs(75,.3);
                 break;
             case 1:
-                // Switch from Left
-                // Check left or right side
-                switch (data.charAt(0)) {
-                case 'L':
-                    drive.moveDistance(130, .9);
-                    drive.turnDegAbs(-90, .3);
-                    drive.moveDistance(-30, .9);
-                    dumper.open();
-                    Timer.delay(.5);
-                    dumper.set(DoubleSolenoid.Value.kForward);
-                    break;
-                case 'R':
-                    drive.moveDistance(5, .9);
-                    drive.turnDegAbs(24, .3);
-                    drive.moveDistance(288, .9);
-                    drive.turnDegAbs(0, .3);
-                    drive.moveDistance(60, .9);
-                    drive.turnDegAbs(90, .3);
-                    drive.moveDistance(-30, .9);
-                    dumper.open();
-                    Timer.delay(.5);
-                    dumper.set(DoubleSolenoid.Value.kForward);
-                    break;
-                }
-                break;
-            case 2:
-                // Switch from Right
-                // Check left or right side
-                switch (data.charAt(0)) {
-                case 'L':
-                    drive.moveDistance(5, .9);
-                    drive.turnDegAbs(-24, .5);
-                    drive.moveDistance(288, .9);
-                    drive.turnDegAbs(0, .5);
-                    drive.moveDistance(60, .9);
-                    drive.turnDegAbs(-90, .5);
-                    drive.moveDistance(-30, .9);
-                    dumper.open();
-                    Timer.delay(.5);
-                    dumper.set(DoubleSolenoid.Value.kForward);
-                    break;
-                case 'R':
-                    drive.moveDistance(130, .9);
-                    drive.turnDegAbs(90, .3);
-                    drive.moveDistance(-30, .9);
-                    dumper.open();
-                    Timer.delay(.5);
-                    dumper.set(DoubleSolenoid.Value.kForward);
-                    break;
-                }
-                break;
-            case 3:
                 // Scale from Left
                 switch (data.charAt(1)) {
                 case 'L':
@@ -155,7 +103,7 @@ public class Robot extends IterativeRobot {
                     break;
                 }
                 break;
-            case 4:
+            case 2:
                 // Scale from Right
                 switch (data.charAt(0)) {
                 case 'L':
@@ -184,21 +132,21 @@ public class Robot extends IterativeRobot {
                     break;
                 }
                 break;
-            case 5:
+            case 3:
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, .9);
                 drive.turnDegAbs(90, 0.3);
                 drive.moveDistance(40, .9);
                 break;
-            case 6:
+            case 4:
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, .9);
                 drive.turnDegAbs(-90, 0.3);
                 drive.moveDistance(40, .9);
                 break;
-            case 7:
+            case 5:
                 // Outtake into the hole
                 // Shake a bit to drop the grabber
                 drive.moveDistance(-5, .5);
@@ -206,6 +154,7 @@ public class Robot extends IterativeRobot {
                 grabber.outtake();
                 break;
             default:
+                System.out.println("No Auton mode selected.");
                 break;
             }
             doneAuton = true;
