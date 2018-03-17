@@ -94,7 +94,7 @@ public class Robot extends IterativeRobot {
                     break;
                 case 'R':
                     drive.moveDistance(270, 0.9);
-                    drive.turnDegAbs(90, .3);//98.5
+                    drive.turnDegAbs(90, .3);
                     drive.moveDistance(120, .9);
                     drive.turnDegAbs(0, .3);
                     drive.moveDistance(32, .9);
