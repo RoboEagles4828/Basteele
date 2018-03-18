@@ -118,7 +118,7 @@ public class Robot extends IterativeRobot {
                     drive.turnDegAbs(0, .3);
                     drive.moveDistance(190, .9);
                     lift.setTarget(1);
-                    while (lift.isBusy() && Timer.getMatchTime() > 1) {
+                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
                     drive.turnDegAbs(90, .3);
@@ -128,7 +128,7 @@ public class Robot extends IterativeRobot {
                 case 'R':
                     drive.moveDistance(310, .9);
                     lift.setTarget(1);
-                    while (lift.isBusy() && Timer.getMatchTime() > 1) {
+                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
                     drive.turnDegAbs(288, .3);
