@@ -21,7 +21,7 @@ public class Lift implements Runnable {
     private int target;
     private boolean manual;
     private int targetDirection;
-    private boolean stopThread = false;
+    private boolean stopThread = true;
 
     public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort, int amount) {
         liftMotor = new Victor(liftMotorPort);
