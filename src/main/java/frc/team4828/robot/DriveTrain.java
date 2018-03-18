@@ -16,12 +16,13 @@ public class DriveTrain {
     // MoveDistance Constants
     private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
     private static final double CORRECTION_FACTOR = 0.05;
-    private static final double ANGLE_THRESH = 0.1;
+    private static final double ANGLE_THRESH_MOVE = 0.1;
     private static final double ANGLE_CHECK_DELAY = 0.01;
     private static final double TIMEOUT = 10;
 
     // TurnDegrees Constants
     private static final double TURN_FACTOR = 0.01;
+    private static final double ANGLE_THRESH_TURN = 0.1;
 
     /**
      * DriveTrain for the robot.
@@ -151,7 +152,7 @@ public class DriveTrain {
         }
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
             changeAngle = startAngle - navx.getAngle();
-            if (Math.abs(changeAngle) > ANGLE_THRESH) {
+            if (Math.abs(changeAngle) > ANGLE_THRESH_MOVE) {
                 changeAngle = normalizeAbs(changeAngle * CORRECTION_FACTOR, speed);
                 if (speed * changeAngle > 0) {
                     right.drive(speed - changeAngle);
@@ -180,7 +181,7 @@ public class DriveTrain {
         double changeAngle;
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
             changeAngle = angle - navx.getAngle();
-            if (Math.abs(changeAngle) > ANGLE_THRESH) {
+            if (Math.abs(changeAngle) > ANGLE_THRESH_TURN) {
                 changeAngle = normalizeAbs(changeAngle * TURN_FACTOR, speed);
                 turn(changeAngle);
             } else {
