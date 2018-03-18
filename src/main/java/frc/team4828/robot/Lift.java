@@ -95,9 +95,11 @@ public class Lift implements Runnable {
     // Thread Control
 
     public void start() {
-        stopThread = false;
-        Thread thread = new Thread(this);
-        thread.start();
+        if (stopThread) {
+            stopThread = false;
+            Thread thread = new Thread(this);
+            thread.start();
+        }
     }
 
     public void stop() {
