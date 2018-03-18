@@ -16,12 +16,14 @@ public class DriveTrain {
     // MoveDistance Constants
     private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
     private static final double CORRECTION_FACTOR = 0.05;
+    private static final double CORRECTION_FACTOR_LOG = 0.1;
     private static final double ANGLE_THRESH_MOVE = 0.1;
     private static final double ANGLE_CHECK_DELAY = 0.01;
     private static final double TIMEOUT = 10;
 
     // TurnDegrees Constants
     private static final double TURN_FACTOR = 0.01;
+    private static final double TURN_FACTOR_LOG = 0.02;
     private static final double ANGLE_THRESH_TURN = 0.1;
 
     /**
@@ -81,6 +83,17 @@ public class DriveTrain {
     }
 
     /**
+     * Scales input so that it does not exceed a given maximum (Logistic).
+     * 
+     * @param input A double that is to be normalized.
+     * @param max Absolute maximum value of output.
+     * @return Normalized value.
+     */
+    private double normalizeLogAbs(double input, double factor, double max) {
+        return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max / 2;
+    }
+
+    /**
      * Scales input so that it does not exceed a given maximum.
      * 
      * @param input A double that is to be normalized.
@@ -135,6 +148,42 @@ public class DriveTrain {
     }
 
     /**
+     * Moves a given distance forward (Logistic).
+     *
+     * @param distance The distance in inches.
+     * @param speed The speed.
+     */
+    public void moveDistanceLog(double distance, double speed) {
+        double startTime = Timer.getFPGATimestamp();
+        double startEncL = left.getEnc();
+        double startEncR = right.getEnc();
+        double startAngle = navx.getAngle();
+        double maxEnc = Math.abs(distance * ENC_RATIO);
+        double changeAngle;
+        if (distance < 0) {
+            speed *= -1;
+        }
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
+            changeAngle = startAngle - navx.getAngle();
+            if (Math.abs(changeAngle) > ANGLE_THRESH_MOVE) {
+                changeAngle = normalizeLogAbs(changeAngle, CORRECTION_FACTOR_LOG, speed);
+                if (speed * changeAngle > 0) {
+                    right.drive(speed - changeAngle);
+                } else {
+                    left.drive(speed + changeAngle);
+                }
+            } else {
+                drive(speed);
+            }
+            if (Math.abs(left.getEnc() - startEncL) >= maxEnc && Math.abs(right.getEnc() - startEncR) >= maxEnc) {
+                brake();
+                break;
+            }
+            Timer.delay(ANGLE_CHECK_DELAY);
+        }
+    }
+
+    /**
      * Moves a given distance forward.
      *
      * @param distance The distance in inches.
@@ -163,6 +212,28 @@ public class DriveTrain {
                 drive(speed);
             }
             if (Math.abs(left.getEnc() - startEncL) >= maxEnc && Math.abs(right.getEnc() - startEncR) >= maxEnc) {
+                brake();
+                break;
+            }
+            Timer.delay(ANGLE_CHECK_DELAY);
+        }
+    }
+
+    /**
+     * Turns until it faces a given direction (Logistic).
+     * 
+     * @param angle The angle in degrees (Determined by the navx).
+     * @param speed The speed.
+     */
+    public void turnDegLogAbs(double angle, double speed) {
+        double startTime = Timer.getFPGATimestamp();
+        double changeAngle;
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
+            changeAngle = angle - navx.getAngle();
+            if (Math.abs(changeAngle) > ANGLE_THRESH_TURN) {
+                changeAngle = normalizeLogAbs(changeAngle, TURN_FACTOR_LOG, speed);
+                turn(changeAngle);
+            } else {
                 brake();
                 break;
             }
