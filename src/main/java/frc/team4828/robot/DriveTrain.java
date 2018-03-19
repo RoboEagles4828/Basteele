@@ -90,7 +90,7 @@ public class DriveTrain {
      * @return Normalized value.
      */
     private double normalizeLogAbs(double input, double factor, double max) {
-        return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max / 2;
+        return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max;
     }
 
     /**
