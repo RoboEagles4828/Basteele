@@ -15,13 +15,13 @@ public class DriveTrain {
 
     // MoveDistance Constants
     private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
-    private static final double CORRECTION_FACTOR = 0.05;
+    private static final double CORRECTION_FACTOR = 0.1;
     private static final double ANGLE_THRESH_MOVE = 0.1;
     private static final double ANGLE_CHECK_DELAY = 0.01;
     private static final double TIMEOUT = 10;
 
     // TurnDegrees Constants
-    private static final double TURN_FACTOR = 0.01;
+    private static final double TURN_FACTOR = 0.02;
     private static final double ANGLE_THRESH_TURN = 0.1;
 
     /**
@@ -89,12 +89,15 @@ public class DriveTrain {
      */
     private double normalizeAbs(double input, double factor, double max) {
         return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max;
+    }
+
+//    private double normalizeAbs(double input, double factor, double max) {
 //        input *= factor;
 //        if (Math.abs(input) > Math.abs(max)) {
 //            input *= Math.abs(max) / Math.abs(input);
 //        }
 //        return input;
-    }
+//    }
 
     /**
      * Scales inputs so that they do not exceed a given maximum.
