@@ -18,6 +18,7 @@ public class DriveTrain {
     private static final double CORRECTION_FACTOR = 0.1;
     private static final double ANGLE_THRESH_MOVE = 0.1;
     private static final double ANGLE_CHECK_DELAY = 0.01;
+    private static final double RAMP_ENC_DISTANCE = 500;
     private static final double TIMEOUT = 10;
 
     // TurnDegrees Constants
@@ -151,10 +152,12 @@ public class DriveTrain {
         double startEncR = right.getEnc();
         double startAngle = navx.getAngle();
         double maxEnc = Math.abs(distance * ENC_RATIO);
+        double currentEnc;
         double changeAngle;
         if (distance < 0) {
             speed *= -1;
         }
+        double maxSpeed = speed;
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
             changeAngle = startAngle - navx.getAngle();
             if (Math.abs(changeAngle) > ANGLE_THRESH_MOVE) {
@@ -167,9 +170,13 @@ public class DriveTrain {
             } else {
                 drive(speed);
             }
-            if (Math.abs(left.getEnc() - startEncL) >= maxEnc && Math.abs(right.getEnc() - startEncR) >= maxEnc) {
+            currentEnc = Math.max(Math.abs(left.getEnc() - startEncL), Math.abs(right.getEnc() - startEncR));
+            if (currentEnc >= maxEnc) {
                 brake();
                 break;
+            }
+            if (maxEnc - currentEnc < RAMP_ENC_DISTANCE) {
+                speed = maxSpeed * (maxEnc - currentEnc) / RAMP_ENC_DISTANCE;
             }
             Timer.delay(ANGLE_CHECK_DELAY);
         }
