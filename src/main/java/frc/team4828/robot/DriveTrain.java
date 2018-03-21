@@ -13,17 +13,20 @@ public class DriveTrain {
     private AHRS navx;
     private DoubleSolenoid shifter;
 
-    // MoveDistance Constants
     private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
-    private static final double CORRECTION_FACTOR = 0.1;
-    private static final double ANGLE_THRESH_MOVE = 0.1;
-    private static final double ANGLE_CHECK_DELAY = 0.01;
-    private static final double RAMP_ENC_DISTANCE = 500;
     private static final double TIMEOUT = 10;
+
+    // MoveDistance Constants
+    private static final double MOVE_FACTOR = 0.1;
+    private static final double MOVE_ANGLE_THRESH = 0.1;
+    private static final double MOVE_CHECK_DELAY = 0.01;
+    private static final double MOVE_RAMP_ENC = 500;
+    private static final double MOVE_RAMP_MIN = 0.1;
 
     // TurnDegrees Constants
     private static final double TURN_FACTOR = 0.02;
-    private static final double ANGLE_THRESH_TURN = 0.1;
+    private static final double TURN_ANGLE_THRESH = 0.1;
+    private static final double TURN_CHECK_DELAY = 0.01;
 
     /**
      * DriveTrain for the robot.
@@ -95,7 +98,7 @@ public class DriveTrain {
 //    private double normalizeAbs(double input, double factor, double max) {
 //        input *= factor;
 //        if (Math.abs(input) > Math.abs(max)) {
-//            input *= Math.abs(max) / Math.abs(input);
+//            input = Math.abs(max) * Math.signum(input);
 //        }
 //        return input;
 //    }
@@ -146,39 +149,49 @@ public class DriveTrain {
      * @param distance The distance in inches.
      * @param speed The speed.
      */
-    public void moveDistance(double distance, double speed) {
+    public void moveDistance(double distance, double maxSpeed) {
+        // Start values
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
         double startAngle = navx.getAngle();
-        double maxEnc = Math.abs(distance * ENC_RATIO);
+        // Current values
+        double currentAngle;
         double currentEnc;
-        double changeAngle;
-        if (distance < 0) {
-            speed *= -1;
-        }
-        double maxSpeed = speed;
-        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
-            changeAngle = startAngle - navx.getAngle();
-            if (Math.abs(changeAngle) > ANGLE_THRESH_MOVE) {
-                changeAngle = normalizeAbs(changeAngle, CORRECTION_FACTOR, speed);
-                if (speed * changeAngle > 0) {
-                    right.drive(speed - changeAngle);
+        // Target values
+        double maxEnc = Math.abs(distance * ENC_RATIO);
+
+        maxSpeed = Math.abs(maxSpeed) * Math.signum(distance); // Ensure max speed has the right sign
+        double speed = maxSpeed; // Set current speed to max
+
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) { // Loop until break or timeout
+            currentAngle = startAngle - navx.getAngle();
+            currentEnc = maxEnc - Math.max(Math.abs(left.getEnc() - startEncL), Math.abs(right.getEnc() - startEncR));
+            // Correct angle
+            if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
+                currentAngle = normalizeAbs(currentAngle, MOVE_FACTOR, speed);
+                if (speed * currentAngle > 0) {
+                    right.drive(speed - currentAngle);
                 } else {
-                    left.drive(speed + changeAngle);
+                    left.drive(speed + currentAngle);
                 }
             } else {
                 drive(speed);
             }
-            currentEnc = Math.max(Math.abs(left.getEnc() - startEncL), Math.abs(right.getEnc() - startEncR));
-            if (currentEnc >= maxEnc) {
+            // Check encoder
+            if (currentEnc <= 0) {
                 brake();
                 break;
             }
-            if (maxEnc - currentEnc < RAMP_ENC_DISTANCE) {
-                speed = maxSpeed * (maxEnc - currentEnc) / RAMP_ENC_DISTANCE;
+            // Ramp
+            if (currentEnc < MOVE_RAMP_ENC) {
+                speed = maxSpeed * currentEnc / MOVE_RAMP_ENC;
+                if (Math.abs(speed) < MOVE_RAMP_MIN) {
+                    speed = MOVE_RAMP_MIN * Math.signum(speed);
+                }
             }
-            Timer.delay(ANGLE_CHECK_DELAY);
+
+            Timer.delay(MOVE_CHECK_DELAY);
         }
     }
 
@@ -190,17 +203,17 @@ public class DriveTrain {
      */
     public void turnDegAbs(double angle, double speed) {
         double startTime = Timer.getFPGATimestamp();
-        double changeAngle;
+        double currentAngle;
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) {
-            changeAngle = angle - navx.getAngle();
-            if (Math.abs(changeAngle) > ANGLE_THRESH_TURN) {
-                changeAngle = normalizeAbs(changeAngle, TURN_FACTOR, speed);
-                turn(changeAngle);
+            currentAngle = angle - navx.getAngle();
+            if (Math.abs(currentAngle) > TURN_ANGLE_THRESH) {
+                currentAngle = normalizeAbs(currentAngle, TURN_FACTOR, speed);
+                turn(currentAngle);
             } else {
                 brake();
                 break;
             }
-            Timer.delay(ANGLE_CHECK_DELAY);
+            Timer.delay(TURN_CHECK_DELAY);
         }
     }
 
