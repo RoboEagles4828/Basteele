@@ -19,10 +19,10 @@ public class Ports {
     public static final int SWITCHER = 7;
     public static final int PROX = 6;
     // Pneumatics
-    public static final int COMPRESSOR = 0;
     public static final int[] SHIFTER = { 0, 4 };
     public static final int[] DUMPER = { 6, 7 };
     public static final int[] GRABBER = { 2, 3 };
+    public static final int FLIPPER = 5;
     // Auton
     public static final int[] AUTON = { 0, 1, 2 };
     // Servo
