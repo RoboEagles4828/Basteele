@@ -23,6 +23,8 @@ public class Robot extends IterativeRobot {
     // Dumper
     private Dumper dumper;
 
+    private Thread dashboardThread;
+
     public void robotInit() {
         // Joysticks
         driveStick = new Joystick(Ports.DRIVE_STICK);
@@ -42,6 +44,18 @@ public class Robot extends IterativeRobot {
         switch3 = new DigitalInput(Ports.AUTON[2]);
         // Dumper
         dumper = new Dumper(Ports.DUMPER, Ports.SERVO, Ports.PROX);
+
+        dashboardThread = new Thread() {
+            public void run() {
+                while (true) {
+                    drive.updateDashboard();
+                    dumper.updateDashboard();
+                    lift.updateDashboard();
+                    Timer.delay(0.1);
+                }
+            }
+        };
+        dashboardThread.start();
 
         CameraServer.getInstance().startAutomaticCapture();
     }
@@ -248,10 +262,6 @@ public class Robot extends IterativeRobot {
             drive.setGear(DoubleSolenoid.Value.kReverse);
         }
 
-        drive.updateDashboard();
-        dumper.updateDashboard();
-        lift.updateDashboard();
-        drive.debugEnc();
         Timer.delay(0.01);
     }
 
@@ -272,9 +282,6 @@ public class Robot extends IterativeRobot {
         } else {
             dumper.close();
         }
-        drive.updateDashboard();
-        dumper.updateDashboard();
-        lift.updateDashboard();
 
         Timer.delay(0.01);
     }
