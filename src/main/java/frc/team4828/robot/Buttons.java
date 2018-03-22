@@ -19,5 +19,6 @@ public class Buttons {
     public static final int GRABBER_OPEN = 2;
     public static final int[] GRABBER_CLOSE = { 3, 4, 5, 6 };
     public static final int GRABBER_OUT = 1;
+    public static final int FLIP = 12;
 
 }

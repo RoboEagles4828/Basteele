@@ -39,10 +39,10 @@ public class Grabber {
     }
 
     public void up() {
-        flipper.set(true);
+        flipper.set(false);
     }
 
     public void down() {
-        flipper.set(false);
+        flipper.set(true);
     }
 }

@@ -33,7 +33,7 @@ public class Robot extends IterativeRobot {
         // Lift
         lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, Ports.SWITCHER, 0);
         // Grabber
-        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER);
+        grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER, Ports.FLIPPER);
         // Climber
         climber = new Climber(Ports.LEFT_CLIMBER, Ports.RIGHT_CLIMBER);
         // Auton
@@ -186,12 +186,14 @@ public class Robot extends IterativeRobot {
                 Timer.delay(0.5);
             }
             dumper.set(DoubleSolenoid.Value.kForward);
-        } else {
+        } else{
             if (dumper.hasBlock()) {
                 dumper.close();
             } else {
                 dumper.open();
             }
+        }
+        if(driveStick.getRawButton(12)) {
             dumper.set(DoubleSolenoid.Value.kReverse);
         }
 
@@ -209,6 +211,11 @@ public class Robot extends IterativeRobot {
             } else if (liftStick.getRawButton(Buttons.LIFT_RESET)) {
                 lift.resetTarget();
             }
+        }
+        if (liftStick.getRawButton(Buttons.FLIP)) {
+            grabber.up();
+        } else {
+            grabber.down();
         }
 
         // Grabber
