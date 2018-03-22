@@ -186,14 +186,14 @@ public class Robot extends IterativeRobot {
                 Timer.delay(0.5);
             }
             dumper.set(DoubleSolenoid.Value.kForward);
-        } else{
+        } else {
             if (dumper.hasBlock()) {
                 dumper.close();
             } else {
                 dumper.open();
             }
         }
-        if(driveStick.getRawButton(12)) {
+        if (driveStick.getRawButton(12)) {
             dumper.set(DoubleSolenoid.Value.kReverse);
         }
 

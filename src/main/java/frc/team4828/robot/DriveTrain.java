@@ -171,9 +171,11 @@ public class DriveTrain {
             if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
                 currentAngle = normalizeAbs(currentAngle, MOVE_ANGLE_FACTOR, speed);
                 if (speed * currentAngle > 0) {
+                    left.drive(speed);
                     right.drive(speed - currentAngle);
                 } else {
                     left.drive(speed + currentAngle);
+                    right.drive(speed);
                 }
             } else {
                 drive(speed);
