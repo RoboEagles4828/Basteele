@@ -176,6 +176,9 @@ public class DriveTrain {
         maxSpeed = Math.abs(maxSpeed) * Math.signum(distance); // Ensure max speed has the right sign
         double speed = maxSpeed; // Set current speed to max
 
+        debugEnc("Begin MOVE");
+        debugNavx("Begin MOVE");
+
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) { // Loop until break or timeout
             currentAngle = startAngle - navx.getAngle();
             currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
@@ -202,6 +205,9 @@ public class DriveTrain {
 
             Timer.delay(MOVE_CHECK_DELAY);
         }
+
+        debugEnc("End MOVE");
+        debugNavx("End MOVE");
     }
 
     /**
@@ -216,6 +222,9 @@ public class DriveTrain {
         // Current values
         double currentAngle;
 
+        debugEnc("Begin TURN");
+        debugNavx("Begin TURN");
+
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) { // Loop until break or timeout
             currentAngle = angle - navx.getAngle();
             // Check angle
@@ -229,6 +238,9 @@ public class DriveTrain {
 
             Timer.delay(TURN_CHECK_DELAY);
         }
+
+        debugEnc("End TURN");
+        debugNavx("End TURN");
     }
 
     /**
@@ -242,8 +254,8 @@ public class DriveTrain {
     /**
      * Prints the current values of the encoders.
      */
-    public void debugEnc() {
-        System.out.println("Left: " + left.getEnc() + " Right: " + right.getEnc());
+    public void debugEnc(String input) {
+        System.out.println(input + " - Left: " + left.getEnc() + " Right: " + right.getEnc());
     }
 
     /**
@@ -251,6 +263,10 @@ public class DriveTrain {
      */
     public void reset() {
         navx.reset();
+    }
+
+    public void debugNavx(String input) {
+        System.out.println(input + " - Angle: " + navx.getAngle());
     }
 
     /**
