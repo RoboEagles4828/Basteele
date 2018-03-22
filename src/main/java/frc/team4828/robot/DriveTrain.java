@@ -92,15 +92,25 @@ public class DriveTrain {
      * @return Normalized value.
      */
     private double normalizeAbs(double input, double factor, double max) {
-        return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max;
+        input *= factor;
+        if (Math.abs(input) > Math.abs(max)) {
+            input = Math.abs(max) * Math.signum(input);
+        }
+        return input;
+    }
+
+    private double normalizeAbs(double input, double factor, double min, double max) {
+        input *= factor;
+        if (Math.abs(input) < Math.abs(min)) {
+            input = Math.abs(min) * Math.signum(input);
+        } else if (Math.abs(input) > Math.abs(max)) {
+            input = Math.abs(max) * Math.signum(input);
+        }
+        return input;
     }
 
 //    private double normalizeAbs(double input, double factor, double max) {
-//        input *= factor;
-//        if (Math.abs(input) > Math.abs(max)) {
-//            input = Math.abs(max) * Math.signum(input);
-//        }
-//        return input;
+//        return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max;
 //    }
 
     /**
@@ -149,7 +159,7 @@ public class DriveTrain {
      * @param distance The distance in inches.
      * @param maxSpeed The max speed.
      */
-    public void moveDistance(double distance, double maxSpeed) {
+    public void moveDistance(double distance, double maxSpeed) { // TODO Add min speed
         // Start values
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
