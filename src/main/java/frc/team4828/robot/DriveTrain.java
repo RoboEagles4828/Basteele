@@ -22,11 +22,13 @@ public class DriveTrain {
     private static final double MOVE_ANGLE_THRESH = 0.1;
     private static final double MOVE_ENC_THRESH = 0.1;
     private static final double MOVE_CHECK_DELAY = 0.01;
+    private static final double MOVE_MIN_SPEED = 0.1;
 
     // TurnDegrees Constants
     private static final double TURN_FACTOR = 0.02;
     private static final double TURN_ANGLE_THRESH = 0.1;
     private static final double TURN_CHECK_DELAY = 0.01;
+    private static final double TURN_MIN_SPEED = 0.1;
 
     /**
      * DriveTrain for the robot.
@@ -159,7 +161,7 @@ public class DriveTrain {
      * @param distance The distance in inches.
      * @param maxSpeed The max speed.
      */
-    public void moveDistance(double distance, double maxSpeed) { // TODO Add min speed
+    public void moveDistance(double distance, double maxSpeed) {
         // Start values
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
@@ -192,7 +194,7 @@ public class DriveTrain {
             }
             // Check encoder
             if (Math.abs(currentEnc) > MOVE_ENC_THRESH) {
-                speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, maxSpeed);
+                speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
             } else {
                 brake();
                 break;
@@ -218,7 +220,7 @@ public class DriveTrain {
             currentAngle = angle - navx.getAngle();
             // Check angle
             if (Math.abs(currentAngle) > TURN_ANGLE_THRESH) {
-                currentAngle = normalizeAbs(currentAngle, TURN_FACTOR, speed);
+                currentAngle = normalizeAbs(currentAngle, TURN_FACTOR, TURN_MIN_SPEED, speed);
                 turn(currentAngle);
             } else {
                 brake();
