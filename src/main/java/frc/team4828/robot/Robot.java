@@ -212,11 +212,6 @@ public class Robot extends IterativeRobot {
                 lift.resetTarget();
             }
         }
-        if (liftStick.getRawButton(Buttons.FLIP)) {
-            grabber.up();
-        } else {
-            grabber.down();
-        }
 
         // Grabber
         if (liftStick.getRawButton(Buttons.GRABBER_OPEN)) {
@@ -230,6 +225,11 @@ public class Robot extends IterativeRobot {
             grabber.outtake();
         } else {
             grabber.stop();
+        }
+        if (liftStick.getRawButton(Buttons.FLIP)) {
+            grabber.up();
+        } else {
+            grabber.down();
         }
 
         // Climber

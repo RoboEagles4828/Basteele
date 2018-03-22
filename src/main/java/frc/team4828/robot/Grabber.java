@@ -12,11 +12,11 @@ public class Grabber {
     private DoubleSolenoid switcher;
     private Solenoid flipper;
 
-    public Grabber(int leftMotorPort, int rightMotorPort, int[] switcherPorts, int flipperport) {
+    public Grabber(int leftMotorPort, int rightMotorPort, int[] switcherPorts, int flipperPort) {
         leftMotor = new Victor(leftMotorPort);
         rightMotor = new Victor(rightMotorPort);
         switcher = new DoubleSolenoid(switcherPorts[0], switcherPorts[1]);
-        flipper = new Solenoid(flipperport);
+        flipper = new Solenoid(flipperPort);
     }
 
     public void set(Value mode) {
