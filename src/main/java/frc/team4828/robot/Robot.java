@@ -225,6 +225,7 @@ public class Robot extends IterativeRobot {
                 }
                 break;
             case 5:
+                // Double scale from right
                 break;
             case 6:
                 // Out of the way left
@@ -278,7 +279,10 @@ public class Robot extends IterativeRobot {
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
             if (dumper.hasBlock()) {
-                dumper.close();
+                if(dumper.isOpen()) {
+                    Timer.delay(0.1);
+                    dumper.close();
+                }
             } else {
                 dumper.open();
             }
