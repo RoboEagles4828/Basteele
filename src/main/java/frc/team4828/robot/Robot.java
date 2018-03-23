@@ -25,6 +25,9 @@ public class Robot extends IterativeRobot {
 
     private Thread dashboardThread;
 
+    private static final double[] MOVE = { 0.5, 1.0 };
+    private static final double TURN = 0.3;
+
     public void robotInit() {
         // Joysticks
         driveStick = new Joystick(Ports.DRIVE_STICK);
@@ -80,97 +83,111 @@ public class Robot extends IterativeRobot {
         if (!doneAuton) {
             switch (mode) {
             case 0:
-                // Do Switch From Front
-                drive.moveDistance(-10, .5);
-                if (data.charAt(0) == 'L') {
-                    drive.turnDegAbs(90, .3);
-                    drive.moveDistance(94, .9);
-                    drive.turnDegAbs(0, .3);
+                // Switch from left
+                drive.moveDistance(-10, MOVE[0]);
+                if (data.charAt(0) == 'R') {
+                    drive.turnDegAbs(-90, TURN);
+                    drive.moveDistance(94, MOVE[1]);
+                    drive.turnDegAbs(0, TURN);
                 }
-                drive.arcadeDrive(0, -.7, 0);
+                drive.arcadeDrive(0, -MOVE[0], 0);
+                Timer.delay(2);
+                drive.brake();
+                dumper.open();
+                Timer.delay(.5);
+                dumper.set(DoubleSolenoid.Value.kForward);
+            case 1:
+                // Switch from right
+                drive.moveDistance(-10, MOVE[0]);
+                if (data.charAt(0) == 'L') {
+                    drive.turnDegAbs(90, TURN);
+                    drive.moveDistance(94, MOVE[1]);
+                    drive.turnDegAbs(0, TURN);
+                }
+                drive.arcadeDrive(0, -MOVE[0], 0);
                 Timer.delay(2);
                 drive.brake();
                 dumper.open();
                 Timer.delay(.5);
                 dumper.set(DoubleSolenoid.Value.kForward);
                 break;
-            case 1:
-                // Scale from Left
+            case 2:
+                // Scale from left
                 switch (data.charAt(1)) {
                 case 'L':
-                    drive.moveDistance(310, .9);
+                    drive.moveDistance(310, MOVE[1]);
                     lift.setTarget(1);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
-                    drive.turnDegAbs(90, .3);
-                    drive.moveDistance(10, .4);
+                    drive.turnDegAbs(90, TURN);
+                    drive.moveDistance(10, MOVE[0]);
                     grabber.outtake();
                     break;
                 case 'R':
-                    drive.moveDistance(270, 0.9);
-                    drive.turnDegAbs(90, .3);
-                    drive.moveDistance(120, .9);
-                    drive.turnDegAbs(0, .3);
-                    drive.moveDistance(32, .9);
+                    drive.moveDistance(270, MOVE[1]);
+                    drive.turnDegAbs(90, TURN);
+                    drive.moveDistance(120, MOVE[1]);
+                    drive.turnDegAbs(0, TURN);
+                    drive.moveDistance(32, MOVE[1]);
                     lift.setTarget(1);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
-                    drive.turnDegAbs(270, .3);
-                    drive.moveDistance(10, .4);
-                    grabber.outtake();
-                    break;
-                }
-                break;
-            case 2:
-                // Scale from Right
-                switch (data.charAt(0)) {
-                case 'L':
-                    drive.moveDistance(5, .9);
-                    drive.turnDegAbs(-24, .3);
-                    drive.moveDistance(300, .9);
-                    drive.turnDegAbs(0, .3);
-                    drive.moveDistance(190, .9);
-                    lift.setTarget(1);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(90, .3);
-                    drive.moveDistance(10, .4);
-                    grabber.outtake();
-                    break;
-                case 'R':
-                    drive.moveDistance(310, .9);
-                    lift.setTarget(1);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(288, .3);
-                    drive.moveDistance(10, .4);
+                    drive.turnDegAbs(270, TURN);
+                    drive.moveDistance(10, MOVE[0]);
                     grabber.outtake();
                     break;
                 }
                 break;
             case 3:
-                // Out of the way left
-                // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
-                drive.moveDistance(210, .9);
-                drive.turnDegAbs(90, 0.3);
-                drive.moveDistance(40, .9);
+                // Scale from right
+                switch (data.charAt(0)) {
+                case 'L':
+                    drive.moveDistance(5, MOVE[1]);
+                    drive.turnDegAbs(-24, TURN);
+                    drive.moveDistance(300, MOVE[1]);
+                    drive.turnDegAbs(0, TURN);
+                    drive.moveDistance(190, MOVE[1]);
+                    lift.setTarget(1);
+                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                        Timer.delay(0.1);
+                    }
+                    drive.turnDegAbs(90, TURN);
+                    drive.moveDistance(10, MOVE[0]);
+                    grabber.outtake();
+                    break;
+                case 'R':
+                    drive.moveDistance(310, MOVE[1]);
+                    lift.setTarget(1);
+                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                        Timer.delay(0.1);
+                    }
+                    drive.turnDegAbs(288, TURN);
+                    drive.moveDistance(10, MOVE[0]);
+                    grabber.outtake();
+                    break;
+                }
                 break;
             case 4:
-                // Out of the way right
+                // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
-                drive.moveDistance(210, .9);
-                drive.turnDegAbs(-90, 0.3);
-                drive.moveDistance(40, .9);
+                drive.moveDistance(210, MOVE[1]);
+                drive.turnDegAbs(90, TURN);
+                drive.moveDistance(40, MOVE[1]);
                 break;
             case 5:
+                // Out of the way right
+                // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
+                drive.moveDistance(210, MOVE[1]);
+                drive.turnDegAbs(-90, TURN);
+                drive.moveDistance(40, MOVE[1]);
+                break;
+            case 6:
                 // Outtake into the hole
                 // Shake a bit to drop the grabber
-                drive.moveDistance(-5, .5);
-                drive.moveDistance(5, .5);
+                drive.moveDistance(-5, MOVE[0]);
+                drive.moveDistance(5, MOVE[0]);
                 grabber.outtake();
                 break;
             default:
