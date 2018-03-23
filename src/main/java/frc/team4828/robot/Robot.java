@@ -67,6 +67,7 @@ public class Robot extends IterativeRobot {
         mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
         SmartDashboard.putNumber("Autonomous Mode", mode);
 
+        drive.setGear(DoubleSolenoid.Value.kReverse);
         drive.reset();
         drive.zeroEnc();
         lift.start();
@@ -184,6 +185,7 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
+        drive.setGear(DoubleSolenoid.Value.kReverse);
         lift.start();
         System.out.println(" --- Start Teleop ---");
     }
@@ -267,7 +269,7 @@ public class Robot extends IterativeRobot {
 
     public void testInit() {
         System.out.println(" --- Start Test Init ---");
-
+        drive.setGear(DoubleSolenoid.Value.kReverse);
         System.out.println(" --- Start Test ---");
     }
 

@@ -15,7 +15,7 @@ public class Ports {
     public static final int RIGHT_CLIMBER = 1;
     // DIO
     public static final int LIFT_MIN = 8;
-    public static final int LIFT_MAX = 5;
+    public static final int LIFT_MAX = 9;
     public static final int SWITCHER = 7;
     public static final int PROX = 6;
     // Pneumatics

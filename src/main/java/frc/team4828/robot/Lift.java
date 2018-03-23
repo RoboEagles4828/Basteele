@@ -109,42 +109,42 @@ public class Lift implements Runnable {
     // Check Loop
 
     private void check() {
+        int tempDirection = direction;
         //boolean currentState = switcher.get();
         boolean currentState = false;
         // Position Check
         if (currentState != prevState && Timer.getFPGATimestamp() - startTime > SWITCHER_DELAY) {
-            pos += direction;
+            pos += tempDirection;
             startTime = Timer.getFPGATimestamp();
-        }
-        // Limits Check
-        if (liftMin.get() && direction == -1) {
-            direction = 0;
-            pos = 0;
-            return;
-        } else if (liftMin.get()) {
-            pos = direction;
-        }
-        if (liftMax.get() && direction == 1) {
-            direction = 0;
-            pos = posMax;
-            return;
-        } else if (liftMax.get()) {
-            pos = posMax + direction;
         }
         // Manual Check
         if (manual) {
-            direction = targetDirection;
+            tempDirection = targetDirection;
         }
         // Auto Check
         else {
             if (pos > target) {
-                direction = -1;
+                tempDirection = -1;
             } else if (pos < target) {
-                direction = 1;
+                tempDirection = 1;
             } else {
-                direction = 0;
+                tempDirection = 0;
             }
         }
+        // Limits Check
+        if (liftMin.get() && tempDirection == -1) {
+            tempDirection = 0;
+            pos = 0;
+        } else if (liftMin.get()) {
+            pos = tempDirection;
+        }
+        if (liftMax.get() && tempDirection == 1) {
+            tempDirection = 0;
+            pos = posMax;
+        } else if (liftMax.get()) {
+            pos = posMax + tempDirection;
+        }
+        direction = tempDirection;
         prevState = currentState;
     }
 
