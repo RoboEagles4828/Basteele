@@ -75,6 +75,7 @@ public class Robot extends IterativeRobot {
         drive.zeroEnc();
 
         lift.start();
+        lift.resetTarget();
 
         dumper.close();
         dumper.set(DoubleSolenoid.Value.kReverse);
