@@ -22,13 +22,13 @@ public class DriveTrain {
     private static final double MOVE_ANGLE_THRESH = 0.2;
     private static final double MOVE_ENC_THRESH = 20;
     private static final double MOVE_CHECK_DELAY = 0.01;
-    private static final double MOVE_MIN_SPEED = 0.1;
+    private static final double MOVE_MIN_SPEED = 0.2;
 
     // TurnDegrees Constants
     private static final double TURN_FACTOR = 0.02;
     private static final double TURN_ANGLE_THRESH = 0.2;
     private static final double TURN_CHECK_DELAY = 0.01;
-    private static final double TURN_MIN_SPEED = 0.1;
+    private static final double TURN_MIN_SPEED = 0.2;
 
     /**
      * DriveTrain for the robot.
