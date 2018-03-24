@@ -13,7 +13,7 @@ public class DriveTrain {
     private AHRS navx;
     private DoubleSolenoid shifter;
 
-    private static final double ENC_RATIO = 25.464; // [ NU / Inch ] => [ NU / Rotations / 6π ]
+    private static final double ENC_RATIO = 25.46; // [ NU / Inch ] => [ NU / Rotations / 6π ]
     private static final double TIMEOUT = 5;
     // TODO Set constants
     // MoveDistance Constants

@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {
 
     private Thread dashboardThread;
 
-    private static final double[] MOVE = { 0.5, 1.0 };
+    private static final double[] MOVE = { 0.5, 0.7 };
     private static final double TURN = 0.3;
 
     public void robotInit() {
@@ -70,7 +70,7 @@ public class Robot extends IterativeRobot {
         mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
         SmartDashboard.putNumber("Autonomous Mode", mode);
 
-        drive.setGear(DoubleSolenoid.Value.kReverse);
+        drive.setGear(DoubleSolenoid.Value.kForward);
         drive.reset();
         drive.zeroEnc();
         lift.start();
@@ -81,7 +81,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            switch (mode) {
+            switch (5) {
             case 0:
                 // Switch from left
                 drive.moveDistance(-10, MOVE[0]);
@@ -115,8 +115,8 @@ public class Robot extends IterativeRobot {
                 // Scale from left
                 switch (data.charAt(0)) {
                 case 'L':
-                    drive.moveDistance(310, MOVE[1]);
                     lift.setTarget(1);
+                    drive.moveDistance(300, MOVE[1]);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
@@ -125,16 +125,16 @@ public class Robot extends IterativeRobot {
                     grabber.outtake();
                     break;
                 case 'R':
-                    drive.moveDistance(270, MOVE[1]);
-                    drive.turnDegAbs(90, TURN);
-                    drive.moveDistance(120, MOVE[1]);
-                    drive.turnDegAbs(0, TURN);
-                    drive.moveDistance(32, MOVE[1]);
                     lift.setTarget(1);
+                    drive.moveDistance(210, MOVE[1]);
+                    drive.turnDegAbs(90, TURN);
+                    drive.moveDistance(237, MOVE[1]);
+                    drive.turnDegAbs(0, TURN);
+                    drive.moveDistance(90, MOVE[1]);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
-                    drive.turnDegAbs(270, TURN);
+                    drive.turnDegAbs(-90, TURN);
                     drive.moveDistance(10, MOVE[0]);
                     grabber.outtake();
                     break;
@@ -144,12 +144,12 @@ public class Robot extends IterativeRobot {
                 // Scale from right
                 switch (data.charAt(0)) {
                 case 'L':
+                    lift.setTarget(1);
                     drive.moveDistance(5, MOVE[1]);
                     drive.turnDegAbs(-24, TURN);
                     drive.moveDistance(300, MOVE[1]);
                     drive.turnDegAbs(0, TURN);
                     drive.moveDistance(190, MOVE[1]);
-                    lift.setTarget(1);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
@@ -158,8 +158,8 @@ public class Robot extends IterativeRobot {
                     grabber.outtake();
                     break;
                 case 'R':
-                    drive.moveDistance(310, MOVE[1]);
                     lift.setTarget(1);
+                    drive.moveDistance(310, MOVE[1]);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
                     }
@@ -226,6 +226,7 @@ public class Robot extends IterativeRobot {
                 break;
             case 5:
                 // Double scale from right
+                drive.moveDistance(120, 0.3);
                 break;
             case 6:
                 // Out of the way left
@@ -260,7 +261,8 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
-        drive.setGear(DoubleSolenoid.Value.kReverse);
+        drive.zeroEnc();
+        drive.setGear(DoubleSolenoid.Value.kForward);
         lift.start();
         System.out.println(" --- Start Teleop ---");
     }
@@ -278,17 +280,15 @@ public class Robot extends IterativeRobot {
             }
             dumper.set(DoubleSolenoid.Value.kForward);
         } else {
+            dumper.set(DoubleSolenoid.Value.kReverse);
             if (dumper.hasBlock()) {
                 if(dumper.isOpen()) {
-                    Timer.delay(0.1);
+                    Timer.delay(0.05);
                     dumper.close();
                 }
             } else {
                 dumper.open();
             }
-        }
-        if (driveStick.getRawButton(12)) {
-            dumper.set(DoubleSolenoid.Value.kReverse);
         }
 
         // Lift
@@ -301,7 +301,7 @@ public class Robot extends IterativeRobot {
             if (liftStick.getRawButton(Buttons.LIFT[0])) {
                 lift.setTarget(0);
             } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
-                lift.setTarget(2);
+                lift.setTarget(1);
             } else if (liftStick.getRawButton(Buttons.LIFT_RESET)) {
                 lift.resetTarget();
             }
@@ -337,9 +337,9 @@ public class Robot extends IterativeRobot {
 
         // Gear Shift
         if (driveStick.getRawButton(Buttons.GEAR_HIGH)) {
-            drive.setGear(DoubleSolenoid.Value.kForward);
-        } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
             drive.setGear(DoubleSolenoid.Value.kReverse);
+        } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
+            drive.setGear(DoubleSolenoid.Value.kForward);
         }
 
         Timer.delay(0.01);
@@ -347,21 +347,12 @@ public class Robot extends IterativeRobot {
 
     public void testInit() {
         System.out.println(" --- Start Test Init ---");
-        drive.setGear(DoubleSolenoid.Value.kReverse);
+        drive.setGear(DoubleSolenoid.Value.kForward);
+        drive.moveDistance(120, 0.3);
         System.out.println(" --- Start Test ---");
     }
 
     public void testPeriodic() {
-        if (liftStick.getRawButton(1)) {
-            dumper.set(DoubleSolenoid.Value.kForward);
-        } else {
-            dumper.set(DoubleSolenoid.Value.kReverse);
-        }
-        if (liftStick.getRawButton(2)) {
-            dumper.open();
-        } else {
-            dumper.close();
-        }
 
         Timer.delay(0.01);
     }
