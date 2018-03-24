@@ -282,7 +282,7 @@ public class Robot extends IterativeRobot {
         } else {
             dumper.set(DoubleSolenoid.Value.kReverse);
             if (dumper.hasBlock()) {
-                if(dumper.isOpen()) {
+                if (dumper.isOpen()) {
                     Timer.delay(0.05);
                     dumper.close();
                 }
