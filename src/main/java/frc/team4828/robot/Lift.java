@@ -143,9 +143,9 @@ public class Lift implements Runnable {
         if (liftMax.get()) {
             if (tempDirection == 1) {
                 tempDirection = 0;
-                pos = 0;
+                pos = posMax;
             } else {
-                pos = tempDirection;
+                pos = posMax + tempDirection;
             }
         }
         direction = tempDirection;
