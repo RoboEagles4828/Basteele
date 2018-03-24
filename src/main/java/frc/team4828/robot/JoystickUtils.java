@@ -2,7 +2,7 @@ package frc.team4828.robot;
 
 public class JoystickUtils {
 
-    private static final double THRESHOLD = 0.01;
+    private static final double THRESHOLD = 0.1;
     private static final double ANGLE_THRESHOLD = 0.1;
 
     public static double processX(double x) {
