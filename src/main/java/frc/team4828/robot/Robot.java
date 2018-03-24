@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {
 
     private Thread dashboardThread;
 
-    private static final double[] MOVE = { 0.5, 0.7 };
+    private static final double[] MOVE = { 0.3, 0.5 };
     private static final double TURN = 0.3;
 
     public void robotInit() {
@@ -74,8 +74,8 @@ public class Robot extends IterativeRobot {
         drive.reset();
         drive.zeroEnc();
 
-        lift.start();
-        lift.resetTarget();
+        //lift.start();
+        //lift.resetTarget();
 
         dumper.close();
         dumper.set(DoubleSolenoid.Value.kReverse);
@@ -91,7 +91,7 @@ public class Robot extends IterativeRobot {
                 drive.moveDistance(-10, MOVE[0]);
                 if (data.charAt(0) == 'L') {
                     drive.turnDegAbs(90, TURN);
-                    drive.moveDistance(94, MOVE[1]);
+                    drive.moveDistance(108, MOVE[0]);
                     drive.turnDegAbs(0, TURN);
                 }
                 drive.arcadeDrive(0, -MOVE[1], 0);
