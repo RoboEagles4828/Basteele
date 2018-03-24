@@ -86,12 +86,13 @@ public class Robot extends IterativeRobot {
             switch (0) {
             case 0:
                 // Switch from front
-                drive.moveDistance(-10, MOVE[0]);
+                drive.moveDistance(-16, MOVE[0]);
+                //drive.moveDistance(1, MOVE[1]);
 
                 if (data.charAt(0) == 'L') {
                     drive.turnDegAbs(90, TURN);
                     drive.moveDistance(94, MOVE[1]);
-
+                    //drive.moveDistance(2, MOVE[1]);
                     drive.turnDegAbs(0, TURN);
                 }
                 drive.arcadeDrive(0, -MOVE[1], 0);
