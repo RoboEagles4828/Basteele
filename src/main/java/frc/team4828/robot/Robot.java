@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {
 
     private Thread dashboardThread;
 
-    private static final double[] MOVE = { 0.3, 0.5 };
+    private static final double[] MOVE = { 0.5, 0.7 };
     private static final double TURN = 0.3;
 
     public void robotInit() {
@@ -75,7 +75,7 @@ public class Robot extends IterativeRobot {
         drive.zeroEnc();
 
         //lift.start();
-        //lift.resetTarget();
+        lift.resetTarget();
 
         dumper.close();
         dumper.set(DoubleSolenoid.Value.kReverse);
@@ -332,11 +332,11 @@ public class Robot extends IterativeRobot {
         }
 
         // Gear Shift
-        if (driveStick.getRawButton(Buttons.GEAR_HIGH)) {
-            drive.setGear(DoubleSolenoid.Value.kReverse);
-        } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
-            drive.setGear(DoubleSolenoid.Value.kForward);
-        }
+//        if (driveStick.getRawButton(Buttons.GEAR_HIGH)) {
+//            drive.setGear(DoubleSolenoid.Value.kReverse);
+//        } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
+//            drive.setGear(DoubleSolenoid.Value.kForward);
+//        }
 
         Timer.delay(0.01);
     }

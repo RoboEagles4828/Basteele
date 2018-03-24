@@ -19,7 +19,7 @@ public class DriveTrain {
     // MoveDistance Constants
     private static final double MOVE_ANGLE_FACTOR = 0.05;
     private static final double MOVE_RAMP_FACTOR = 0.01;
-    private static final double MOVE_ANGLE_THRESH = 0;
+    private static final double MOVE_ANGLE_THRESH = 0.1;
     private static final double MOVE_ENC_THRESH = 40;
     private static final double MOVE_CHECK_DELAY = 0.001;
     private static final double MOVE_MIN_SPEED = 0.1;
