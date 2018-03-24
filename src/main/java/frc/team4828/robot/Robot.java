@@ -60,7 +60,7 @@ public class Robot extends IterativeRobot {
         };
         dashboardThread.start();
 
-        CameraServer.getInstance().startAutomaticCapture();
+        //CameraServer.getInstance().startAutomaticCapture();
     }
 
     public void autonomousInit() {
@@ -75,6 +75,7 @@ public class Robot extends IterativeRobot {
         drive.zeroEnc();
         lift.start();
         dumper.close();
+        dumper.set(DoubleSolenoid.Value.kReverse);
 
         System.out.println(" --- Start Autonomous ---");
     }
@@ -83,151 +84,141 @@ public class Robot extends IterativeRobot {
         if (!doneAuton) {
             switch (5) {
             case 0:
-                // Switch from left
+                // Switch from front
                 drive.moveDistance(-10, MOVE[0]);
-                if (data.charAt(0) == 'R') {
-                    drive.turnDegAbs(-90, TURN);
-                    drive.moveDistance(94, MOVE[1]);
-                    drive.turnDegAbs(0, TURN);
-                }
-                drive.arcadeDrive(0, -MOVE[0], 0);
-                Timer.delay(2);
-                drive.brake();
-                dumper.open();
-                Timer.delay(.5);
-                dumper.set(DoubleSolenoid.Value.kForward);
-            case 1:
-                // Switch from right
-                drive.moveDistance(-10, MOVE[0]);
+
                 if (data.charAt(0) == 'L') {
                     drive.turnDegAbs(90, TURN);
                     drive.moveDistance(94, MOVE[1]);
+
                     drive.turnDegAbs(0, TURN);
                 }
-                drive.arcadeDrive(0, -MOVE[0], 0);
+                drive.arcadeDrive(0, -MOVE[1], 0);
                 Timer.delay(2);
                 drive.brake();
                 dumper.open();
                 Timer.delay(.5);
                 dumper.set(DoubleSolenoid.Value.kForward);
                 break;
-            case 2:
-                // Scale from left
-                switch (data.charAt(0)) {
-                case 'L':
-                    lift.setTarget(1);
-                    drive.moveDistance(300, MOVE[1]);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
+                case 2:
+                    // Scale from left
+                    switch (data.charAt(0)) {
+                        case 'L':
+                            lift.setTarget(1);
+                            drive.moveDistance(300, MOVE[1]);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.turnDegAbs(90, TURN);
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            break;
+                        case 'R':
+                            lift.setTarget(1);
+                            drive.moveDistance(210, MOVE[1]);
+                            drive.turnDegAbs(90, TURN);
+                            drive.moveDistance(237, MOVE[1]);
+                            drive.turnDegAbs(0, TURN);
+                            drive.moveDistance(90, MOVE[1]);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.turnDegAbs(-90, TURN);
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            break;
                     }
-                    drive.turnDegAbs(90, TURN);
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
                     break;
-                case 'R':
-                    lift.setTarget(1);
-                    drive.moveDistance(210, MOVE[1]);
-                    drive.turnDegAbs(90, TURN);
-                    drive.moveDistance(237, MOVE[1]);
-                    drive.turnDegAbs(0, TURN);
-                    drive.moveDistance(90, MOVE[1]);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
+                case 3:
+                    // Scale from right
+                    switch (data.charAt(0)) {
+                        case 'L':
+                            lift.setTarget(1);
+                            drive.moveDistance(5, MOVE[1]);
+                            drive.turnDegAbs(-24, TURN);
+                            drive.moveDistance(300, MOVE[1]);
+                            drive.turnDegAbs(0, TURN);
+                            drive.moveDistance(190, MOVE[1]);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.turnDegAbs(90, TURN);
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            break;
+                        case 'R':
+                            lift.setTarget(1);
+                            drive.moveDistance(310, MOVE[1]);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.turnDegAbs(288, TURN);
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            break;
                     }
-                    drive.turnDegAbs(-90, TURN);
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
                     break;
-                }
-                break;
-            case 3:
-                // Scale from right
-                switch (data.charAt(0)) {
-                case 'L':
-                    lift.setTarget(1);
-                    drive.moveDistance(5, MOVE[1]);
-                    drive.turnDegAbs(-24, TURN);
-                    drive.moveDistance(300, MOVE[1]);
-                    drive.turnDegAbs(0, TURN);
-                    drive.moveDistance(190, MOVE[1]);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
+                case 4:
+                    // Double scale from left
+                    switch (data.charAt(0)) {
+                        case 'L':
+                            lift.setTarget(1);
+                            drive.moveDistance(310, MOVE[1]);
+                            drive.turnDegAbs(90, TURN);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            Timer.delay(0.5);
+                            grabber.stop();
+                            lift.setTarget(0);
+                            drive.moveDistance(-10, MOVE[0]);
+                            drive.turnDegAbs(0, TURN);
+                            drive.moveDistance(-36, MOVE[0]); // Set distance
+                            drive.turnDegAbs(90, TURN);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            grabber.set(DoubleSolenoid.Value.kForward);
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.set(DoubleSolenoid.Value.kReverse);
+                            grabber.intake();
+                            Timer.delay(0.5);
+                            grabber.stop();
+                            drive.moveDistance(-10, MOVE[0]);
+                            lift.setTarget(1);
+                            drive.turnDegAbs(0, TURN);
+                            drive.moveDistance(36, MOVE[0]); // Set distance
+                            drive.turnDegAbs(90, TURN);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            break;
+                        case 'R':
+                            drive.moveDistance(270, MOVE[1]);
+                            drive.turnDegAbs(90, TURN);
+                            drive.moveDistance(120, MOVE[1]);
+                            drive.turnDegAbs(0, TURN);
+                            drive.moveDistance(32, MOVE[1]);
+                            lift.setTarget(1);
+                            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                                Timer.delay(0.1);
+                            }
+                            drive.turnDegAbs(270, TURN);
+                            drive.moveDistance(10, MOVE[0]);
+                            grabber.outtake();
+                            break;
                     }
-                    drive.turnDegAbs(90, TURN);
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
                     break;
-                case 'R':
-                    lift.setTarget(1);
-                    drive.moveDistance(310, MOVE[1]);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(288, TURN);
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
+                case 5:
+                    // Double scale from right
+                    System.out.println("Start move");
+                    drive.moveDistance(60, 0.3);
+                    drive.brake();
                     break;
-                }
-                break;
-            case 4:
-                // Double scale from left
-                switch (data.charAt(0)) {
-                case 'L':
-                    lift.setTarget(1);
-                    drive.moveDistance(310, MOVE[1]);
-                    drive.turnDegAbs(90, TURN);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
-                    Timer.delay(0.5);
-                    grabber.stop();
-                    lift.setTarget(0);
-                    drive.moveDistance(-10, MOVE[0]);
-                    drive.turnDegAbs(0, TURN);
-                    drive.moveDistance(-36, MOVE[0]); // Set distance
-                    drive.turnDegAbs(90, TURN);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    grabber.set(DoubleSolenoid.Value.kForward);
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.set(DoubleSolenoid.Value.kReverse);
-                    grabber.intake();
-                    Timer.delay(0.5);
-                    grabber.stop();
-                    drive.moveDistance(-10, MOVE[0]);
-                    lift.setTarget(1);
-                    drive.turnDegAbs(0, TURN);
-                    drive.moveDistance(36, MOVE[0]); // Set distance
-                    drive.turnDegAbs(90, TURN);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
-                    break;
-                case 'R':
-                    drive.moveDistance(270, MOVE[1]);
-                    drive.turnDegAbs(90, TURN);
-                    drive.moveDistance(120, MOVE[1]);
-                    drive.turnDegAbs(0, TURN);
-                    drive.moveDistance(32, MOVE[1]);
-                    lift.setTarget(1);
-                    while (lift.isBusy() && Timer.getMatchTime() > 3) {
-                        Timer.delay(0.1);
-                    }
-                    drive.turnDegAbs(270, TURN);
-                    drive.moveDistance(10, MOVE[0]);
-                    grabber.outtake();
-                    break;
-                }
-                break;
-            case 5:
-                // Double scale from right
-                drive.moveDistance(120, 0.3);
-                break;
             case 6:
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
@@ -294,7 +285,7 @@ public class Robot extends IterativeRobot {
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
             lift.setManual(true);
-            lift.setSpeedManual(JoystickUtils.processY(-liftStick.getY()));
+            lift.setSpeedManual(liftStick.getY());
             lift.resetTarget();
         } else {
             lift.setManual(false);

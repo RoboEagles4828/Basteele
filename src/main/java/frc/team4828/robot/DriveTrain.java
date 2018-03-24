@@ -19,7 +19,7 @@ public class DriveTrain {
     // MoveDistance Constants
     private static final double MOVE_ANGLE_FACTOR = 0.1;
     private static final double MOVE_RAMP_FACTOR = 0.1;
-    private static final double MOVE_ANGLE_THRESH = 0.2;
+    private static final double MOVE_ANGLE_THRESH = 1;
     private static final double MOVE_ENC_THRESH = 20;
     private static final double MOVE_CHECK_DELAY = 0.01;
     private static final double MOVE_MIN_SPEED = 0.1;
@@ -169,38 +169,50 @@ public class DriveTrain {
         double startAngle = navx.getAngle();
         // Current values
         double currentAngle;
-        double currentEnc;
+        double currentEncL, currentEncR;
         // Target values
         double targetEnc = distance * ENC_RATIO;
+        boolean ldone = false, rdone = false;
 
         maxSpeed = Math.abs(maxSpeed) * Math.signum(distance); // Ensure max speed has the right sign
         double speed = maxSpeed; // Set current speed to max
 
         debugEnc("Begin MOVE");
         debugNavx("Begin MOVE");
-
-        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) { // Loop until break or timeout
+        left.zeroEnc();
+        right.zeroEnc();
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT && (!ldone || !rdone)) { // Loop until break or timeout
             currentAngle = startAngle - navx.getAngle();
-            currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
+            //currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
+            currentEncL = left.getEnc();
+            currentEncR = left.getEnc();
+            System.out.println("Current: " + currentEncL + " " + currentEncR);
+
             // Correct angle
-            if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
-                currentAngle = normalizeAbs(currentAngle, MOVE_ANGLE_FACTOR, speed);
-                if (speed * currentAngle > 0) {
-                    left.drive(speed);
-                    right.drive(speed - currentAngle);
-                } else {
-                    left.drive(speed + currentAngle);
-                    right.drive(speed);
-                }
-            } else {
+//            System.out.println("Angle: " + currentAngle);
+//            if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
+//                System.out.println("Correcting Angle");
+//                currentAngle = normalizeAbs(currentAngle, MOVE_ANGLE_FACTOR, speed);
+//                if (speed * currentAngle > 0) {
+//                    left.drive(speed);
+//                    right.drive(speed - currentAngle);
+//                } else {
+//                    left.drive(speed + currentAngle);
+//                    right.drive(speed);
+//                }
+//            } else {
                 drive(speed);
-            }
+            //}
             // Check encoder
-            if (Math.abs(currentEnc) > MOVE_ENC_THRESH) {
-                speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
-            } else {
-                brake();
-                break;
+            if (Math.abs(currentEncL) > targetEnc) {
+                //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                left.brake();
+                ldone = true;
+            }
+            if (Math.abs(currentEncR) > targetEnc) {
+                //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                right.brake();
+                rdone = true;
             }
 
             Timer.delay(MOVE_CHECK_DELAY);
