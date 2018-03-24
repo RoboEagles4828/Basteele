@@ -238,13 +238,6 @@ public class Robot extends IterativeRobot {
                 drive.moveDistance(40, MOVE[1]);
                 break;
             case 9:
-                // Outtake into the hole
-                // Shake a bit to drop the grabber
-                drive.moveDistance(-5, MOVE[0]);
-                drive.moveDistance(5, MOVE[0]);
-                grabber.outtake();
-                break;
-            case 10:
                 // Test
                 drive.moveDistance(120, 0.3);
                 break;
