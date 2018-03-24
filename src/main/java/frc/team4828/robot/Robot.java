@@ -60,7 +60,7 @@ public class Robot extends IterativeRobot {
         };
         dashboardThread.start();
 
-        CameraServer.getInstance().startAutomaticCapture();
+//        CameraServer.getInstance().startAutomaticCapture();
     }
 
     public void autonomousInit() {
@@ -73,45 +73,40 @@ public class Robot extends IterativeRobot {
         drive.setGear(DoubleSolenoid.Value.kForward);
         drive.reset();
         drive.zeroEnc();
+
         lift.start();
+
         dumper.close();
+        dumper.set(DoubleSolenoid.Value.kReverse);
 
         System.out.println(" --- Start Autonomous ---");
     }
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            switch (5) {
+            switch (10) {
             case 0:
-                // Switch from left
-                drive.moveDistance(-10, MOVE[0]);
-                if (data.charAt(0) == 'R') {
-                    drive.turnDegAbs(-90, TURN);
-                    drive.moveDistance(94, MOVE[1]);
-                    drive.turnDegAbs(0, TURN);
-                }
-                drive.arcadeDrive(0, -MOVE[0], 0);
-                Timer.delay(2);
-                drive.brake();
-                dumper.open();
-                Timer.delay(.5);
-                dumper.set(DoubleSolenoid.Value.kForward);
-            case 1:
-                // Switch from right
+                // Switch from front
                 drive.moveDistance(-10, MOVE[0]);
                 if (data.charAt(0) == 'L') {
                     drive.turnDegAbs(90, TURN);
                     drive.moveDistance(94, MOVE[1]);
                     drive.turnDegAbs(0, TURN);
                 }
-                drive.arcadeDrive(0, -MOVE[0], 0);
+                drive.arcadeDrive(0, -MOVE[1], 0);
                 Timer.delay(2);
                 drive.brake();
                 dumper.open();
                 Timer.delay(.5);
                 dumper.set(DoubleSolenoid.Value.kForward);
                 break;
+            case 1:
+                // Switch from left
+                break;
             case 2:
+                // Switch from right
+                break;
+            case 3:
                 // Scale from left
                 switch (data.charAt(0)) {
                 case 'L':
@@ -140,7 +135,7 @@ public class Robot extends IterativeRobot {
                     break;
                 }
                 break;
-            case 3:
+            case 4:
                 // Scale from right
                 switch (data.charAt(0)) {
                 case 'L':
@@ -169,7 +164,7 @@ public class Robot extends IterativeRobot {
                     break;
                 }
                 break;
-            case 4:
+            case 5:
                 // Double scale from left
                 switch (data.charAt(0)) {
                 case 'L':
@@ -224,30 +219,33 @@ public class Robot extends IterativeRobot {
                     break;
                 }
                 break;
-            case 5:
-                // Double scale from right
-                drive.moveDistance(120, 0.3);
-                break;
             case 6:
+                // Double scale from right
+                break;
+            case 7:
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, MOVE[1]);
                 drive.turnDegAbs(90, TURN);
                 drive.moveDistance(40, MOVE[1]);
                 break;
-            case 7:
+            case 8:
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, MOVE[1]);
                 drive.turnDegAbs(-90, TURN);
                 drive.moveDistance(40, MOVE[1]);
                 break;
-            case 8:
+            case 9:
                 // Outtake into the hole
                 // Shake a bit to drop the grabber
                 drive.moveDistance(-5, MOVE[0]);
                 drive.moveDistance(5, MOVE[0]);
                 grabber.outtake();
+                break;
+            case 10:
+                // Test
+                drive.moveDistance(120, 0.3);
                 break;
             default:
                 System.out.println("No Auton mode selected.");
@@ -261,9 +259,12 @@ public class Robot extends IterativeRobot {
 
     public void teleopInit() {
         System.out.println(" --- Start Teleop Init ---");
-        drive.zeroEnc();
+
         drive.setGear(DoubleSolenoid.Value.kForward);
+        drive.zeroEnc();
+
         lift.start();
+
         System.out.println(" --- Start Teleop ---");
     }
 
