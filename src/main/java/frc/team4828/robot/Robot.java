@@ -83,7 +83,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            switch (0) {
+            switch (9) {
             case 0:
                 // Switch from front
                 drive.moveDistance(-16, MOVE[0]);
@@ -242,6 +242,10 @@ public class Robot extends IterativeRobot {
                 drive.moveDistance(200, MOVE[0]);
                 drive.brake();
                 break;
+            case 9:
+                drive.moveDistance(60, MOVE[0]);
+                Timer.delay(3);
+                drive.turnDegAbs(90, TURN);
             default:
                 System.out.println("No Auton mode selected.");
                 break;

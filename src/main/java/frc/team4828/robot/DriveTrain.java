@@ -25,7 +25,7 @@ public class DriveTrain {
     private static final double MOVE_MIN_SPEED = 0.2;
 
     // TurnDegrees Constants
-    private static final double TURN_FACTOR = 0.02;
+    private static final double TURN_FACTOR = 0.005;
     private static final double TURN_ANGLE_THRESH = 0.5;
     private static final double TURN_CHECK_DELAY = 0.001;
     private static final double TURN_MIN_SPEED = 0.1;
@@ -70,6 +70,7 @@ public class DriveTrain {
      */
     public void brake() {
         drive(0);
+
     }
 
     /**
@@ -228,12 +229,12 @@ public class DriveTrain {
                     rdone = true;
                 }
             }
-
             Timer.delay(MOVE_CHECK_DELAY);
         }
 
         debugEnc("End MOVE");
         debugNavx("End MOVE");
+        brake();
     }
 
     /**
@@ -267,6 +268,7 @@ public class DriveTrain {
 
         debugEnc("End TURN");
         debugNavx("End TURN");
+        brake();
     }
 
     /**
