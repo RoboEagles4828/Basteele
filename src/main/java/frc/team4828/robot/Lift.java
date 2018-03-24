@@ -132,17 +132,21 @@ public class Lift implements Runnable {
             }
         }
         // Limits Check
-        if (liftMin.get() && tempDirection == -1) {
-            tempDirection = 0;
-            pos = 0;
-        } else if (liftMin.get()) {
-            pos = tempDirection;
+        if (liftMin.get()) {
+            if (tempDirection == -1) {
+                tempDirection = 0;
+                pos = 0;
+            } else {
+                pos = tempDirection;
+            }
         }
-        if (liftMax.get() && tempDirection == 1) {
-            tempDirection = 0;
-            pos = posMax;
-        } else if (liftMax.get()) {
-            pos = posMax + tempDirection;
+        if (liftMax.get()) {
+            if (tempDirection == 1) {
+                tempDirection = 0;
+                pos = 0;
+            } else {
+                pos = tempDirection;
+            }
         }
         direction = tempDirection;
         prevState = currentState;
