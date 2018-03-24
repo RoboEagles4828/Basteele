@@ -18,8 +18,8 @@ public class DriveTrain {
     // TODO Set constants
     // MoveDistance Constants
     private static final double MOVE_ANGLE_FACTOR = 0.1;
-    private static final double MOVE_RAMP_FACTOR = 0.1;
-    private static final double MOVE_ANGLE_THRESH = 1;
+    private static final double MOVE_RAMP_FACTOR = 0.01;
+    private static final double MOVE_ANGLE_THRESH = .2;
     private static final double MOVE_ENC_THRESH = 20;
     private static final double MOVE_CHECK_DELAY = 0.01;
     private static final double MOVE_MIN_SPEED = 0.1;
@@ -179,30 +179,31 @@ public class DriveTrain {
 
         debugEnc("Begin MOVE");
         debugNavx("Begin MOVE");
-        left.zeroEnc();
-        right.zeroEnc();
+        zeroEnc();
+        Timer.delay(.1);
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT && (!ldone || !rdone)) { // Loop until break or timeout
             currentAngle = startAngle - navx.getAngle();
             //currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
             currentEncL = left.getEnc();
-            currentEncR = left.getEnc();
+            currentEncR = right.getEnc();
             System.out.println("Current: " + currentEncL + " " + currentEncR);
 
             // Correct angle
-//            System.out.println("Angle: " + currentAngle);
-//            if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
-//                System.out.println("Correcting Angle");
-//                currentAngle = normalizeAbs(currentAngle, MOVE_ANGLE_FACTOR, speed);
-//                if (speed * currentAngle > 0) {
-//                    left.drive(speed);
-//                    right.drive(speed - currentAngle);
-//                } else {
-//                    left.drive(speed + currentAngle);
-//                    right.drive(speed);
-//                }
-//            } else {
+            System.out.println("Angle: " + currentAngle);
+            if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
+                System.out.println("Correcting Angle");
+                currentAngle = normalizeAbs(currentAngle, MOVE_ANGLE_FACTOR, speed);
+                if (speed * currentAngle > 0) {
+                    left.drive(speed);
+                    right.drive(speed - currentAngle);
+                } else {
+                    left.drive(speed + currentAngle);
+                    right.drive(speed);
+                }
+            } else {
                 drive(speed);
-            //}
+            }
+
             // Check encoder
             if (Math.abs(currentEncL) > targetEnc) {
                 //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
