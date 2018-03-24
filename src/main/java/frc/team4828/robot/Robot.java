@@ -258,6 +258,7 @@ public class Robot extends IterativeRobot {
         drive.zeroEnc();
 
         lift.start();
+        lift.resetTarget();
 
         System.out.println(" --- Start Teleop ---");
     }
