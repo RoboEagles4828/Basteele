@@ -205,15 +205,28 @@ public class DriveTrain {
             }
 
             // Check encoder
-            if (Math.abs(currentEncL) > targetEnc) {
-                //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
-                left.brake();
-                ldone = true;
-            }
-            if (Math.abs(currentEncR) > targetEnc) {
-                //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
-                right.brake();
-                rdone = true;
+            if(distance > 0) {
+                if (currentEncL > targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    left.brake();
+                    ldone = true;
+                }
+                if (currentEncR > targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    right.brake();
+                    rdone = true;
+                }
+            } else {
+                if (currentEncL < targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    left.brake();
+                    ldone = true;
+                }
+                if (currentEncR < targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    right.brake();
+                    rdone = true;
+                }
             }
 
             Timer.delay(MOVE_CHECK_DELAY);

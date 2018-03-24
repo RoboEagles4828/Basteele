@@ -219,6 +219,8 @@ public class Robot extends IterativeRobot {
                 // Double scale from right
                 System.out.println("Start move");
                 drive.moveDistance(60, 0.3);
+                drive.moveDistance(-60, 0.3);
+
                 drive.brake();
                 break;
             case 6:
