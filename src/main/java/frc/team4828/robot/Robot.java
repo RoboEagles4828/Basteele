@@ -238,8 +238,15 @@ public class Robot extends IterativeRobot {
                 drive.moveDistance(40, MOVE[1]);
                 break;
             case 9:
+                // Move Forward
+                drive.moveDistance(200, MOVE[0]);
+                drive.brake();
+                break;
+            case 10:
                 // Test
-                drive.moveDistance(120, 0.3);
+                drive.moveDistance(60, MOVE[0]);
+                Timer.delay(1);
+                drive.turnDegAbs(90, TURN);
                 break;
             default:
                 System.out.println("No Auton mode selected.");
@@ -290,7 +297,7 @@ public class Robot extends IterativeRobot {
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
             lift.setManual(true);
-            lift.setSpeedManual(JoystickUtils.processY(-liftStick.getY()));
+            lift.setSpeedManual(liftStick.getY());
             lift.resetTarget();
         } else {
             lift.setManual(false);

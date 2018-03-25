@@ -70,6 +70,7 @@ public class DriveTrain {
      */
     public void brake() {
         drive(0);
+
     }
 
     /**
@@ -169,21 +170,29 @@ public class DriveTrain {
         double startAngle = navx.getAngle();
         // Current values
         double currentAngle;
-        double currentEnc;
+        double currentEncL, currentEncR;
         // Target values
         double targetEnc = distance * ENC_RATIO;
+        boolean ldone = false, rdone = false;
 
         maxSpeed = Math.abs(maxSpeed) * Math.signum(distance); // Ensure max speed has the right sign
         double speed = maxSpeed; // Set current speed to max
 
         debugEnc("Begin MOVE");
         debugNavx("Begin MOVE");
-
-        while (Timer.getFPGATimestamp() - startTime < TIMEOUT) { // Loop until break or timeout
+        zeroEnc();
+        Timer.delay(.1);
+        while (Timer.getFPGATimestamp() - startTime < TIMEOUT && (!ldone || !rdone)) { // Loop until break or timeout
             currentAngle = startAngle - navx.getAngle();
-            currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
+            //currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
+            currentEncL = left.getEnc();
+            currentEncR = right.getEnc();
+            System.out.println("Current: " + currentEncL + " " + currentEncR);
+
             // Correct angle
+            System.out.println("Angle: " + currentAngle);
             if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
+                System.out.println("Correcting Angle");
                 currentAngle = normalizeAbs(currentAngle, MOVE_ANGLE_FACTOR, speed);
                 if (speed * currentAngle > 0) {
                     left.drive(speed);
@@ -195,19 +204,37 @@ public class DriveTrain {
             } else {
                 drive(speed);
             }
-            // Check encoder
-            if (Math.abs(currentEnc) > MOVE_ENC_THRESH) {
-                speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
-            } else {
-                brake();
-                break;
-            }
 
+            // Check encoder
+            if (distance > 0) {
+                if (currentEncL > targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    left.brake();
+                    ldone = true;
+                }
+                if (currentEncR > targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    right.brake();
+                    rdone = true;
+                }
+            } else {
+                if (currentEncL < targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    left.brake();
+                    ldone = true;
+                }
+                if (currentEncR < targetEnc) {
+                    //speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
+                    right.brake();
+                    rdone = true;
+                }
+            }
             Timer.delay(MOVE_CHECK_DELAY);
         }
 
         debugEnc("End MOVE");
         debugNavx("End MOVE");
+        brake();
     }
 
     /**
@@ -241,6 +268,7 @@ public class DriveTrain {
 
         debugEnc("End TURN");
         debugNavx("End TURN");
+        brake();
     }
 
     /**
