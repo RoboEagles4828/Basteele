@@ -10,8 +10,7 @@ public class Robot extends IterativeRobot {
     // Drive
     private DriveTrain drive;
     // Lift
-    //private Lift lift;
-    private LiftRevamp liftr;
+    private Lift lift;
     // Grabber
     private Grabber grabber;
     // Climber
@@ -112,8 +111,7 @@ public class Robot extends IterativeRobot {
                 // Scale from left
                 switch (data.charAt(0)) {
                 case 'L':
-                    //lift.setTarget(1);
-                    liftr.setCommand(1);
+                    lift.setTarget(1);
                     drive.moveDistance(300, MOVE[1]);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
