@@ -9,10 +9,11 @@ public class LiftRevamp implements Runnable{
     private DigitalInput topLimit, botLimit;
 
     private static final double DEADZONE = .1;
+    private static final double AUTO_SPD = .4;
 
-    int command = 0;
-    double speed = 0;
-    boolean moving = false;
+    private int command = 0;
+    private double speed = 0;
+    private boolean moving = false, stopThread = false;
 
     public LiftRevamp(int motorPort, int topLimitPort, int botLimitPort) {
         liftMotor = new Victor(motorPort);
@@ -20,13 +21,16 @@ public class LiftRevamp implements Runnable{
         botLimit = new DigitalInput(botLimitPort);
     }
     public void run() {
-        switch (command) {
-            case 0:
-                move();
-                break;
-            default:
-                auto();
+        while(!stopThread) {
+            switch (command) {
+                case 0:
+                    move();
+                    break;
+                default:
+                    auto();
+            }
         }
+        System.out.println("LiftR Stopped");
     }
 
     public void setSpeed(double value) {
@@ -40,7 +44,7 @@ public class LiftRevamp implements Runnable{
     private void move() {
         double mspeed;
         if(command != 0) {
-            mspeed = speed * command;
+            mspeed = AUTO_SPD * command;
         } else {
             mspeed = speed;
         }
@@ -70,4 +74,16 @@ public class LiftRevamp implements Runnable{
         liftMotor.set(0);
         moving = false;
     }
+    public void start() {
+        if (stopThread) {
+            stopThread = false;
+            Thread thread = new Thread(this);
+            thread.start();
+        }
+    }
+
+    public void stop() {
+        stopThread = true;
+    }
+
 }
