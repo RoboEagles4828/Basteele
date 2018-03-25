@@ -208,6 +208,7 @@ public class DriveTrain {
 
         debugEnc("End MOVE");
         debugNavx("End MOVE");
+        brake();
     }
 
     /**
@@ -241,6 +242,7 @@ public class DriveTrain {
 
         debugEnc("End TURN");
         debugNavx("End TURN");
+        brake();
     }
 
     /**

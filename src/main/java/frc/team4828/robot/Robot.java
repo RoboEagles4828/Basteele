@@ -85,7 +85,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            switch (0) {
+            switch (9) {
             case 0:
                 // Switch from front
                 drive.moveDistance(-10, MOVE[0]);
@@ -239,7 +239,8 @@ public class Robot extends IterativeRobot {
                 break;
             case 9:
                 // Move Forward
-                drive.moveDistance(200, MOVE[0]);
+                drive.moveDistance(250, MOVE[0]);
+                drive.brake();
                 break;
             case 10:
                 // Test
