@@ -297,7 +297,7 @@ public class Robot extends IterativeRobot {
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
             lift.setManual(true);
-            lift.setSpeedManual(liftStick.getY());
+            lift.setSpeedManual(JoystickUtils.processY(-liftStick.getY()));
             lift.resetTarget();
         } else {
             lift.setManual(false);
