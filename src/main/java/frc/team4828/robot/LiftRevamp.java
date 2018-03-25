@@ -68,9 +68,15 @@ public class LiftRevamp implements Runnable{
     private void auto() {
         moving = true;
         move();
+        int oldComm = command;
         while(!check()) {
+            System.out.println(command);
+            if(command != oldComm) {
+                break;
+            }
             Timer.delay(.1);
         }
+        command = 0;
         liftMotor.set(0);
         moving = false;
     }

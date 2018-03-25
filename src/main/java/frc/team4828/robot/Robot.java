@@ -37,8 +37,8 @@ public class Robot extends IterativeRobot {
         // Drive
         drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER);
         // Lift
-        //lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, Ports.SWITCHER, 0);
-        liftr = new LiftRevamp(Ports.LIFT, Ports.LIFT_MAX, Ports.LIFT_MIN);
+        lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, Ports.SWITCHER, 0);
+        //liftr = new LiftRevamp(Ports.LIFT, Ports.LIFT_MAX, Ports.LIFT_MIN);
         // Grabber
         grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER, Ports.FLIPPER);
         // Climber
@@ -358,11 +358,19 @@ public class Robot extends IterativeRobot {
 
     public void testPeriodic() {
         liftr.setSpeed(liftStick.getY());
-        Timer.delay(0.01);
+        if(liftStick.getRawButton(12)) {
+            liftr.setCommand(-1);
+        } else if(liftStick.getRawButton(10)) {
+            liftr.setCommand(1);
+        } else if(liftStick.getRawButton(1)){
+            liftr.setCommand(0);
+        }
+            Timer.delay(0.01);
     }
 
     public void disabledInit() {
-        //lift.stop();
-        liftr.stop();
+        lift.stop();
+        //liftr.setCommand(0);
+        //liftr.stop();
     }
 }
