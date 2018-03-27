@@ -112,7 +112,7 @@ public class Robot extends IterativeRobot {
                 // Scale from left
                 switch (data.charAt(0)) {
                 case 'L':
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.moveDistance(300, MOVE[1]);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
@@ -122,7 +122,7 @@ public class Robot extends IterativeRobot {
                     grabber.outtake();
                     break;
                 case 'R':
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.moveDistance(210, MOVE[1]);
                     drive.turnDegAbs(90, TURN);
                     drive.moveDistance(237, MOVE[1]);
@@ -141,7 +141,7 @@ public class Robot extends IterativeRobot {
                 // Scale from right
                 switch (data.charAt(0)) {
                 case 'L':
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.moveDistance(5, MOVE[1]);
                     drive.turnDegAbs(-24, TURN);
                     drive.moveDistance(300, MOVE[1]);
@@ -155,7 +155,7 @@ public class Robot extends IterativeRobot {
                     grabber.outtake();
                     break;
                 case 'R':
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.moveDistance(310, MOVE[1]);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
                         Timer.delay(0.1);
@@ -170,7 +170,7 @@ public class Robot extends IterativeRobot {
                 // Double scale from left
                 switch (data.charAt(0)) {
                 case 'L':
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.moveDistance(310, MOVE[1]);
                     drive.turnDegAbs(90, TURN);
                     while (lift.isBusy() && Timer.getMatchTime() > 3) {
@@ -180,7 +180,7 @@ public class Robot extends IterativeRobot {
                     grabber.outtake();
                     Timer.delay(0.5);
                     grabber.stop();
-                    lift.setTargetDirection(-1);
+                    lift.setDirection(-1);
                     drive.moveDistance(-10, MOVE[0]);
                     drive.turnDegAbs(0, TURN);
                     drive.moveDistance(-36, MOVE[0]); // Set distance
@@ -195,7 +195,7 @@ public class Robot extends IterativeRobot {
                     Timer.delay(0.5);
                     grabber.stop();
                     drive.moveDistance(-10, MOVE[0]);
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.turnDegAbs(0, TURN);
                     drive.moveDistance(36, MOVE[0]); // Set distance
                     drive.turnDegAbs(90, TURN);
@@ -206,7 +206,7 @@ public class Robot extends IterativeRobot {
                     grabber.outtake();
                     break;
                 case 'R':
-                    lift.setTargetDirection(1);
+                    lift.setDirection(1);
                     drive.moveDistance(270, MOVE[1]);
                     drive.turnDegAbs(90, TURN);
                     drive.moveDistance(120, MOVE[1]);
@@ -296,15 +296,13 @@ public class Robot extends IterativeRobot {
 
         // Lift
         if (JoystickUtils.processY(liftStick.getY()) != 0) {
-            lift.setTargetSpeed(JoystickUtils.processY(-liftStick.getY()));
+            lift.setVelocity(JoystickUtils.processY(-liftStick.getY()));
+        } else if (liftStick.getRawButton(Buttons.LIFT[0])) {
+            lift.setVelocity(Lift.DEFAULT_SPEED);
+        } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
+            lift.setVelocity(-Lift.DEFAULT_SPEED);
         } else {
-            if (liftStick.getRawButton(Buttons.LIFT[0])) {
-                lift.setTargetDirection(-1);
-            } else if (liftStick.getRawButton(Buttons.LIFT[1])) {
-                lift.setTargetDirection(1);
-            } else if (liftStick.getRawButton(Buttons.LIFT_RESET)) {
-                lift.setTargetDirection(0);
-            }
+            lift.setVelocity(0);
         }
 
         // Grabber
@@ -352,20 +350,11 @@ public class Robot extends IterativeRobot {
     }
 
     public void testPeriodic() {
-        liftr.setSpeed(liftStick.getY());
-        if (liftStick.getRawButton(12)) {
-            liftr.setCommand(-1);
-        } else if (liftStick.getRawButton(10)) {
-            liftr.setCommand(1);
-        } else if (liftStick.getRawButton(1)) {
-            liftr.setCommand(0);
-        }
-        Timer.delay(0.01);
+        lift.setVelocity(JoystickUtils.processY(-liftStick.getY()));
+        Timer.delay(0.1);
     }
 
     public void disabledInit() {
         lift.stop();
-        //liftr.setCommand(0);
-        //liftr.stop();
     }
 }

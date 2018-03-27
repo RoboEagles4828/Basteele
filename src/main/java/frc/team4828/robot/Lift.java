@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lift implements Runnable {
 
-    private static final double DEFAULT_SPEED = 0.5;
+    public static final double DEFAULT_SPEED = 0.5;
     private static final double CHECK_DELAY = 0.01;
     private Victor liftMotor;
     private DigitalInput liftMin, liftMax;
@@ -45,19 +45,13 @@ public class Lift implements Runnable {
         this.speed = speed;
     }
 
-    public synchronized void setTargetSpeed(double speed) {
-        this.speed = Math.abs(speed);
-        if (speed > 0) {
-            targetDirection = 1;
-        } else if (speed < 0) {
-            targetDirection = -1;
-        } else {
-            targetDirection = 0;
-        }
+    public synchronized void setDirection(int direction) {
+        targetDirection = direction;
     }
 
-    public synchronized void setTargetDirection(int targetDirection) {
-        this.targetDirection = targetDirection;
+    public synchronized void setVelocity(double velocity) {
+        speed = Math.abs(velocity);
+        targetDirection = (int) Math.signum(velocity);
     }
 
     public synchronized boolean isBusy() {
