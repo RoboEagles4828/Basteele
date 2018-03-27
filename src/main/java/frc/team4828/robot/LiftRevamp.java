@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
-public class LiftRevamp implements Runnable{
+public class LiftRevamp implements Runnable {
     private Victor liftMotor;
     private DigitalInput topLimit, botLimit;
 
@@ -20,14 +20,15 @@ public class LiftRevamp implements Runnable{
         topLimit = new DigitalInput(topLimitPort);
         botLimit = new DigitalInput(botLimitPort);
     }
+
     public void run() {
-        while(!stopThread) {
+        while (!stopThread) {
             switch (command) {
-                case 0:
-                    move();
-                    break;
-                default:
-                    auto();
+            case 0:
+                move();
+                break;
+            default:
+                auto();
             }
         }
         System.out.println("LiftR Stopped");
@@ -43,14 +44,12 @@ public class LiftRevamp implements Runnable{
 
     private void move() {
         double mspeed;
-        if(command != 0) {
+        if (command != 0) {
             mspeed = AUTO_SPD * command;
         } else {
             mspeed = speed;
         }
-        if((mspeed < 0 && botLimit.get()) ||
-           (mspeed > 0 && topLimit.get()) ||
-           (Math.abs(mspeed) < DEADZONE)) {
+        if ((mspeed < 0 && botLimit.get()) || (mspeed > 0 && topLimit.get()) || (Math.abs(mspeed) < DEADZONE)) {
             liftMotor.set(0);
             return;
         }
@@ -58,7 +57,7 @@ public class LiftRevamp implements Runnable{
     }
 
     private boolean check() {
-        if(command == 1) {
+        if (command == 1) {
             return topLimit.get();
         } else {
             return botLimit.get();
@@ -69,9 +68,9 @@ public class LiftRevamp implements Runnable{
         moving = true;
         move();
         int oldComm = command;
-        while(!check()) {
+        while (!check()) {
             System.out.println(command);
-            if(command != oldComm) {
+            if (command != oldComm) {
                 break;
             }
             Timer.delay(.1);
@@ -80,6 +79,7 @@ public class LiftRevamp implements Runnable{
         liftMotor.set(0);
         moving = false;
     }
+
     public void start() {
         if (stopThread) {
             stopThread = false;

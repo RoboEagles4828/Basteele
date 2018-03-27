@@ -9,36 +9,24 @@ public class Lift implements Runnable {
 
     private static final double DEFAULT_SPEED = 0.5;
     private static final double CHECK_DELAY = 0.01;
-    private static final double SWITCHER_DELAY = 0.05;
     private Victor liftMotor;
-    private DigitalInput liftMin, liftMax, switcher;
-    private int posMax;
-    private boolean prevState = false;
-    private double startTime = 0.0;
+    private DigitalInput liftMin, liftMax;
     private double speed;
     private int direction;
-    private int pos;
-    private int target;
-    private boolean manual;
     private int targetDirection;
     private boolean stopThread = true;
 
-    public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort, int amount) {
+    public Lift(int liftMotorPort, int liftMinPort, int liftMaxPort, int switcherPort) {
         liftMotor = new Victor(liftMotorPort);
         liftMin = new DigitalInput(liftMinPort);
         liftMax = new DigitalInput(liftMaxPort);
-        switcher = new DigitalInput(switcherPort);
-        posMax = amount * 2 + 2;
     }
 
     public void run() {
         System.out.println("Lift Thread Started");
         // Init Variables
-        speed = -1;
+        speed = DEFAULT_SPEED;
         direction = 0;
-        pos = 1;
-        target = 1;
-        manual = false;
         targetDirection = 0;
         // Main Loop
         while (!stopThread) {
@@ -49,52 +37,33 @@ public class Lift implements Runnable {
         System.out.println("Lift Thread Stopped");
     }
 
-    public void setSpeed(double speed) {
+    public synchronized void setSpeed(double speed) {
         this.speed = speed;
     }
 
-    // Position Control
-
-    public void setTarget(int target) {
-        this.target = target * 2;
+    public synchronized void setTargetSpeed(double speed) {
+        this.speed = Math.abs(speed);
+        if (speed > 0) {
+            targetDirection = 1;
+        } else if (speed < 0) {
+            targetDirection = -1;
+        } else {
+            targetDirection = 0;
+        }
     }
 
-    public void resetTarget() {
-        target = pos;
-    }
-
-    public int getPos() {
-        return pos;
-    }
-
-    public boolean isBusy() {
-        return pos != target;
-    }
-
-    // Manual Control
-
-    public void setManual(boolean manual) {
-        this.manual = manual;
-    }
-
-    public void setTargetDirection(int targetDirection) {
+    public synchronized void setTargetDirection(int targetDirection) {
         this.targetDirection = targetDirection;
     }
 
-    public void setSpeedManual(double speed) {
-        setSpeed(Math.abs(speed));
-        if (speed > 0) {
-            setTargetDirection(1);
-        } else if (speed < 0) {
-            setTargetDirection(-1);
-        } else {
-            setTargetDirection(0);
-        }
+    public synchronized boolean isMoving() {
+        check();
+        return direction != 0;
     }
 
     // Thread Control
 
-    public void start() {
+    public synchronized void start() {
         if (stopThread) {
             stopThread = false;
             Thread thread = new Thread(this);
@@ -102,74 +71,33 @@ public class Lift implements Runnable {
         }
     }
 
-    public void stop() {
+    public synchronized void stop() {
         stopThread = true;
     }
 
     // Check Loop
 
-    private void check() {
-        int tempDirection = direction;
-        //boolean currentState = switcher.get();
-        boolean currentState = false;
-        // Position Check
-        if (currentState != prevState && Timer.getFPGATimestamp() - startTime > SWITCHER_DELAY) {
-            pos += tempDirection;
-            startTime = Timer.getFPGATimestamp();
+    private synchronized void check() {
+        if (liftMin.get() && targetDirection == -1) {
+            direction = 0;
+            return;
         }
-        // Manual Check
-        if (manual) {
-            tempDirection = targetDirection;
+        if (liftMax.get() && targetDirection == 1) {
+            direction = 0;
+            return;
         }
-        // Auto Check
-        else {
-            if (pos > target) {
-                tempDirection = -1;
-            } else if (pos < target) {
-                tempDirection = 1;
-            } else {
-                tempDirection = 0;
-            }
-        }
-        // Limits Check
-        if (liftMin.get()) {
-            if (tempDirection == -1) {
-                tempDirection = 0;
-                pos = 0;
-            } else {
-                pos = tempDirection;
-            }
-        }
-        if (liftMax.get()) {
-            if (tempDirection == 1) {
-                tempDirection = 0;
-                pos = posMax;
-            } else {
-                pos = posMax + tempDirection;
-            }
-        }
-        direction = tempDirection;
-        prevState = currentState;
+        direction = targetDirection;
     }
 
-    // Set Loop
-
-    private void set() {
-        if (speed == -1) {
-            liftMotor.set(DEFAULT_SPEED * direction);
-        } else {
-            liftMotor.set(speed * direction);
-        }
+    private synchronized void set() {
+        liftMotor.set(speed * direction);
     }
 
-    public void updateDashboard() {
+    public synchronized void updateDashboard() {
         SmartDashboard.putBoolean("Lift Min", liftMin.get());
         SmartDashboard.putBoolean("Lift Max", liftMax.get());
         SmartDashboard.putNumber("Lift Speed", speed);
         SmartDashboard.putNumber("Lift Direction", direction);
-        SmartDashboard.putNumber("Lift Position", pos);
-        SmartDashboard.putNumber("Lift Target", target);
-        SmartDashboard.putBoolean("Lift Manual", manual);
         SmartDashboard.putNumber("Lift Target Direction", targetDirection);
     }
 
