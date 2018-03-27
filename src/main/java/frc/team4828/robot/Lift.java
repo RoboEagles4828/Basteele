@@ -37,6 +37,10 @@ public class Lift implements Runnable {
         System.out.println("Lift Thread Stopped");
     }
 
+    public boolean isLimited() {
+        return (liftMin.get() && targetDirection == -1) || (liftMax.get() && targetDirection == 1);
+    }
+
     public synchronized void setSpeed(double speed) {
         this.speed = speed;
     }
@@ -56,8 +60,11 @@ public class Lift implements Runnable {
         this.targetDirection = targetDirection;
     }
 
+    public synchronized boolean isBusy() {
+        return targetDirection != 0 && !isLimited();
+    }
+
     public synchronized boolean isMoving() {
-        check();
         return direction != 0;
     }
 
@@ -78,11 +85,7 @@ public class Lift implements Runnable {
     // Check Loop
 
     private synchronized void check() {
-        if (liftMin.get() && targetDirection == -1) {
-            direction = 0;
-            return;
-        }
-        if (liftMax.get() && targetDirection == 1) {
+        if (isLimited()) {
             direction = 0;
             return;
         }
