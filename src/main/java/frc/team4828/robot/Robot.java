@@ -11,7 +11,6 @@ public class Robot extends IterativeRobot {
     private DriveTrain drive;
     // Lift
     private Lift lift;
-    private LiftRevamp liftr;
     // Grabber
     private Grabber grabber;
     // Climber
@@ -345,7 +344,7 @@ public class Robot extends IterativeRobot {
 
     public void testInit() {
         System.out.println(" --- Start Test Init ---");
-        liftr.start();
+        lift.start();
         System.out.println(" --- Start Test ---");
     }
 
