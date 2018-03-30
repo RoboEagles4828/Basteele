@@ -4,13 +4,18 @@ import edu.wpi.first.wpilibj.Victor;
 
 public class Climber {
 
+    private static final double DEFAULT_SPEED = 1;
     private Victor leftMotor, rightMotor;
 
-    private static final double DEFAULT_SPEED = 0.5;
-
-    Climber(int leftMotor, int rightMotor) {
-        this.leftMotor = new Victor(leftMotor);
-        this.rightMotor = new Victor(rightMotor);
+    /**
+     * Climber for the robot.
+     * 
+     * @param leftMotorPort Left motor port.
+     * @param rightMotorPort Right motor port.
+     */
+    public Climber(int leftMotorPort, int rightMotorPort) {
+        leftMotor = new Victor(leftMotorPort);
+        rightMotor = new Victor(rightMotorPort);
     }
 
     public void up() {
