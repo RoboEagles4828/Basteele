@@ -15,7 +15,7 @@ public class DriveTrain {
 
     private static final double ENC_RATIO = 25.46; // [ NU / Inch ] => [ NU / Rotations / 6π ]
     private static final double TIMEOUT = 5;
-    // TODO Set constants
+
     // MoveDistance Constants
     private static final double MOVE_ANGLE_FACTOR = 0.05;
     private static final double MOVE_RAMP_FACTOR = 0.01;
@@ -29,6 +29,9 @@ public class DriveTrain {
     private static final double TURN_ANGLE_THRESH = 0.5;
     private static final double TURN_CHECK_DELAY = 0.001;
     private static final double TURN_MIN_SPEED = 0.05;
+
+    private static final double[] MOVE = { 0.5, 0.7 };
+    private static final double TURN = 0.3;
 
     /**
      * DriveTrain for the robot.
@@ -243,6 +246,82 @@ public class DriveTrain {
         debugEnc("End TURN");
         debugNavx("End TURN");
         brake();
+    }
+
+    public void switchAuton(int init, int target, int amount, Dumper dumper) {
+        if (init == target) {
+            moveDistance(-100, MOVE[1]);
+            turnDegAbs(-init * 90, TURN);
+        } else if (init == -target) {
+            moveDistance(-10, MOVE[0]);
+            turnDegAbs(init * 90, TURN);
+            moveDistance(200, MOVE[1]);
+            turnDegAbs(0, TURN);
+            moveDistance(-90, MOVE[1]);
+            turnDegAbs(init * 90, TURN);
+        } else {
+            moveDistance(-10, MOVE[0]);
+            if (target == -1) {
+                turnDegAbs(90, TURN);
+                moveDistance(108, MOVE[0]);
+                turnDegAbs(0, TURN);
+            }
+            arcadeDrive(0, -MOVE[1], 0);
+            Timer.delay(2);
+            brake();
+        }
+        dumper.open();
+        Timer.delay(0.5);
+        dumper.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void scaleAuton(int init, int target, int amount, Lift lift, Grabber grabber) {
+        if (init == target) {
+            lift.setDirection(1);
+            moveDistance(300, MOVE[1]);
+            turnDegAbs(-init * 90, TURN);
+        } else if (init == -target) {
+            lift.setDirection(1);
+            moveDistance(210, MOVE[1]);
+            turnDegAbs(target * 90, TURN);
+            moveDistance(237, MOVE[1]);
+            turnDegAbs(0, TURN);
+            moveDistance(90, MOVE[1]);
+        } else {
+            return;
+        }
+        while (lift.isBusy() && Timer.getMatchTime() > 3) {
+            Timer.delay(0.1);
+        }
+        moveDistance(10, MOVE[0]);
+        grabber.outtake();
+        for (int i = 1; i < amount; i++) {
+            Timer.delay(0.5);
+            moveDistance(-10, MOVE[0]);
+            grabber.stop();
+            lift.setDirection(-1);
+            turnDegAbs(0, TURN);
+            moveDistance(-36, MOVE[0]); // Set distance
+            turnDegAbs(-target * 90, TURN);
+            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                Timer.delay(0.1);
+            }
+            grabber.set(DoubleSolenoid.Value.kForward);
+            grabber.intake();
+            moveDistance(10 * (i + 1), MOVE[0]);
+            grabber.set(DoubleSolenoid.Value.kReverse);
+            Timer.delay(0.5);
+            grabber.stop();
+            moveDistance(-10 * i, MOVE[0]);
+            lift.setDirection(1);
+            turnDegAbs(0, TURN);
+            moveDistance(26, MOVE[0]); // Set distance
+            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+                Timer.delay(0.1);
+            }
+            moveDistance(10, MOVE[0]);
+            grabber.outtake();
+        }
     }
 
     /**
