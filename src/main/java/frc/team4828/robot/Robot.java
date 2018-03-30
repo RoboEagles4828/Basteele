@@ -131,7 +131,6 @@ public class Robot extends IterativeRobot {
             case 9:
                 // Move Forward
                 drive.moveDistance(250, MOVE[0]);
-                drive.brake();
                 break;
             case 10:
                 // Test

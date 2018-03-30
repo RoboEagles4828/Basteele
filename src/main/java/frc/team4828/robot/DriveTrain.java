@@ -202,16 +202,14 @@ public class DriveTrain {
             if (Math.abs(currentEnc) > MOVE_ENC_THRESH) {
                 speed = normalizeAbs(currentEnc, MOVE_RAMP_FACTOR, MOVE_MIN_SPEED, maxSpeed);
             } else {
-                brake();
                 break;
             }
 
             Timer.delay(MOVE_CHECK_DELAY);
         }
-
+        brake();
         debugEnc("End MOVE");
         debugNavx("End MOVE");
-        brake();
     }
 
     /**
@@ -236,16 +234,14 @@ public class DriveTrain {
                 currentAngle = normalizeAbs(currentAngle, TURN_FACTOR, TURN_MIN_SPEED, speed);
                 turn(currentAngle);
             } else {
-                brake();
                 break;
             }
 
             Timer.delay(TURN_CHECK_DELAY);
         }
-
+        brake();
         debugEnc("End TURN");
         debugNavx("End TURN");
-        brake();
     }
 
     public void switchAuton(int init, int target, int amount, Dumper dumper) {
