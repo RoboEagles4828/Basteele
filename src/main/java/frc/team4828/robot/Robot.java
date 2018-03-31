@@ -134,9 +134,15 @@ public class Robot extends IterativeRobot {
                 break;
             case 10:
                 // Test
-                drive.moveDistance(60, MOVE[0]);
-                Timer.delay(1);
-                drive.turnDegAbs(90, TURN);
+                drive.moveDistance(50, MOVE[0]);
+                grabber.set(DoubleSolenoid.Value.kForward);
+                grabber.intake();
+                drive.moveDistance(10, MOVE[0]);
+                grabber.set(DoubleSolenoid.Value.kReverse);
+                Timer.delay(0.5);
+                grabber.stop();
+
+
                 break;
             default:
                 System.out.println("No Auton mode selected.");
