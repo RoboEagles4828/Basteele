@@ -18,7 +18,7 @@ public class DriveTrain {
 
     // MoveDistance Constants
     private static final double MOVE_ANGLE_FACTOR = 0.05;
-    private static final double MOVE_RAMP_FACTOR = 0.1;
+    private static final double MOVE_RAMP_FACTOR = 0.01;
     private static final double MOVE_ANGLE_THRESH = 0.1;
     private static final double MOVE_ENC_THRESH = 20;
     private static final double MOVE_CHECK_DELAY = 0.001;
@@ -31,7 +31,7 @@ public class DriveTrain {
     private static final double TURN_MIN_SPEED = 0.05;
 
     // Auton
-    private static final double[] MOVE = { 0.5, 0.5 };
+    private static final double[] MOVE = { 0.5, 0.7 };
     private static final double TURN = 0.3;
     private static final double LENGTH = 38;
     private static final double WIDTH = 34;
@@ -40,7 +40,7 @@ public class DriveTrain {
     private static final double SWITCH_INNER = 14;
     private static final double SCALE_OUTER = 42 - WIDTH;
     private static final double SCALE_INNER = 12;
-    private static final double[] SCALE_OFFSET = { 6, 14 };
+    private static final double[] SCALE_OFFSET = { 6, 16 };
 
     /**
      * DriveTrain for the robot.
@@ -286,6 +286,7 @@ public class DriveTrain {
 
     public void scaleAuton(int init, int target, boolean second, Lift lift, Grabber grabber) {
         moveDistance(12, MOVE[1]);
+        Timer.delay(0.2);
         lift.setDirection(1);
         moveDistance(210, MOVE[1]);
         turnDegAbs(-init * 90, TURN);
