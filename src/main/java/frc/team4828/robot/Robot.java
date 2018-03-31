@@ -141,6 +141,14 @@ public class Robot extends IterativeRobot {
                 grabber.set(DoubleSolenoid.Value.kReverse);
                 Timer.delay(0.5);
                 grabber.stop();
+                drive.turnDegAbs(90, TURN);
+                grabber.up()
+                grabber.outtake();
+                time.delay(1)
+                grabber.stop()
+
+
+
 
 
                 break;
