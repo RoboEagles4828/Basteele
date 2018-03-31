@@ -154,9 +154,9 @@ public class Robot extends IterativeRobot {
                 break;
             }
             doneAuton = true;
+            System.out.println("Auton done");
         }
         Timer.delay(0.1);
-        System.out.println("Finished Auton");
     }
 
     public void teleopInit() {
