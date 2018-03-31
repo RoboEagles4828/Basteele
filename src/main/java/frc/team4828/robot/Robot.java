@@ -100,19 +100,19 @@ public class Robot extends IterativeRobot {
                 break;
             case 3:
                 // Scale from left
-                drive.scaleAuton(-1, data.charAt(1) == 'L' ? -1 : 1, 1, lift, grabber);
+                drive.scaleAuton(-1, data.charAt(1) == 'L' ? -1 : 1, false, lift, grabber);
                 break;
             case 4:
                 // Scale from right
-                drive.scaleAuton(1, data.charAt(1) == 'L' ? -1 : 1, 1, lift, grabber);
+                drive.scaleAuton(1, data.charAt(1) == 'L' ? -1 : 1, false, lift, grabber);
                 break;
             case 5:
                 // Double scale from left
-                drive.scaleAuton(-1, data.charAt(1) == 'L' ? -1 : 1, 2, lift, grabber);
+                drive.scaleAuton(-1, data.charAt(1) == 'L' ? -1 : 1, true, lift, grabber);
                 break;
             case 6:
                 // Double scale from right
-                drive.scaleAuton(1, data.charAt(1) == 'L' ? -1 : 1, 2, lift, grabber);
+                drive.scaleAuton(1, data.charAt(1) == 'L' ? -1 : 1, true, lift, grabber);
                 break;
             case 7:
                 // Out of the way left
@@ -130,7 +130,7 @@ public class Robot extends IterativeRobot {
                 break;
             case 9:
                 // Move Forward
-                drive.moveDistance(250, MOVE[0]);
+                drive.moveDistance(240, MOVE[0]);
                 break;
             case 10:
                 // Test

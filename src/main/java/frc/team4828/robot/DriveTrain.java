@@ -281,28 +281,23 @@ public class DriveTrain {
         dumper.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void scaleAuton(int init, int target, int amount, Lift lift, Grabber grabber) {
+    public void scaleAuton(int init, int target, boolean second, Lift lift, Grabber grabber) {
+        lift.setDirection(1);
+        moveDistance(222, MOVE[1]);
+        turnDegAbs(-init * 90, TURN);
         if (init == target) {
-            lift.setDirection(1);
-            moveDistance(300, MOVE[1]);
-            turnDegAbs(-target * 90, TURN);
-            moveDistance(SCALE_OUTER - SCALE_OFFSET[1], MOVE[0]);
+            moveDistance(36 + SCALE_OUTER - SCALE_INNER, MOVE[1]);
         } else if (init == -target) {
-            lift.setDirection(1);
-            moveDistance(210, MOVE[1]);
-            turnDegAbs(-init * 90, TURN);
             moveDistance(144 + SCALE_OUTER + WIDTH + SCALE_INNER, MOVE[1]);
-            turnDegAbs(0, TURN);
-            moveDistance(90 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
-        } else {
-            return;
         }
+        turnDegAbs(0, TURN);
+        moveDistance(78 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
         while (lift.isBusy() && Timer.getMatchTime() > 3) {
             Timer.delay(0.1);
         }
         moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
         grabber.outtake();
-        for (int i = 1; i < amount; i++) {
+        if (second) {
             Timer.delay(0.5);
             moveDistance(-10, MOVE[0]);
             grabber.stop();
@@ -315,11 +310,11 @@ public class DriveTrain {
             }
             grabber.set(DoubleSolenoid.Value.kForward);
             grabber.intake();
-            moveDistance(10 * (i + 1), MOVE[0]);
+            moveDistance(20, MOVE[0]);
             grabber.set(DoubleSolenoid.Value.kReverse);
             Timer.delay(0.5);
             grabber.stop();
-            moveDistance(-10 * i, MOVE[0]);
+            moveDistance(-10, MOVE[0]);
             lift.setDirection(1);
             turnDegAbs(0, TURN);
             moveDistance(26, MOVE[0]); // Set distance
