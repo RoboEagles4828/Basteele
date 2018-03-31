@@ -142,15 +142,10 @@ public class Robot extends IterativeRobot {
                 Timer.delay(0.5);
                 grabber.stop();
                 drive.turnDegAbs(90, TURN);
-                grabber.up()
+                grabber.up();
                 grabber.outtake();
-                time.delay(1)
-                grabber.stop()
-
-
-
-
-
+                Timer.delay(1);
+                grabber.stop();
                 break;
             default:
                 System.out.println("No Auton mode selected.");
