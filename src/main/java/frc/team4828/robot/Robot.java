@@ -130,6 +130,7 @@ public class Robot extends IterativeRobot {
                 break;
             case 9:
                 // Move Forward
+                //290 to stop before scale
                 drive.moveDistance(240, MOVE[0]);
                 break;
             case 10:
@@ -142,6 +143,7 @@ public class Robot extends IterativeRobot {
                 Timer.delay(0.5);
                 grabber.stop();
                 drive.turnDegAbs(90, TURN);
+                drive.moveDistance(10, 90, MOVE[0]);
                 grabber.up();
                 grabber.outtake();
                 Timer.delay(1);
