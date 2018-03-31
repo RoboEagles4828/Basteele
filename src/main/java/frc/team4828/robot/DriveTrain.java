@@ -285,8 +285,9 @@ public class DriveTrain {
     }
 
     public void scaleAuton(int init, int target, boolean second, Lift lift, Grabber grabber) {
+        moveDistance(12, MOVE[1]);
         lift.setDirection(1);
-        moveDistance(222, MOVE[1]);
+        moveDistance(210, MOVE[1]);
         turnDegAbs(-init * 90, TURN);
         if (init == target) {
             moveDistance(36 + SCALE_OUTER - SCALE_INNER, MOVE[1]);
