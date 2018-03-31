@@ -302,29 +302,27 @@ public class DriveTrain {
         grabber.outtake();
         if (second) {
             Timer.delay(0.5);
-            moveDistance(-10, MOVE[0]);
+            moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
             grabber.stop();
             lift.setDirection(-1);
-            turnDegAbs(0, TURN);
-            moveDistance(-36, MOVE[0]); // Set distance
-            turnDegAbs(-target * 90, TURN);
+            turnDegAbs(180, TURN);
+            moveDistance(80 - SCALE_OFFSET[1] - LENGTH, MOVE[0]);
             while (lift.isBusy() && Timer.getMatchTime() > 3) {
                 Timer.delay(0.1);
             }
             grabber.set(DoubleSolenoid.Value.kForward);
             grabber.intake();
-            moveDistance(20, MOVE[0]);
+            moveDistance(22, MOVE[0]);
             grabber.set(DoubleSolenoid.Value.kReverse);
             Timer.delay(0.5);
             grabber.stop();
-            moveDistance(-10, MOVE[0]);
             lift.setDirection(1);
             turnDegAbs(0, TURN);
-            moveDistance(26, MOVE[0]); // Set distance
+            moveDistance(102 - SCALE_OFFSET[1] - LENGTH, MOVE[0]);
             while (lift.isBusy() && Timer.getMatchTime() > 3) {
                 Timer.delay(0.1);
             }
-            moveDistance(10, MOVE[0]);
+            moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
             grabber.outtake();
         }
     }
