@@ -323,6 +323,7 @@ public class DriveTrain {
                 Timer.delay(0.1);
             }
             moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
+            grabber.up();
             grabber.outtake();
         }
     }
