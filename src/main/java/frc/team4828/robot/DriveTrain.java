@@ -14,13 +14,13 @@ public class DriveTrain {
     private DoubleSolenoid shifter;
 
     private static final double ENC_RATIO = 25.46; // [ NU / Inch ] => [ NU / Rotations / 6π ]
-    private static final double TIMEOUT = 5;
+    private static final double TIMEOUT = 10;
 
     // MoveDistance Constants
     private static final double MOVE_ANGLE_FACTOR = 0.05;
-    private static final double MOVE_RAMP_FACTOR = 0.01;
+    private static final double MOVE_RAMP_FACTOR = 0.1;
     private static final double MOVE_ANGLE_THRESH = 0.1;
-    private static final double MOVE_ENC_THRESH = 40;
+    private static final double MOVE_ENC_THRESH = 20;
     private static final double MOVE_CHECK_DELAY = 0.001;
     private static final double MOVE_MIN_SPEED = 0.1;
 
@@ -31,16 +31,16 @@ public class DriveTrain {
     private static final double TURN_MIN_SPEED = 0.05;
 
     // Auton
-    private static final double[] MOVE = { 0.5, 0.7 };
+    private static final double[] MOVE = { 0.5, 0.5 };
     private static final double TURN = 0.3;
     private static final double LENGTH = 38;
     private static final double WIDTH = 34;
     private static final double SWITCH_INIT = 12;
-    private static final double SWITCH_OUTER = 6;
+    private static final double SWITCH_OUTER = 12;
     private static final double SWITCH_INNER = 14;
-    private static final double SCALE_OUTER = 6;
-    private static final double SCALE_INNER = 14;
-    private static final double[] SCALE_OFFSET = { 2, 12 };
+    private static final double SCALE_OUTER = 42 - WIDTH;
+    private static final double SCALE_INNER = 12;
+    private static final double[] SCALE_OFFSET = { 6, 14 };
 
     /**
      * DriveTrain for the robot.
@@ -295,11 +295,11 @@ public class DriveTrain {
         }
         turnDegAbs(0, TURN);
         moveDistance(78 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
-        while (lift.isBusy() && Timer.getMatchTime() > 3) {
+        while (lift.isBusy()) {
             Timer.delay(0.1);
         }
         moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
-        grabber.outtake();
+        grabber.set(DoubleSolenoid.Value.kForward);
         if (second) {
             Timer.delay(0.5);
             moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
@@ -307,7 +307,7 @@ public class DriveTrain {
             lift.setDirection(-1);
             turnDegAbs(180, TURN);
             moveDistance(80 - SCALE_OFFSET[1] - LENGTH, MOVE[0]);
-            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+            while (lift.isBusy()) {
                 Timer.delay(0.1);
             }
             grabber.set(DoubleSolenoid.Value.kForward);
@@ -319,7 +319,7 @@ public class DriveTrain {
             lift.setDirection(1);
             turnDegAbs(0, TURN);
             moveDistance(102 - SCALE_OFFSET[1] - LENGTH, MOVE[0]);
-            while (lift.isBusy() && Timer.getMatchTime() > 3) {
+            while (lift.isBusy()) {
                 Timer.delay(0.1);
             }
             moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
@@ -368,9 +368,9 @@ public class DriveTrain {
      */
     public void updateDashboard() {
         double[] speeds = { left.get(), right.get() };
-        double[] enc = { left.getEnc(), right.getEnc() };
         SmartDashboard.putNumberArray("Drive", speeds);
         SmartDashboard.putNumber("Angle", navx.getAngle());
-        SmartDashboard.putNumberArray("Encoders", enc);
+        SmartDashboard.putNumber("Left Encoder", left.get());
+        SmartDashboard.putNumber("Right Encoder", right.get());
     }
 }

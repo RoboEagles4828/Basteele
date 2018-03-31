@@ -74,6 +74,7 @@ public class Robot extends IterativeRobot {
         drive.setGear(DoubleSolenoid.Value.kForward);
         drive.reset();
         drive.zeroEnc();
+        Timer.delay(0.1);
 
         lift.start();
 
@@ -85,7 +86,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            switch (9) {
+            switch (3) {
             case 0:
                 // Switch from front
                 drive.switchAuton(0, data.charAt(0) == 'L' ? -1 : 1, 1, dumper);
@@ -130,7 +131,6 @@ public class Robot extends IterativeRobot {
                 break;
             case 9:
                 // Move Forward
-                //290 to stop before scale
                 drive.moveDistance(240, MOVE[0]);
                 break;
             case 10:
