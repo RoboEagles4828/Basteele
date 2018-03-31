@@ -30,8 +30,17 @@ public class DriveTrain {
     private static final double TURN_CHECK_DELAY = 0.001;
     private static final double TURN_MIN_SPEED = 0.05;
 
+    // Auton
     private static final double[] MOVE = { 0.5, 0.7 };
     private static final double TURN = 0.3;
+    private static final double LENGTH = 48;
+    private static final double WIDTH = 24;
+    private static final double SWITCH_INIT = 12;
+    private static final double SWITCH_OUTER = 12;
+    private static final double SWITCH_INNER = 12;
+    private static final double SCALE_OUTER = 12;
+    private static final double SCALE_INNER = 12;
+    private static final double[] SCALE_OFFSET = { 6, 12 };
 
     /**
      * DriveTrain for the robot.
@@ -246,26 +255,27 @@ public class DriveTrain {
 
     public void switchAuton(int init, int target, int amount, Dumper dumper) {
         if (init == target) {
-            moveDistance(-100, MOVE[1]);
-            turnDegAbs(-init * 90, TURN);
+            moveDistance(-140, MOVE[1]);
+            turnDegAbs(-target * 90, TURN);
         } else if (init == -target) {
-            moveDistance(-10, MOVE[0]);
+            moveDistance(-SWITCH_INIT, MOVE[1]);
             turnDegAbs(init * 90, TURN);
-            moveDistance(200, MOVE[1]);
+            moveDistance(144 + 2 * SWITCH_OUTER + WIDTH, MOVE[1]);
             turnDegAbs(0, TURN);
-            moveDistance(-90, MOVE[1]);
-            turnDegAbs(init * 90, TURN);
+            moveDistance(SWITCH_INIT - 140, MOVE[1]);
+            turnDegAbs(-target * 90, TURN);
         } else {
-            moveDistance(-10, MOVE[0]);
+            moveDistance(-SWITCH_INIT, MOVE[1]);
             if (target == -1) {
                 turnDegAbs(90, TURN);
-                moveDistance(108, MOVE[0]);
+                moveDistance(72 + 2 * SWITCH_INNER + WIDTH, MOVE[1]);
                 turnDegAbs(0, TURN);
             }
-            arcadeDrive(0, -MOVE[1], 0);
-            Timer.delay(2);
-            brake();
+            moveDistance(SWITCH_INIT + LENGTH - 130, MOVE[1]);
         }
+        drive(-MOVE[0]);
+        Timer.delay(1);
+        brake();
         dumper.open();
         Timer.delay(0.5);
         dumper.set(DoubleSolenoid.Value.kForward);
@@ -275,21 +285,22 @@ public class DriveTrain {
         if (init == target) {
             lift.setDirection(1);
             moveDistance(300, MOVE[1]);
-            turnDegAbs(-init * 90, TURN);
+            turnDegAbs(-target * 90, TURN);
+            moveDistance(SCALE_OUTER - SCALE_OFFSET[1], MOVE[0]);
         } else if (init == -target) {
             lift.setDirection(1);
             moveDistance(210, MOVE[1]);
-            turnDegAbs(target * 90, TURN);
-            moveDistance(237, MOVE[1]);
+            turnDegAbs(-init * 90, TURN);
+            moveDistance(144 + SCALE_OUTER + WIDTH + SCALE_INNER, MOVE[1]);
             turnDegAbs(0, TURN);
-            moveDistance(90, MOVE[1]);
+            moveDistance(90 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
         } else {
             return;
         }
         while (lift.isBusy() && Timer.getMatchTime() > 3) {
             Timer.delay(0.1);
         }
-        moveDistance(10, MOVE[0]);
+        moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
         grabber.outtake();
         for (int i = 1; i < amount; i++) {
             Timer.delay(0.5);
