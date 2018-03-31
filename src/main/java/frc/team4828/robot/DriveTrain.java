@@ -36,8 +36,8 @@ public class DriveTrain {
     private static final double LENGTH = 38;
     private static final double WIDTH = 34;
     private static final double SWITCH_INIT = 12;
-    private static final double SWITCH_OUTER = 12;
-    private static final double SWITCH_INNER = 14;
+    private static final double SWITCH_OUTER = 55.5 - WIDTH;
+    private static final double SWITCH_INNER = 6;
     private static final double SCALE_OUTER = 42 - WIDTH;
     private static final double SCALE_INNER = 12;
     private static final double[] SCALE_OFFSET = { 6, 16 };
