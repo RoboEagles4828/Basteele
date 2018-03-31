@@ -173,12 +173,11 @@ public class DriveTrain {
      * @param distance The distance in inches.
      * @param maxSpeed The max speed.
      */
-    public void moveDistance(double distance, double maxSpeed) {
+    public void moveDistance(double distance, double angle, double maxSpeed) {
         // Start values
         double startTime = Timer.getFPGATimestamp();
         double startEncL = left.getEnc();
         double startEncR = right.getEnc();
-        double startAngle = navx.getAngle();
         // Current values
         double currentAngle;
         double currentEnc;
@@ -192,7 +191,7 @@ public class DriveTrain {
         debugNavx("Begin MOVE");
 
         while (Timer.getFPGATimestamp() - startTime < TIMEOUT) { // Loop until break or timeout
-            currentAngle = startAngle - navx.getAngle();
+            currentAngle = angle - navx.getAngle();
             currentEnc = targetEnc - (left.getEnc() - startEncL + right.getEnc() - startEncR) / 2;
             // Correct angle
             if (Math.abs(currentAngle) > MOVE_ANGLE_THRESH) {
@@ -219,6 +218,10 @@ public class DriveTrain {
         brake();
         debugEnc("End MOVE");
         debugNavx("End MOVE");
+    }
+
+    public void moveDistance(double distance, double maxSpeed) {
+        moveDistance(distance, navx.getAngle(), maxSpeed);
     }
 
     /**
