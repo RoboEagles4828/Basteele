@@ -89,15 +89,15 @@ public class Robot extends IterativeRobot {
             switch (3) {
             case 0:
                 // Switch from front
-                drive.switchAuton(0, data.charAt(0) == 'L' ? -1 : 1, 1, dumper);
+                drive.switchAuton(0, data.charAt(0) == 'L' ? -1 : 1, dumper);
                 break;
             case 1:
                 // Switch from left
-                drive.switchAuton(-1, data.charAt(0) == 'L' ? -1 : 1, 1, dumper);
+                drive.switchAuton(-1, data.charAt(0) == 'L' ? -1 : 1, dumper);
                 break;
             case 2:
                 // Switch from right
-                drive.switchAuton(1, data.charAt(0) == 'L' ? -1 : 1, 1, dumper);
+                drive.switchAuton(1, data.charAt(0) == 'L' ? -1 : 1, dumper);
                 break;
             case 3:
                 // Scale from left

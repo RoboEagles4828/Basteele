@@ -256,7 +256,7 @@ public class DriveTrain {
         debugNavx("End TURN");
     }
 
-    public void switchAuton(int init, int target, int amount, Dumper dumper) {
+    public void switchAuton(int init, int target, Dumper dumper) {
         if (init == target) {
             moveDistance(-140, MOVE[1]);
             turnDegAbs(-target * 90, TURN);
