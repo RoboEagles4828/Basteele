@@ -95,7 +95,7 @@ public class Robot extends IterativeRobot {
 
     public void autonomousPeriodic() {
         if (!doneAuton) {
-            switch (3) {
+            switch (mode) {
             case 0:
                 // Switch from front
                 switchAuton(0);
@@ -117,38 +117,30 @@ public class Robot extends IterativeRobot {
                 scaleAuton(1, 0);
                 break;
             case 5:
-                // Double scale from left
-                scaleAuton(-1, 1);
-                break;
-            case 6:
-                // Double scale from right
-                scaleAuton(1, 1);
-                break;
-            case 7:
-                // Scale switch from left
+                // Scale+ from left
                 scaleAuton(-1, 3);
                 break;
-            case 8:
-                // Scale switch from right
+            case 6:
+                // Scale+ from right
                 scaleAuton(1, 3);
                 break;
-            case 9:
+            case 7:
+                // Move Forward
+                drive.moveDistance(240, MOVE[0]);
+                break;
+            case 10:
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, MOVE[1]);
                 drive.turnDegAbs(90, TURN);
                 drive.moveDistance(40, MOVE[1]);
                 break;
-            case 10:
+            case 11:
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, MOVE[1]);
                 drive.turnDegAbs(-90, TURN);
                 drive.moveDistance(40, MOVE[1]);
-                break;
-            case 11:
-                // Move Forward
-                drive.moveDistance(240, MOVE[0]);
                 break;
             case 12:
                 // Test
