@@ -275,7 +275,7 @@ public class Robot extends IterativeRobot {
         lift.stop();
     }
 
-    public void switchAuton(int init) {
+    private void switchAuton(int init) {
         int target = data.charAt(0) == 'L' ? -1 : 1;
         if (init == target) {
             drive.moveDistance(-140, MOVE[1]);
@@ -304,7 +304,7 @@ public class Robot extends IterativeRobot {
         dumper.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void scaleAuton(int init, int type) {
+    private void scaleAuton(int init, int type) {
         int switchTarget = data.charAt(0) == 'L' ? -1 : 1;
         int target = data.charAt(1) == 'L' ? -1 : 1;
         lift.setDirection(1);
@@ -316,54 +316,52 @@ public class Robot extends IterativeRobot {
             drive.moveDistance(144 + SCALE_OUTER + WIDTH + SCALE_INNER, MOVE[1]);
         }
         drive.turnDegAbs(0, TURN);
-        drive.moveDistance(78 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
+        drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
         while (lift.isBusy()) {
             Timer.delay(0.1);
         }
         drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
         grabber.set(DoubleSolenoid.Value.kForward);
-        if (type > 0) {
-            Timer.delay(0.5);
-            drive.moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
-            grabber.stop();
-            lift.setDirection(-1);
+        Timer.delay(0.5);
+        drive.moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
+        grabber.stop();
+        lift.setDirection(-1);
+        drive.turnDegAbs(180, TURN);
+        drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
+        while (lift.isBusy()) {
+            Timer.delay(0.1);
+        }
+        grabber.set(DoubleSolenoid.Value.kForward);
+        grabber.intake();
+        drive.moveDistance(10, MOVE[1]);
+        grabber.set(DoubleSolenoid.Value.kReverse);
+        Timer.delay(0.5);
+        grabber.stop();
+        lift.setDirection(1);
+        drive.moveDistance(-10, MOVE[1]);
+        if (type > 1) {
+            drive.turnDegAbs(-target * 90, TURN);
+            if (switchTarget == target) {
+                drive.moveDistance(1.5 + SCALE_INNER - SWITCH_INNER, MOVE[1]);
+            } else if (type == 3) {
+                drive.moveDistance(7.5 + SCALE_INNER + SWITCH_INNER + WIDTH, MOVE[1]);
+            } else {
+                return;
+            }
             drive.turnDegAbs(180, TURN);
-            drive.moveDistance(80 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
+            drive.moveDistance(14, MOVE[0]);
+            lift.setDirection(0);
+            grabber.outtake();
+        } else if (type == 1) {
+            drive.turnDegAbs(0, TURN);
+            drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
             while (lift.isBusy()) {
                 Timer.delay(0.1);
             }
+            drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
             grabber.set(DoubleSolenoid.Value.kForward);
-            grabber.intake();
-            drive.moveDistance(22, MOVE[1]);
-            grabber.set(DoubleSolenoid.Value.kReverse);
-            Timer.delay(0.5);
-            grabber.stop();
-            lift.setDirection(1);
-            if (type > 1) {
-                drive.moveDistance(-14, MOVE[1]);
-                drive.turnDegAbs(-target * 90, TURN);
-                if (switchTarget == target) {
-                    drive.moveDistance(1.5 + SCALE_INNER - SWITCH_INNER, MOVE[1]);
-                } else if (type == 3) {
-                    drive.moveDistance(7.5 + SCALE_INNER + SWITCH_INNER + WIDTH, MOVE[1]);
-                } else {
-                    return;
-                }
-                drive.turnDegAbs(180, TURN);
-                drive.drive(MOVE[0]);
-                Timer.delay(1);
-                drive.brake();
-                lift.setDirection(0);
-            } else {
-                drive.turnDegAbs(0, TURN);
-                drive.moveDistance(102 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
-                while (lift.isBusy()) {
-                    Timer.delay(0.1);
-                }
-                drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
-            }
-            grabber.set(DoubleSolenoid.Value.kForward);
+        } else {
+            return;
         }
     }
-
 }
