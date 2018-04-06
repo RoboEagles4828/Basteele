@@ -25,8 +25,17 @@ public class Robot extends IterativeRobot {
 
     private Thread dashboardThread;
 
+    // Auton
     private static final double[] MOVE = { 0.5, 0.7 };
     private static final double TURN = 0.3;
+    private static final double LENGTH = 38;
+    private static final double WIDTH = 34;
+    private static final double SWITCH_INIT = 12;
+    private static final double SWITCH_OUTER = 55.5 - WIDTH;
+    private static final double SWITCH_INNER = 6;
+    private static final double SCALE_OUTER = 42 - WIDTH;
+    private static final double SCALE_INNER = 12;
+    private static final double[] SCALE_OFFSET = { 6, 16 };
 
     public void robotInit() {
         // Joysticks
@@ -89,51 +98,59 @@ public class Robot extends IterativeRobot {
             switch (3) {
             case 0:
                 // Switch from front
-                drive.switchAuton(0, data.charAt(0) == 'L' ? -1 : 1, dumper);
+                switchAuton(0);
                 break;
             case 1:
                 // Switch from left
-                drive.switchAuton(-1, data.charAt(0) == 'L' ? -1 : 1, dumper);
+                switchAuton(-1);
                 break;
             case 2:
                 // Switch from right
-                drive.switchAuton(1, data.charAt(0) == 'L' ? -1 : 1, dumper);
+                switchAuton(1);
                 break;
             case 3:
                 // Scale from left
-                drive.scaleAuton(-1, data.charAt(1) == 'L' ? -1 : 1, false, lift, grabber);
+                scaleAuton(-1, 0);
                 break;
             case 4:
                 // Scale from right
-                drive.scaleAuton(1, data.charAt(1) == 'L' ? -1 : 1, false, lift, grabber);
+                scaleAuton(1, 0);
                 break;
             case 5:
                 // Double scale from left
-                drive.scaleAuton(-1, data.charAt(1) == 'L' ? -1 : 1, true, lift, grabber);
+                scaleAuton(-1, 1);
                 break;
             case 6:
                 // Double scale from right
-                drive.scaleAuton(1, data.charAt(1) == 'L' ? -1 : 1, true, lift, grabber);
+                scaleAuton(1, 1);
                 break;
             case 7:
+                // Scale switch from left
+                scaleAuton(-1, 3);
+                break;
+            case 8:
+                // Scale switch from right
+                scaleAuton(1, 3);
+                break;
+            case 9:
                 // Out of the way left
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, MOVE[1]);
                 drive.turnDegAbs(90, TURN);
                 drive.moveDistance(40, MOVE[1]);
                 break;
-            case 8:
+            case 10:
                 // Out of the way right
                 // Goes quickly and crosses line to the left of the switch. To be used if there is a chance of collision
                 drive.moveDistance(210, MOVE[1]);
                 drive.turnDegAbs(-90, TURN);
                 drive.moveDistance(40, MOVE[1]);
                 break;
-            case 9:
+            case 11:
                 // Move Forward
                 drive.moveDistance(240, MOVE[0]);
                 break;
-            case 10:
+            case 12:
                 // Test
                 drive.moveDistance(50, MOVE[0]);
                 grabber.set(DoubleSolenoid.Value.kForward);
@@ -257,4 +274,96 @@ public class Robot extends IterativeRobot {
     public void disabledInit() {
         lift.stop();
     }
+
+    public void switchAuton(int init) {
+        int target = data.charAt(0) == 'L' ? -1 : 1;
+        if (init == target) {
+            drive.moveDistance(-140, MOVE[1]);
+            drive.turnDegAbs(-target * 90, TURN);
+        } else if (init == -target) {
+            drive.moveDistance(-SWITCH_INIT, MOVE[1]);
+            drive.turnDegAbs(init * 90, TURN);
+            drive.moveDistance(144 + 2 * SWITCH_OUTER + WIDTH, MOVE[1]);
+            drive.turnDegAbs(0, TURN);
+            drive.moveDistance(SWITCH_INIT - 140, MOVE[1]);
+            drive.turnDegAbs(-target * 90, TURN);
+        } else {
+            drive.moveDistance(-SWITCH_INIT, MOVE[1]);
+            if (target == -1) {
+                drive.turnDegAbs(90, TURN);
+                drive.moveDistance(72 + 2 * SWITCH_INNER + WIDTH, MOVE[1]);
+                drive.turnDegAbs(0, TURN);
+            }
+            drive.moveDistance(SWITCH_INIT + LENGTH - 130, MOVE[1]);
+        }
+        drive.drive(-MOVE[0]);
+        Timer.delay(1);
+        drive.brake();
+        dumper.open();
+        Timer.delay(0.5);
+        dumper.set(DoubleSolenoid.Value.kForward);
+    }
+
+    public void scaleAuton(int init, int type) {
+        int switchTarget = data.charAt(0) == 'L' ? -1 : 1;
+        int target = data.charAt(1) == 'L' ? -1 : 1;
+        lift.setDirection(1);
+        drive.moveDistance(222, MOVE[1]);
+        drive.turnDegAbs(-init * 90, TURN);
+        if (init == target) {
+            drive.moveDistance(36 + SCALE_OUTER - SCALE_INNER, MOVE[1]);
+        } else if (init == -target) {
+            drive.moveDistance(144 + SCALE_OUTER + WIDTH + SCALE_INNER, MOVE[1]);
+        }
+        drive.turnDegAbs(0, TURN);
+        drive.moveDistance(78 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
+        while (lift.isBusy()) {
+            Timer.delay(0.1);
+        }
+        drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
+        grabber.set(DoubleSolenoid.Value.kForward);
+        if (type > 0) {
+            Timer.delay(0.5);
+            drive.moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
+            grabber.stop();
+            lift.setDirection(-1);
+            drive.turnDegAbs(180, TURN);
+            drive.moveDistance(80 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
+            while (lift.isBusy()) {
+                Timer.delay(0.1);
+            }
+            grabber.set(DoubleSolenoid.Value.kForward);
+            grabber.intake();
+            drive.moveDistance(22, MOVE[1]);
+            grabber.set(DoubleSolenoid.Value.kReverse);
+            Timer.delay(0.5);
+            grabber.stop();
+            lift.setDirection(1);
+            if (type > 1) {
+                drive.moveDistance(-14, MOVE[1]);
+                drive.turnDegAbs(-target * 90, TURN);
+                if (switchTarget == target) {
+                    drive.moveDistance(1.5 + SCALE_INNER - SWITCH_INNER, MOVE[1]);
+                } else if (type == 3) {
+                    drive.moveDistance(7.5 + SCALE_INNER + SWITCH_INNER + WIDTH, MOVE[1]);
+                } else {
+                    return;
+                }
+                drive.turnDegAbs(180, TURN);
+                drive.drive(MOVE[0]);
+                Timer.delay(1);
+                drive.brake();
+                lift.setDirection(0);
+            } else {
+                drive.turnDegAbs(0, TURN);
+                drive.moveDistance(102 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
+                while (lift.isBusy()) {
+                    Timer.delay(0.1);
+                }
+                drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
+            }
+            grabber.set(DoubleSolenoid.Value.kForward);
+        }
+    }
+
 }

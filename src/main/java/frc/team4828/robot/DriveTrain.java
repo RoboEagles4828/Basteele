@@ -30,18 +30,6 @@ public class DriveTrain {
     private static final double TURN_CHECK_DELAY = 0.001;
     private static final double TURN_MIN_SPEED = 0.05;
 
-    // Auton
-    private static final double[] MOVE = { 0.5, 0.7 };
-    private static final double TURN = 0.3;
-    private static final double LENGTH = 38;
-    private static final double WIDTH = 34;
-    private static final double SWITCH_INIT = 12;
-    private static final double SWITCH_OUTER = 55.5 - WIDTH;
-    private static final double SWITCH_INNER = 6;
-    private static final double SCALE_OUTER = 42 - WIDTH;
-    private static final double SCALE_INNER = 12;
-    private static final double[] SCALE_OFFSET = { 6, 16 };
-
     /**
      * DriveTrain for the robot.
      * 
@@ -254,80 +242,6 @@ public class DriveTrain {
         brake();
         debugEnc("End TURN");
         debugNavx("End TURN");
-    }
-
-    public void switchAuton(int init, int target, Dumper dumper) {
-        if (init == target) {
-            moveDistance(-140, MOVE[1]);
-            turnDegAbs(-target * 90, TURN);
-        } else if (init == -target) {
-            moveDistance(-SWITCH_INIT, MOVE[1]);
-            turnDegAbs(init * 90, TURN);
-            moveDistance(144 + 2 * SWITCH_OUTER + WIDTH, MOVE[1]);
-            turnDegAbs(0, TURN);
-            moveDistance(SWITCH_INIT - 140, MOVE[1]);
-            turnDegAbs(-target * 90, TURN);
-        } else {
-            moveDistance(-SWITCH_INIT, MOVE[1]);
-            if (target == -1) {
-                turnDegAbs(90, TURN);
-                moveDistance(72 + 2 * SWITCH_INNER + WIDTH, MOVE[1]);
-                turnDegAbs(0, TURN);
-            }
-            moveDistance(SWITCH_INIT + LENGTH - 130, MOVE[1]);
-        }
-        drive(-MOVE[0]);
-        Timer.delay(1);
-        brake();
-        dumper.open();
-        Timer.delay(0.5);
-        dumper.set(DoubleSolenoid.Value.kForward);
-    }
-
-    public void scaleAuton(int init, int target, boolean second, Lift lift, Grabber grabber) {
-        moveDistance(12, MOVE[1]);
-        Timer.delay(0.2);
-        lift.setDirection(1);
-        moveDistance(210, MOVE[1]);
-        turnDegAbs(-init * 90, TURN);
-        if (init == target) {
-            moveDistance(36 + SCALE_OUTER - SCALE_INNER, MOVE[1]);
-        } else if (init == -target) {
-            moveDistance(144 + SCALE_OUTER + WIDTH + SCALE_INNER, MOVE[1]);
-        }
-        turnDegAbs(0, TURN);
-        moveDistance(78 - LENGTH - SCALE_OFFSET[1], MOVE[1]);
-        while (lift.isBusy()) {
-            Timer.delay(0.1);
-        }
-        moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
-        grabber.set(DoubleSolenoid.Value.kForward);
-        if (second) {
-            Timer.delay(0.5);
-            moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
-            grabber.stop();
-            lift.setDirection(-1);
-            turnDegAbs(180, TURN);
-            moveDistance(80 - SCALE_OFFSET[1] - LENGTH, MOVE[0]);
-            while (lift.isBusy()) {
-                Timer.delay(0.1);
-            }
-            grabber.set(DoubleSolenoid.Value.kForward);
-            grabber.intake();
-            moveDistance(22, MOVE[0]);
-            grabber.set(DoubleSolenoid.Value.kReverse);
-            Timer.delay(0.5);
-            grabber.stop();
-            lift.setDirection(1);
-            turnDegAbs(0, TURN);
-            moveDistance(102 - SCALE_OFFSET[1] - LENGTH, MOVE[0]);
-            while (lift.isBusy()) {
-                Timer.delay(0.1);
-            }
-            moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
-            grabber.up();
-            grabber.outtake();
-        }
     }
 
     /**
