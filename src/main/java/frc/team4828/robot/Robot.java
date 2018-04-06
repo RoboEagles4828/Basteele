@@ -309,7 +309,7 @@ public class Robot extends IterativeRobot {
         }
         drive.turnDegAbs(0, TURN);
         drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
-        while (lift.isBusy()) {
+        while (lift.isBusy() && isAutonomous()) {
             Timer.delay(0.1);
         }
         drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
@@ -319,7 +319,7 @@ public class Robot extends IterativeRobot {
         lift.setDirection(-1);
         drive.turnDegAbs(180, TURN);
         drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
-        while (lift.isBusy()) {
+        while (lift.isBusy() && isAutonomous()) {
             Timer.delay(0.1);
         }
         grabber.set(DoubleSolenoid.Value.kForward);
@@ -346,7 +346,7 @@ public class Robot extends IterativeRobot {
         } else if (type == 1) {
             drive.turnDegAbs(0, TURN);
             drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
-            while (lift.isBusy()) {
+            while (lift.isBusy() && isAutonomous()) {
                 Timer.delay(0.1);
             }
             drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
