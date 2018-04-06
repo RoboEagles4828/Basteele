@@ -287,14 +287,14 @@ public class Robot extends IterativeRobot {
             drive.turnDegAbs(0, TURN);
             drive.moveDistance(SWITCH_INIT - 140, MOVE[1]);
             drive.turnDegAbs(-target * 90, TURN);
-        } else {
+        } else if (target == -1) {
             drive.moveDistance(-SWITCH_INIT, MOVE[1]);
-            if (target == -1) {
-                drive.turnDegAbs(90, TURN);
-                drive.moveDistance(72 + 2 * SWITCH_INNER + WIDTH, MOVE[1]);
-                drive.turnDegAbs(0, TURN);
-            }
+            drive.turnDegAbs(90, TURN);
+            drive.moveDistance(72 + 2 * SWITCH_INNER + WIDTH, MOVE[1]);
+            drive.turnDegAbs(0, TURN);
             drive.moveDistance(SWITCH_INIT + LENGTH - 130, MOVE[1]);
+        } else {
+            drive.moveDistance(LENGTH - 130, MOVE[1]);
         }
         drive.drive(-MOVE[0]);
         Timer.delay(1);
@@ -324,7 +324,6 @@ public class Robot extends IterativeRobot {
         grabber.set(DoubleSolenoid.Value.kForward);
         Timer.delay(0.5);
         drive.moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
-        grabber.stop();
         lift.setDirection(-1);
         drive.turnDegAbs(180, TURN);
         drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
@@ -348,10 +347,10 @@ public class Robot extends IterativeRobot {
             } else {
                 return;
             }
+            lift.setDirection(0);
             drive.turnDegAbs(180, TURN);
             drive.moveDistance(14, MOVE[0]);
-            lift.setDirection(0);
-            grabber.outtake();
+            grabber.set(DoubleSolenoid.Value.kForward);
         } else if (type == 1) {
             drive.turnDegAbs(0, TURN);
             drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
