@@ -64,6 +64,8 @@ public class Robot extends IterativeRobot {
                     drive.updateDashboard();
                     dumper.updateDashboard();
                     lift.updateDashboard();
+                    mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
+                    SmartDashboard.putNumber("Autonomous Mode", mode);
                     Timer.delay(0.1);
                 }
             }
@@ -77,8 +79,6 @@ public class Robot extends IterativeRobot {
         System.out.println(" --- Start Autonomous Init ---");
         doneAuton = false;
         data = DriverStation.getInstance().getGameSpecificMessage();
-        mode = (switch1.get() ? 4 : 0) + (switch2.get() ? 2 : 0) + (switch3.get() ? 1 : 0);
-        SmartDashboard.putNumber("Autonomous Mode", mode);
 
         drive.setGear(DoubleSolenoid.Value.kForward);
         drive.reset();
@@ -299,6 +299,11 @@ public class Robot extends IterativeRobot {
     private void scaleAuton(int init, int type) {
         int switchTarget = data.charAt(0) == 'L' ? -1 : 1;
         int target = data.charAt(1) == 'L' ? -1 : 1;
+        drive.drive(1);
+        Timer.delay(0.2);
+        drive.drive(-1);
+        Timer.delay(0.3);
+        drive.brake();
         lift.setDirection(1);
         drive.moveDistance(222, MOVE[1]);
         drive.turnDegAbs(-init * 90, TURN);
@@ -314,45 +319,45 @@ public class Robot extends IterativeRobot {
         }
         drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
         grabber.set(DoubleSolenoid.Value.kForward);
-        Timer.delay(0.5);
-        drive.moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
-        lift.setDirection(-1);
-        drive.turnDegAbs(180, TURN);
-        drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
-        while (lift.isBusy() && isAutonomous()) {
-            Timer.delay(0.1);
-        }
-        grabber.set(DoubleSolenoid.Value.kForward);
-        grabber.intake();
-        drive.moveDistance(10, MOVE[1]);
-        grabber.set(DoubleSolenoid.Value.kReverse);
-        Timer.delay(0.5);
-        grabber.stop();
-        lift.setDirection(1);
-        drive.moveDistance(-10, MOVE[1]);
-        if (type > 1) {
-            drive.turnDegAbs(-target * 90, TURN);
-            if (switchTarget == target) {
-                drive.moveDistance(1.5 + SCALE_INNER - SWITCH_INNER, MOVE[1]);
-            } else if (type == 3) {
-                drive.moveDistance(7.5 + SCALE_INNER + SWITCH_INNER + WIDTH, MOVE[1]);
-            } else {
-                return;
-            }
-            lift.setDirection(0);
+        if (type > 0) {
+            Timer.delay(0.5);
+            drive.moveDistance(SCALE_OFFSET[0] - SCALE_OFFSET[1], MOVE[0]);
+            lift.setDirection(-1);
             drive.turnDegAbs(180, TURN);
-            drive.moveDistance(14, MOVE[0]);
-            grabber.set(DoubleSolenoid.Value.kForward);
-        } else if (type == 1) {
-            drive.turnDegAbs(0, TURN);
             drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
             while (lift.isBusy() && isAutonomous()) {
                 Timer.delay(0.1);
             }
-            drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
             grabber.set(DoubleSolenoid.Value.kForward);
-        } else {
-            return;
+            grabber.intake();
+            drive.moveDistance(10, MOVE[1]);
+            grabber.set(DoubleSolenoid.Value.kReverse);
+            Timer.delay(0.5);
+            grabber.stop();
+            lift.setDirection(1);
+            drive.moveDistance(-10, MOVE[1]);
+            if (type > 1) {
+                drive.turnDegAbs(-target * 90, TURN);
+                if (switchTarget == target) {
+                    drive.moveDistance(1.5 + SCALE_INNER - SWITCH_INNER, MOVE[1]);
+                } else if (type == 3) {
+                    drive.moveDistance(7.5 + SCALE_INNER + SWITCH_INNER + WIDTH, MOVE[1]);
+                } else {
+                    return;
+                }
+                lift.setDirection(0);
+                drive.turnDegAbs(180, TURN);
+                drive.moveDistance(14, MOVE[0]);
+                grabber.set(DoubleSolenoid.Value.kForward);
+            } else {
+                drive.turnDegAbs(0, TURN);
+                drive.moveDistance(78 - SCALE_OFFSET[1] - LENGTH, MOVE[1]);
+                while (lift.isBusy() && isAutonomous()) {
+                    Timer.delay(0.1);
+                }
+                drive.moveDistance(SCALE_OFFSET[1] - SCALE_OFFSET[0], MOVE[0]);
+                grabber.set(DoubleSolenoid.Value.kForward);
+            }
         }
     }
 }
