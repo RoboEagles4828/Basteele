@@ -250,6 +250,7 @@ public class DriveTrain {
     public void zeroEnc() {
         left.zeroEnc();
         right.zeroEnc();
+        Timer.delay(0.1);
     }
 
     /**

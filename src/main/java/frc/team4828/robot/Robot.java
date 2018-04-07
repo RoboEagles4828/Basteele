@@ -83,7 +83,6 @@ public class Robot extends IterativeRobot {
         drive.setGear(DoubleSolenoid.Value.kForward);
         drive.reset();
         drive.zeroEnc();
-        Timer.delay(0.1);
 
         lift.start();
 
@@ -301,9 +300,10 @@ public class Robot extends IterativeRobot {
         int target = data.charAt(1) == 'L' ? -1 : 1;
         drive.drive(1);
         Timer.delay(0.2);
-        drive.drive(-1);
-        Timer.delay(0.3);
+        drive.drive(-0.5);
+        Timer.delay(0.5);
         drive.brake();
+        drive.zeroEnc();
         lift.setDirection(1);
         drive.moveDistance(222, MOVE[1]);
         drive.turnDegAbs(-init * 90, TURN);
