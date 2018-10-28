@@ -63,10 +63,6 @@ public class Lift implements Runnable {
         target = pos;
     }
 
-    public int getPos() {
-        return pos;
-    }
-
     public boolean isBusy() {
         return pos != target;
     }
@@ -110,7 +106,6 @@ public class Lift implements Runnable {
 
     private void check() {
         int tempDirection = direction;
-        //boolean currentState = switcher.get();
         boolean currentState = false;
         // Position Check
         if (currentState != prevState && Timer.getFPGATimestamp() - startTime > SWITCHER_DELAY) {

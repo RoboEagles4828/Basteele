@@ -59,8 +59,6 @@ public class Robot extends IterativeRobot {
             }
         };
         dashboardThread.start();
-
-//        CameraServer.getInstance().startAutomaticCapture();
     }
 
     public void autonomousInit() {
@@ -73,8 +71,6 @@ public class Robot extends IterativeRobot {
         drive.setGear(DoubleSolenoid.Value.kForward);
         drive.reset();
         drive.zeroEnc();
-
-        //lift.start();
         lift.resetTarget();
 
         dumper.close();
@@ -336,13 +332,6 @@ public class Robot extends IterativeRobot {
         } else {
             climber.stop();
         }
-
-        // Gear Shift
-//        if (driveStick.getRawButton(Buttons.GEAR_HIGH)) {
-//            drive.setGear(DoubleSolenoid.Value.kReverse);
-//        } else if (driveStick.getRawButton(Buttons.GEAR_LOW)) {
-//            drive.setGear(DoubleSolenoid.Value.kForward);
-//        }
 
         Timer.delay(0.01);
     }

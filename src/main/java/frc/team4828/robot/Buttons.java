@@ -10,8 +10,6 @@ public class Buttons {
     public static final int DUMPER = 1;
     public static final int CLIMB_UP = 8;
     public static final int CLIMB_DOWN = 7;
-    public static final int GEAR_HIGH = 3;
-    public static final int GEAR_LOW = 4;
 
     // Lift Joystick
     public static final int[] LIFT = { 9, 7 };

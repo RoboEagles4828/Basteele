@@ -111,10 +111,6 @@ public class DriveTrain {
         return input;
     }
 
-//    private double normalizeAbs(double input, double factor, double max) {
-//        return 2 * max / (1 + Math.pow(Math.E, (-factor * input))) - max;
-//    }
-
     /**
      * Scales inputs so that they do not exceed a given maximum.
      *
