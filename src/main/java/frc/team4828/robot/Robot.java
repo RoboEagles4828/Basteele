@@ -36,7 +36,7 @@ public class Robot extends IterativeRobot {
         // Drive
         drive = new DriveTrain(Ports.LEFT_GEARBOX, Ports.RIGHT_GEARBOX, Ports.SHIFTER);
         // Lift
-        lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, Ports.SWITCHER, 0);
+        lift = new Lift(Ports.LIFT, Ports.LIFT_MIN, Ports.LIFT_MAX, 0);
         // Grabber
         grabber = new Grabber(Ports.LEFT_GRABBER, Ports.RIGHT_GRABBER, Ports.GRABBER, Ports.FLIPPER);
         // Climber
