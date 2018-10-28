@@ -18,16 +18,25 @@ public class Climber {
         rightMotor = new Victor(rightMotorPort);
     }
 
+    /**
+     * Sets the climber going upwards at the default speed
+     */
     public void up() {
         leftMotor.set(DEFAULT_SPEED);
         rightMotor.set(DEFAULT_SPEED);
     }
 
+    /**
+     * Sets the climber going downwards at the default speed
+     */
     public void down() {
         leftMotor.set(-DEFAULT_SPEED);
         rightMotor.set(-DEFAULT_SPEED);
     }
 
+    /**
+     * Sets climber speed to 0
+     */
     public void stop() {
         rightMotor.set(0);
         leftMotor.set(0);
